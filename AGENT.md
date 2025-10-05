@@ -1,18 +1,18 @@
-# Agent Development Log
+# Agent
 
-This document tracks the development process, decisions, and progress of porting the Ruby ComicInfo gem to Swift.
+This document tracks the development process, decisions, and progress of porting the ComicInfo Ruby gem to a Swift package.
 
 ## Project Overview
 
-**Source**: Ruby gem `comicinfo-rb` (complete)
-**Target**: Swift package `ComicInfo-swift` (in development)
-**Approach**: Test-Driven Development (TDD) based on Ruby RSpec tests
+- **Source**: Ruby gem `comicinfo-ruby` (complete) https://github.com/veganstraightedge/comicinfo
+- **Target**: Swift package `ComicInfo-swift` (in development)
+- **Approach**: Test-Driven Development (TDD) based on Ruby RSpec tests
 
 ## Development Guidelines
 
 - **Swift Version**: 6.2+
 - **Testing Framework**: Swift Testing (not XCTest)
-- **Code Formatting**: `swift format`
+- **Code Formatting**: `swift format`, use 2 spaces for level indentation
 - **Development Process**: TDD
   - Write failing tests first (based on Ruby RSpec tests)
   - Use XML fixture files in `Tests/Fixtures/`, not inline XML strings
@@ -24,29 +24,29 @@ This document tracks the development process, decisions, and progress of porting
 ### Ruby Gem Structure
 ```
 lib/comicinfo/
-├── comicinfo.rb        # Main entry point and loader
-├── enums.rb           # Enum definitions (AgeRating, Manga, BlackAndWhite)
-├── errors.rb          # Custom error classes
-├── issue.rb           # Main ComicInfo::Issue class
-├── page.rb            # ComicInfo::Page class
-└── version.rb         # Version constant
+├── comicinfo.rb # Main entry point and loader
+├── enums.rb     # Enum definitions
+├── errors.rb    # Custom error classes
+├── issue.rb     # Main ComicInfo::Issue class
+├── page.rb      # ComicInfo::Page class
+└── version.rb   # Version constant
 ```
 
 ### Swift Package Structure (Planned)
 ```
 Sources/ComicInfo/
-├── ComicInfo.swift     # Main entry point and loader
-├── Enums.swift         # Enum definitions
-├── Errors.swift        # Error types
-├── Issue.swift         # Main ComicInfo.Issue class
-├── Page.swift          # ComicInfo.Page class
-└── Version.swift       # Version constant
+├── ComicInfo.swift # Main entry point and loader
+├── Enums.swift     # Enum definitions
+├── Errors.swift    # Error types
+├── Issue.swift     # Main ComicInfo.Issue class
+├── Page.swift      # ComicInfo.Page class
+└── Version.swift   # Version constant
 ```
 
 ## Key Ruby Features to Port
 
 ### Core Functionality
-- [ ] XML parsing from file paths, URLs, and strings
+- [ ] XML parsing from file paths or strings
 - [ ] Complete ComicInfo v2.0 schema support
 - [ ] Custom error handling with detailed messages
 - [ ] Enum validation and type coercion
@@ -64,12 +64,13 @@ Sources/ComicInfo/
 ## Test Strategy
 
 ### Test File Mapping
+
 ```ruby
-spec/comic_info_spec.rb              → Tests/ComicInfoTests/ComicInfoTests.swift
-spec/comic_info/issue_spec.rb        → Tests/ComicInfoTests/IssueTests.swift
-spec/comic_info/page_spec.rb         → Tests/ComicInfoTests/PageTests.swift
-spec/comic_info/enums_spec.rb        → Tests/ComicInfoTests/EnumsTests.swift
-spec/comic_info/errors_spec.rb       → Tests/ComicInfoTests/ErrorsTests.swift
+spec/comic_info_spec.rb        → Tests/ComicInfoTests/ComicInfoTests.swift
+spec/comic_info/issue_spec.rb  → Tests/ComicInfoTests/IssueTests.swift
+spec/comic_info/page_spec.rb   → Tests/ComicInfoTests/PageTests.swift
+spec/comic_info/enums_spec.rb  → Tests/ComicInfoTests/EnumsTests.swift
+spec/comic_info/errors_spec.rb → Tests/ComicInfoTests/ErrorsTests.swift
 ```
 
 ### Fixture Files
@@ -89,8 +90,8 @@ end
 ```swift
 // Swift Testing
 @Test func testLoadsMinimalComicInfoFile() async throws {
-    let comic = try loadFixture("valid_minimal.xml")
-    #expect(comic.title == "Minimal Comic")
+  let comic = try loadFixture("valid_minimal.xml")
+  #expect(comic.title == "Minimal Comic")
 }
 ```
 
@@ -99,9 +100,9 @@ end
 ### Phase 1: Foundation ✅
 - [x] Create README.md
 - [x] Create AGENT.md
-- [ ] Create TODO.md
-- [ ] Set up basic project structure
-- [ ] Copy fixture files
+- [x] Create TODO.md
+- [x] Set up basic project structure
+- [x] Copy fixture files
 
 ### Phase 2: Core Types
 - [ ] Define error types (`ComicInfoError`)
@@ -111,7 +112,7 @@ end
 
 ### Phase 3: XML Parsing
 - [ ] Implement basic XML loading from string
-- [ ] Implement file/URL loading
+- [ ] Implement file loading
 - [ ] Add basic field parsing (title, series, number)
 - [ ] Add comprehensive field parsing
 
@@ -125,7 +126,7 @@ end
 - [ ] Convenience methods (`isManga`, `isRightToLeft`, etc.)
 - [ ] Page type filtering (`coverPages`, `storyPages`)
 - [ ] Array access for multi-value fields
-- [ ] Export functionality (JSON, PropertyList)
+- [ ] Export functionality (JSON, YAML, ComicInfo.xml)
 
 ## Design Decisions
 
@@ -147,7 +148,7 @@ end
 
 ### XML Parsing
 - Ruby Nokogiri → Swift Foundation XMLParser
-- Stream-based parsing for performance
+- Document-based parsing for clarity
 - Maintain Ruby's flexible loading API
 
 ## Progress Tracking
@@ -158,15 +159,15 @@ end
 - [x] AGENT.md development log
 
 ### Current Focus
-- [ ] TODO.md task tracking
-- [ ] Fixture file setup
+- [x] TODO.md task tracking
+- [x] Fixture file setup
 - [ ] Basic error type definitions
 
 ### Next Steps
-1. Create comprehensive TODO.md
-2. Set up fixture files
-3. Start with basic error types
-4. Implement first failing test for minimal XML loading
+- [x] Create comprehensive TODO.md
+- [x] Set up fixture files
+- [ ] Start with basic error types
+- [ ] Implement first failing test for minimal XML loading
 
 ## Notes and Decisions
 
@@ -184,10 +185,8 @@ end
 - Match Ruby test coverage and behavior
 
 ### Performance Considerations
-- Stream-based XML parsing
-- Lazy evaluation where appropriate
+- Document-based XML parsing
 - Efficient string/array conversions
-- Memory-conscious page array handling
 
 ## Resources
 

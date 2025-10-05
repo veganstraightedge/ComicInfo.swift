@@ -5,7 +5,7 @@ following the official ComicInfo schema specifications from the
 [Anansi Project](https://github.com/anansi-project/comicinfo).
 
 ![Swift](https://img.shields.io/badge/swift-6.2%2B-orange.svg)
-![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Linux-lightgrey.svg)
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS-lightgrey.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## Features
@@ -34,7 +34,7 @@ Add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/your-org/ComicInfo-swift.git", from: "1.0.0")
+  .package(url: "https://github.com/your-org/ComicInfo-swift.git", from: "1.0.0")
 ]
 ```
 
@@ -53,16 +53,12 @@ import ComicInfo
 // Load from file path
 let comic = try ComicInfo.load(from: "path/to/ComicInfo.xml")
 
-// Load from URL
-let url = URL(fileURLWithPath: "ComicInfo.xml")
-let comic = try ComicInfo.load(from: url)
-
 // Load from XML string
 let xmlContent = try String(contentsOfFile: "ComicInfo.xml")
 let comic = try ComicInfo.load(fromXML: xmlContent)
 
 // Async loading
-let comic = try await ComicInfo.loadAsync(from: url)
+let comic = try await ComicInfo.loadAsync(from: "path/to/ComicInfo.xml")
 ```
 
 ### Accessing Comic Information
@@ -125,16 +121,19 @@ let webUrls = comic.webUrlsArray       // [URL(...), URL(...)]
 
 ```swift
 for page in comic.pages {
-    print("Page \(page.image): \(page.type)")
-    if page.isDoublePage {
-        print("  Double page spread")
-    }
-    if let bookmark = page.bookmark {
-        print("  Bookmark: \(bookmark)")
-    }
-    if let width = page.imageWidth, let height = page.imageHeight {
-        print("  Dimensions: \(width)x\(height)")
-    }
+  print("Page \(page.image): \(page.type)")
+
+  if page.isDoublePage {
+    print("  Double page spread")
+  }
+
+  if let bookmark = page.bookmark {
+    print("  Bookmark: \(bookmark)")
+  }
+
+  if let width = page.imageWidth, let height = page.imageHeight {
+    print("  Dimensions: \(width)x\(height)")
+  }
 }
 
 // Page type checks
@@ -150,30 +149,30 @@ print(page.isDeleted) // true for deleted pages
 // Load a manga ComicInfo file
 let manga = try ComicInfo.load(from: "path/to/manga/ComicInfo.xml")
 
-print(manga.title)            // "進撃の巨人"
-print(manga.series)           // "Attack on Titan"
-print(manga.manga)            // .yesAndRightToLeft
-print(manga.isRightToLeft)    // true
-print(manga.languageISO)      // "ja-JP"
-print(manga.isBlackAndWhite)  // true
-print(manga.blackAndWhite)    // .yes
+print(manga.title)           // "進撃の巨人"
+print(manga.series)          // "Attack on Titan"
+print(manga.manga)           // .yesAndRightToLeft
+print(manga.isRightToLeft)   // true
+print(manga.languageISO)     // "ja-JP"
+print(manga.isBlackAndWhite) // true
+print(manga.blackAndWhite)   // .yes
 ```
 
 ### Error Handling
 
 ```swift
 do {
-    let comic = try ComicInfo.load(from: "nonexistent.xml")
+  let comic = try ComicInfo.load(from: "nonexistent.xml")
 } catch ComicInfoError.fileNotFound(let path) {
-    print("File not found: \(path)")
+  print("File not found: \(path)")
 } catch ComicInfoError.parseError(let message) {
-    print("Parse error: \(message)")
+  print("Parse error: \(message)")
 } catch ComicInfoError.invalidEnum(let field, let value, let validValues) {
-    print("Invalid enum: \(field) = '\(value)', valid: \(validValues)")
+  print("Invalid enum: \(field) = '\(value)', valid: \(validValues)")
 } catch ComicInfoError.valueOutOfRange(let field, let value, let range) {
-    print("Out of range: \(field) = \(value), range: \(range)")
+  print("Out of range: \(field) = \(value), range: \(range)")
 } catch ComicInfoError.typeCoercionError(let message) {
-    print("Type coercion error: \(message)")
+  print("Type coercion error: \(message)")
 }
 ```
 
@@ -208,13 +207,13 @@ This package fully supports the ComicInfo v2.0 XSD schema with all field types:
 
 ### Building
 
-```bash
+```sh
 swift build
 ```
 
 ### Testing
 
-```bash
+```sh
 # Run all tests
 swift test
 
@@ -229,7 +228,7 @@ swift test --filter testBasicLoading
 
 This project uses `swift-format` for code formatting:
 
-```bash
+```sh
 # Format all Swift files
 swift format --in-place --recursive Sources/ Tests/
 
@@ -263,14 +262,16 @@ swift format --lint --recursive Sources/ Tests/
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the code of conduct.
+Bug reports and pull requests are welcome on GitHub.
+This project is intended to be a safe, welcoming space for collaboration,
+and contributors are expected to adhere to the code of conduct.
 
 ## License
 
-The package is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The package is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
 
 ## Acknowledgments
 
 - [Anansi Project](https://github.com/anansi-project/comicinfo) for the ComicInfo schema specification
-- Ruby ComicInfo gem for API inspiration and test cases
-- Swift community for excellent XML parsing capabilities
+- [Ruby ComicInfo](https://github.com/veganstraightedge/comicinfo) gem for API inspiration and test cases
