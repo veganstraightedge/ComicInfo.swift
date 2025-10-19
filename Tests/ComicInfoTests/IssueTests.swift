@@ -34,4 +34,16 @@ struct IssueTests {
     #expect(issue.summary?.contains("radioactive spider") == true)
     #expect(issue.notes == "Scanned by ComicTagger v1.0")
   }
+
+  @Test func testCreatorFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.writer == "Dan Slott, Christos Gage")
+    #expect(issue.penciller == "Ryan Ottley")
+    #expect(issue.inker == "Cliff Rathburn")
+    #expect(issue.colorist == "Laura Martin")
+    #expect(issue.letterer == "Joe Caramagna")
+    #expect(issue.coverArtist == "Ryan Ottley")
+    #expect(issue.editor == "Nick Lowe")
+    #expect(issue.translator == "John Smith")
+  }
 }

@@ -22,10 +22,20 @@ public enum ComicInfo {
     public let volume: Int?
     public let summary: String?
     public let notes: String?
+    public let writer: String?
+    public let penciller: String?
+    public let inker: String?
+    public let colorist: String?
+    public let letterer: String?
+    public let coverArtist: String?
+    public let editor: String?
+    public let translator: String?
 
     public init(
       title: String? = nil, series: String? = nil, number: String? = nil, count: Int? = nil, volume: Int? = nil,
-      summary: String? = nil, notes: String? = nil
+      summary: String? = nil, notes: String? = nil, writer: String? = nil, penciller: String? = nil,
+      inker: String? = nil, colorist: String? = nil, letterer: String? = nil, coverArtist: String? = nil,
+      editor: String? = nil, translator: String? = nil
     ) {
       self.title = title
       self.series = series
@@ -34,6 +44,14 @@ public enum ComicInfo {
       self.volume = volume
       self.summary = summary
       self.notes = notes
+      self.writer = writer
+      self.penciller = penciller
+      self.inker = inker
+      self.colorist = colorist
+      self.letterer = letterer
+      self.coverArtist = coverArtist
+      self.editor = editor
+      self.translator = translator
     }
 
     /// Load Issue from an XML string
@@ -52,9 +70,19 @@ public enum ComicInfo {
       let volume = root?.elements(forName: "Volume").first?.stringValue.flatMap { Int($0) }
       let summary = root?.elements(forName: "Summary").first?.stringValue
       let notes = root?.elements(forName: "Notes").first?.stringValue
+      let writer = root?.elements(forName: "Writer").first?.stringValue
+      let penciller = root?.elements(forName: "Penciller").first?.stringValue
+      let inker = root?.elements(forName: "Inker").first?.stringValue
+      let colorist = root?.elements(forName: "Colorist").first?.stringValue
+      let letterer = root?.elements(forName: "Letterer").first?.stringValue
+      let coverArtist = root?.elements(forName: "CoverArtist").first?.stringValue
+      let editor = root?.elements(forName: "Editor").first?.stringValue
+      let translator = root?.elements(forName: "Translator").first?.stringValue
 
       return Issue(
-        title: title, series: series, number: number, count: count, volume: volume, summary: summary, notes: notes)
+        title: title, series: series, number: number, count: count, volume: volume, summary: summary, notes: notes,
+        writer: writer, penciller: penciller, inker: inker, colorist: colorist, letterer: letterer, coverArtist: coverArtist,
+        editor: editor, translator: translator)
     }
   }
 }
