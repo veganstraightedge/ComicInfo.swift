@@ -1,2 +1,10 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+//
+// ComicInfo.swift
+// ComicInfo
+//
+
+import Foundation
+
+/// Main entry point for loading ComicInfo data
+public enum ComicInfo {
+}

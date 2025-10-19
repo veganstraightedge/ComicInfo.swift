@@ -20,7 +20,8 @@ let package = Package(
         ),
         .testTarget(
             name: "ComicInfoTests",
-            dependencies: ["ComicInfo"]
+            dependencies: ["ComicInfo"],
+            resources: [.copy("Fixtures")]
         ),
     ]
 )
