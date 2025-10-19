@@ -9,104 +9,12 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [x] Create TODO.md
 - [x] Copy fixture files from Ruby to Swift
 - [x] Create Tests/Fixtures/ directory structure
-- [ ] Set up basic project file organization
+- [x] Set up basic project file organization
 
-## Phase 2: Core Types and Errors
 
-### Error Types
-- [ ] Define `ComicInfoError` enum with associated values
-  - [ ] `fileNotFound(String)`
-  - [ ] `parseError(String)`
-  - [ ] `invalidEnum(field: String, value: String, validValues: [String])`
-  - [ ] `valueOutOfRange(field: String, value: Any, range: String)`
-  - [ ] `typeCoercionError(String)`
-- [ ] Add error descriptions and localized descriptions
-- [ ] Test: Error creation and message formatting
+## Phase 2: Test Coverage Matching Ruby Gem
 
-### Enums
-- [ ] Define `AgeRating` enum with all Ruby values
-  - [ ] Add `CaseIterable` conformance
-  - [ ] Add string conversion methods
-  - [ ] Test: All enum cases and string conversions
-- [ ] Define `Manga` enum (.unknown, .no, .yes, .yesAndRightToLeft)
-  - [ ] Test: Enum cases and boolean helpers
-- [ ] Define `BlackAndWhite` enum (.unknown, .no, .yes)
-  - [ ] Test: Enum cases and boolean helpers
-- [ ] Define `PageType` enum (all page types from Ruby)
-  - [ ] Add convenience boolean properties
-  - [ ] Test: All page types and boolean checks
-
-### Version
-- [ ] Create Version.swift with version constant
-- [ ] Test: Version number accessibility
-
-## Phase 3: Basic XML Parsing and Issue Structure
-
-### Issue Structure
-- [ ] Create `ComicInfo.Issue` class/struct
-- [ ] Add all basic string properties (title, series, number, etc.)
-- [ ] Add all integer properties (count, volume, year, etc.)
-- [ ] Add decimal properties (communityRating)
-- [ ] Add enum properties (ageRating, manga, blackAndWhite)
-- [ ] Test: Issue initialization with empty values
-
-### Basic XML Loading
-- [ ] Create main `ComicInfo` class with static methods
-- [ ] Implement `load(from: String)` - file path loading
-- [ ] Implement `load(from: URL)` - URL loading
-- [ ] Implement `load(fromXML: String)` - XML string loading
-- [ ] Implement `loadAsync(from: URL)` - async loading
-- [ ] Test: Load minimal XML fixture
-- [ ] Test: File not found error handling
-- [ ] Test: Invalid XML error handling
-
-### XML Parser Implementation
-- [ ] Create XMLParser delegate for ComicInfo parsing
-- [ ] Parse root ComicInfo element
-- [ ] Parse all basic string elements
-- [ ] Parse integer elements with type coercion
-- [ ] Parse decimal elements with validation
-- [ ] Parse enum elements with validation
-- [ ] Test: Complete XML fixture parsing
-- [ ] Test: Type coercion edge cases
-- [ ] Test: Enum validation and error cases
-
-## Phase 4: Advanced Features
-
-### Multi-value Fields
-- [ ] Add support for comma-separated string fields
-- [ ] Create computed properties for array access:
-  - [ ] `charactersArray` from `characters` string
-  - [ ] `teamsArray` from `teams` string
-  - [ ] `locationsArray` from `locations` string
-  - [ ] `genresArray` from `genre` string
-  - [ ] `webUrlsArray` from `web` string (as URLs)
-- [ ] Test: Multi-value string parsing and array conversion
-- [ ] Test: URL parsing for web field
-
-### Page Support
-- [ ] Create `ComicInfo.Page` class/struct
-- [ ] Add all page properties (image, type, doublePage, etc.)
-- [ ] Add page type enum parsing
-- [ ] Add boolean convenience methods
-- [ ] Parse Pages XML element and create page array
-- [ ] Test: Page creation and property access
-- [ ] Test: Page type validation
-- [ ] Test: Page boolean helpers
-
-### Issue Convenience Methods
-- [ ] Add boolean properties:
-  - [ ] `isManga` (computed from manga enum)
-  - [ ] `isRightToLeft` (computed from manga)
-  - [ ] `isBlackAndWhite` (computed from blackAndWhite enum)
-  - [ ] `hasPages` (computed from pages array)
-- [ ] Add page filtering methods:
-  - [ ] `coverPages` (filter pages by cover types)
-  - [ ] `storyPages` (filter pages by story type)
-- [ ] Test: All boolean properties
-- [ ] Test: Page filtering methods
-
-## Phase 5: Test Coverage Matching Ruby Gem
+- [ ] TDD: Write failing tests that are marked as skipped, then we will write implemetation to code to make each test pass, one at a time
 
 ### Core Loading Tests (from comic_info_spec.rb)
 - [ ] Test: Load minimal XML fixture
@@ -146,6 +54,101 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [ ] Test: Empty and whitespace-only values
 - [ ] Test: Very large page arrays
 - [ ] Test: Unicode in all string fields
+
+## Phase 3: Core Types and Errors
+
+### Error Types
+- [ ] Define `ComicInfoError` enum with associated values
+  - [ ] `fileNotFound(String)`
+  - [ ] `parseError(String)`
+  - [ ] `invalidEnum(field: String, value: String, validValues: [String])`
+  - [ ] `valueOutOfRange(field: String, value: Any, range: String)`
+  - [ ] `typeCoercionError(String)`
+- [ ] Add error descriptions and localized descriptions
+- [ ] Test: Error creation and message formatting
+
+### Enums
+- [ ] Define `AgeRating` enum with all Ruby values
+  - [ ] Add `CaseIterable` conformance
+  - [ ] Add string conversion methods
+  - [ ] Test: All enum cases and string conversions
+- [ ] Define `Manga` enum (.unknown, .no, .yes, .yesAndRightToLeft)
+  - [ ] Test: Enum cases and boolean helpers
+- [ ] Define `BlackAndWhite` enum (.unknown, .no, .yes)
+  - [ ] Test: Enum cases and boolean helpers
+- [ ] Define `PageType` enum (all page types from Ruby)
+  - [ ] Add convenience boolean properties
+  - [ ] Test: All page types and boolean checks
+
+### Version
+- [ ] Create Version.swift with version constant
+- [ ] Test: Version number accessibility
+
+## Phase 4: Basic XML Parsing and Issue Structure
+
+### Issue Structure
+- [ ] Create `ComicInfo.Issue` class/struct
+- [ ] Add all basic string properties (title, series, number, etc.)
+- [ ] Add all integer properties (count, volume, year, etc.)
+- [ ] Add decimal properties (communityRating)
+- [ ] Add enum properties (ageRating, manga, blackAndWhite)
+- [ ] Test: Issue initialization with empty values
+
+### Basic XML Loading
+- [ ] Create main `ComicInfo` class with static methods
+- [ ] Implement `load(from: String)` - file path loading
+- [ ] Implement `load(from: URL)` - URL loading
+- [ ] Implement `load(fromXML: String)` - XML string loading
+- [ ] Implement `loadAsync(from: URL)` - async loading
+- [ ] Test: Load minimal XML fixture
+- [ ] Test: File not found error handling
+- [ ] Test: Invalid XML error handling
+
+### XML Parser Implementation
+- [ ] Create XMLParser delegate for ComicInfo parsing
+- [ ] Parse root ComicInfo element
+- [ ] Parse all basic string elements
+- [ ] Parse integer elements with type coercion
+- [ ] Parse decimal elements with validation
+- [ ] Parse enum elements with validation
+- [ ] Test: Complete XML fixture parsing
+- [ ] Test: Type coercion edge cases
+- [ ] Test: Enum validation and error cases
+
+## Phase 5: Advanced Features
+
+### Multi-value Fields
+- [ ] Add support for comma-separated string fields
+- [ ] Create computed properties for array access:
+  - [ ] `charactersArray` from `characters` string
+  - [ ] `teamsArray` from `teams` string
+  - [ ] `locationsArray` from `locations` string
+  - [ ] `genresArray` from `genre` string
+  - [ ] `webUrlsArray` from `web` string (as URLs)
+- [ ] Test: Multi-value string parsing and array conversion
+- [ ] Test: URL parsing for web field
+
+### Page Support
+- [ ] Create `ComicInfo.Page` class/struct
+- [ ] Add all page properties (image, type, doublePage, etc.)
+- [ ] Add page type enum parsing
+- [ ] Add boolean convenience methods
+- [ ] Parse Pages XML element and create page array
+- [ ] Test: Page creation and property access
+- [ ] Test: Page type validation
+- [ ] Test: Page boolean helpers
+
+### Issue Convenience Methods
+- [ ] Add boolean properties:
+  - [ ] `isManga` (computed from manga enum)
+  - [ ] `isRightToLeft` (computed from manga)
+  - [ ] `isBlackAndWhite` (computed from blackAndWhite enum)
+  - [ ] `hasPages` (computed from pages array)
+- [ ] Add page filtering methods:
+  - [ ] `coverPages` (filter pages by cover types)
+  - [ ] `storyPages` (filter pages by story type)
+- [ ] Test: All boolean properties
+- [ ] Test: Page filtering methods
 
 ## Phase 6: API Polish and Export
 
