@@ -10,7 +10,16 @@ public enum ComicInfo {
 
   /// Load ComicInfo from an XML string
   public static func load(fromXML xmlString: String) throws -> Issue {
-    return Issue()
+    guard let data = xmlString.data(using: .utf8) else {
+      throw NSError(domain: "ComicInfo", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not convert XML to data"])
+    }
+
+    let document = try XMLDocument(data: data, options: [])
+    let root = document.rootElement()
+
+    let title = root?.elements(forName: "Title").first?.stringValue
+
+    return Issue(title: title)
   }
 }
 
