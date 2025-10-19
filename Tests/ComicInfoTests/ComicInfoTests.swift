@@ -22,4 +22,10 @@ struct ComicInfoTests {
     let issue = try ComicInfo.load(fromXML: xml)
     #expect(issue.title == "Test Comic")
   }
+
+  @Test func testIssueSeriesAndNumberProperties() throws {
+    let issue = Issue()
+    _ = issue.series
+    _ = issue.number
+  }
 }
