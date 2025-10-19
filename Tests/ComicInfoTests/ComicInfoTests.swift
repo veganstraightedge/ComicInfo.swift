@@ -1,8 +1,7 @@
-import Testing
 import Foundation
+import Testing
+
 @testable import ComicInfo
-
-
 
 struct ComicInfoTests {
 
@@ -34,12 +33,15 @@ struct ComicInfoTests {
 func loadFixture(_ name: String) throws -> ComicInfo.Issue {
   let testBundle = Bundle.module
 
-  guard let fixtureURL = testBundle.url(
-    forResource: "ComicInfo",
-    withExtension: "xml",
-    subdirectory: "Fixtures/\(name)"
-  ) else {
-    throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Fixture \(name)/ComicInfo.xml not found"])
+  guard
+    let fixtureURL = testBundle.url(
+      forResource: "ComicInfo",
+      withExtension: "xml",
+      subdirectory: "Fixtures/\(name)"
+    )
+  else {
+    throw NSError(
+      domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Fixture \(name)/ComicInfo.xml not found"])
   }
 
   let xmlData = try Data(contentsOf: fixtureURL)
