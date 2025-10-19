@@ -136,6 +136,53 @@ end
 - Ruby class methods → Swift static methods
 - Ruby instance variables → Swift stored properties
 
+### Type Structure - CRITICAL
+**Ruby:**
+```ruby
+module ComicInfo
+  class Issue
+  end
+end
+# Usage: ComicInfo::Issue.new
+```
+
+**Swift:**
+```swift
+public enum ComicInfo {
+  public struct Issue {
+  }
+}
+// Usage: ComicInfo.Issue()
+```
+
+**Why nested types:**
+- Matches Ruby module structure exactly: `ComicInfo::Issue` → `ComicInfo.Issue`
+- Solves `Testing.Issue` name collision naturally
+- Issue is not a standalone type, it's part of ComicInfo namespace
+- Swift doesn't support reopening types to add nested types (no extensions with nested types)
+- Therefore: ALL nested types must be in the same file as parent
+
+**File Organization:**
+- `ComicInfo.swift` contains both `ComicInfo` enum AND nested `Issue` struct
+- One concept per file rule ONLY applies to top-level types
+- Nested types stay with their parent (Swift limitation)
+- Can use extensions in separate files for methods, but NOT for adding new nested types
+
+### Method Delegation Pattern
+**Ruby:**
+```ruby
+ComicInfo.load(...) → Issue.load(...) → Issue.new(...)
+```
+
+**Swift:**
+```swift
+ComicInfo.load(fromXML:) → Issue.load(fromXML:) → Issue(...)
+```
+
+- Top-level convenience method delegates to nested type
+- Parsing logic lives in the nested type
+- Matches Ruby gem architecture exactly
+
 ### Error Handling
 - Ruby exceptions → Swift `Error` protocol
 - Maintain detailed error messages
@@ -147,9 +194,26 @@ end
 - Ruby truthiness → Swift explicit boolean checks
 
 ### XML Parsing
-- Ruby Nokogiri → Swift Foundation XMLParser
-- Document-based parsing for clarity
+- Ruby Nokogiri → Swift Foundation XMLDocument
+- Document-based parsing using XMLDocument
+- Use `.flatMap { Int($0) }` for safe string-to-int conversion
 - Maintain Ruby's flexible loading API
+
+### Testing.Issue Name Collision
+**Problem:** Swift Testing framework has a type called `Issue` (for test failures)
+**Wrong Solution:** Rename our type to `ComicIssue` (changes the API)
+**Wrong Solution:** Use type aliases everywhere (messy workaround)
+**Correct Solution:** Nest `Issue` inside `ComicInfo` enum
+- Creates fully qualified type: `ComicInfo.Issue`
+- No collision because our type is namespaced
+- Matches Ruby structure: `ComicInfo::Issue`
+- Clean, idiomatic Swift
+
+### Namespace Pattern
+- Use caseless enum for pure namespaces (can't be instantiated)
+- `public enum ComicInfo` not `public struct ComicInfo`
+- Signals intent: "this is a namespace, not meant to be instantiated"
+- Common pattern in Swift (e.g., CommandLine)
 
 ## Progress Tracking
 
@@ -169,24 +233,74 @@ end
 - [ ] Start with basic error types
 - [ ] Implement first failing test for minimal XML loading
 
-## Notes and Decisions
+## Common Mistakes to Avoid
 
-### Swift 6.2 Features to Leverage
-- Modern concurrency (async/await)
-- Improved type inference
-- Better error handling
-- Swift Testing framework
+### DON'T
+- ❌ Write implementation before tests
+- ❌ Rename domain types to fix test collisions (`ComicIssue` instead of `Issue`)
+- ❌ Use inline XML strings in tests (use fixtures)
+- ❌ Commit without running `swift format`
+- ❌ Make multiple tests pass in one commit
+- ❌ Separate nested types into their own files (Swift won't allow it)
+- ❌ Add all properties at once (do incrementally with tests)
+- ❌ Skip the failing test step
 
-### Testing Philosophy
-- Test-first development
-- One test at a time
-- Commit after each passing test
-- Use fixtures, not inline XML
-- Match Ruby test coverage and behavior
+### DO
+- ✅ Write ONE failing test first
+- ✅ Use fixture files for XML test data
+- ✅ Nest types to match Ruby module structure
+- ✅ Run `swift format` before every commit
+- ✅ Keep commits small and focused
+- ✅ Match Ruby gem API exactly
+- ✅ Fix root causes, not symptoms
+- ✅ Be disciplined about TDD process
 
-### Performance Considerations
-- Document-based XML parsing
-- Efficient string/array conversions
+## Swift-Specific Patterns
+
+### Safe Type Conversion
+```swift
+// String to Int with nil on failure
+let count = root?.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
+```
+
+### Optional Chaining for XML
+```swift
+let title = root?.elements(forName: "Title").first?.stringValue
+```
+
+### Caseless Enum for Namespaces
+```swift
+public enum ComicInfo {  // Can't instantiate
+  static func load() { }
+}
+```
+
+## Progress Tracking
+
+### Completed ✅
+- [x] Project structure and organization
+- [x] Nested Issue inside ComicInfo enum
+- [x] Issue.load(fromXML:) delegation pattern
+- [x] Basic string fields (title, series, number, summary, notes)
+- [x] Integer fields (count, volume)
+- [x] Creator fields (writer, penciller, inker, colorist, letterer, coverArtist, editor, translator)
+- [x] Test fixture loading helper
+- [x] Swift format integration
+
+### In Progress 🚧
+- [ ] Remaining string fields (publisher, imprint, format, etc.)
+- [ ] Date fields (year, month, day)
+- [ ] Enum fields (ageRating, manga, blackAndWhite)
+- [ ] Decimal fields (communityRating)
+- [ ] Multi-value fields (characters, teams, locations, etc.)
+- [ ] Page support
+- [ ] Error handling (proper error types)
+
+### Future 📋
+- [ ] File loading (not just XML strings)
+- [ ] Convenience methods (isManga, isRightToLeft, etc.)
+- [ ] Page filtering methods
+- [ ] Export functionality
 
 ## Resources
 
