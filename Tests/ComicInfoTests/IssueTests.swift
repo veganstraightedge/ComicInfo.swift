@@ -71,4 +71,16 @@ struct IssueTests {
     #expect(issue.genre == "Superhero, Action, Adventure")
     #expect(issue.web?.contains("marvel.com") == true)
   }
+
+  @Test func testMultiValueAndStoryFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.characters == "Spider-Man, Peter Parker, J. Jonah Jameson, Aunt May")
+    #expect(issue.teams == "Avengers")
+    #expect(issue.locations == "New York City, Manhattan, Queens")
+    #expect(issue.scanInformation == "Scanned at 300dpi, cleaned and leveled")
+    #expect(issue.storyArc == "Brand New Day, Spider-Island")
+    #expect(issue.storyArcNumber == "1, 5")
+    #expect(issue.seriesGroup == "Spider-Man Family")
+    #expect(issue.mainCharacterOrTeam == "Spider-Man")
+  }
 }
