@@ -28,4 +28,10 @@ struct IssueTests {
     #expect(issue.count == 600)
     #expect(issue.volume == 3)
   }
+
+  @Test func testSummaryAndNotesFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.summary?.contains("radioactive spider") == true)
+    #expect(issue.notes == "Scanned by ComicTagger v1.0")
+  }
 }
