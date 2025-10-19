@@ -63,4 +63,12 @@ struct IssueTests {
     #expect(issue.alternateCount == 7)
     #expect(issue.pageCount == 20)
   }
+
+  @Test func testRemainingStringFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.alternateSeries == "Civil War")
+    #expect(issue.alternateNumber == "2")
+    #expect(issue.genre == "Superhero, Action, Adventure")
+    #expect(issue.web?.contains("marvel.com") == true)
+  }
 }

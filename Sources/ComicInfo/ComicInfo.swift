@@ -34,6 +34,10 @@ public enum ComicInfo {
     public let imprint: String?
     public let format: String?
     public let languageISO: String?
+    public let alternateSeries: String?
+    public let alternateNumber: String?
+    public let genre: String?
+    public let web: String?
     public let year: Int?
     public let month: Int?
     public let day: Int?
@@ -45,8 +49,9 @@ public enum ComicInfo {
       summary: String? = nil, notes: String? = nil, writer: String? = nil, penciller: String? = nil,
       inker: String? = nil, colorist: String? = nil, letterer: String? = nil, coverArtist: String? = nil,
       editor: String? = nil, translator: String? = nil, publisher: String? = nil, imprint: String? = nil,
-      format: String? = nil, languageISO: String? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil,
-      alternateCount: Int? = nil, pageCount: Int? = nil
+      format: String? = nil, languageISO: String? = nil, alternateSeries: String? = nil,
+      alternateNumber: String? = nil, genre: String? = nil, web: String? = nil, year: Int? = nil,
+      month: Int? = nil, day: Int? = nil, alternateCount: Int? = nil, pageCount: Int? = nil
     ) {
       self.title = title
       self.series = series
@@ -67,6 +72,10 @@ public enum ComicInfo {
       self.imprint = imprint
       self.format = format
       self.languageISO = languageISO
+      self.alternateSeries = alternateSeries
+      self.alternateNumber = alternateNumber
+      self.genre = genre
+      self.web = web
       self.year = year
       self.month = month
       self.day = day
@@ -102,6 +111,10 @@ public enum ComicInfo {
       let imprint = root?.elements(forName: "Imprint").first?.stringValue
       let format = root?.elements(forName: "Format").first?.stringValue
       let languageISO = root?.elements(forName: "LanguageISO").first?.stringValue
+      let alternateSeries = root?.elements(forName: "AlternateSeries").first?.stringValue
+      let alternateNumber = root?.elements(forName: "AlternateNumber").first?.stringValue
+      let genre = root?.elements(forName: "Genre").first?.stringValue
+      let web = root?.elements(forName: "Web").first?.stringValue
       let year = root?.elements(forName: "Year").first?.stringValue.flatMap { Int($0) }
       let month = root?.elements(forName: "Month").first?.stringValue.flatMap { Int($0) }
       let day = root?.elements(forName: "Day").first?.stringValue.flatMap { Int($0) }
@@ -112,7 +125,8 @@ public enum ComicInfo {
         title: title, series: series, number: number, count: count, volume: volume, summary: summary, notes: notes,
         writer: writer, penciller: penciller, inker: inker, colorist: colorist, letterer: letterer,
         coverArtist: coverArtist, editor: editor, translator: translator, publisher: publisher, imprint: imprint,
-        format: format, languageISO: languageISO, year: year, month: month, day: day,
+        format: format, languageISO: languageISO, alternateSeries: alternateSeries,
+        alternateNumber: alternateNumber, genre: genre, web: web, year: year, month: month, day: day,
         alternateCount: alternateCount, pageCount: pageCount)
     }
   }
