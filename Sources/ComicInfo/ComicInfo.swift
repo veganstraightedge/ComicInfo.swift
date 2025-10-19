@@ -342,6 +342,19 @@ public enum ComicInfo {
       self.year = year
     }
 
+    /// Array of characters split from comma-separated characters string.
+    public var charactersArray: [String] {
+      return splitCommaSeparated(characters)
+    }
+
+    /// Split comma-separated string into array of trimmed strings.
+    private func splitCommaSeparated(_ text: String?) -> [String] {
+      guard let text = text, !text.isEmpty else {
+        return []
+      }
+      return text.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
+
     /// Load Issue from an XML string.
     public static func load(fromXML xmlString: String) throws -> Issue {
       guard !xmlString.isEmpty else {

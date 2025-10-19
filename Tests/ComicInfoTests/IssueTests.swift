@@ -96,4 +96,11 @@ struct IssueTests {
     #expect(issue.manga == .no)
     #expect(issue.ageRating == .teen)
   }
+
+  @Test func testCharactersArray() throws {
+    // Test that characters string is split into array
+    let issue = try loadFixture("valid_complete")
+    let charactersArray = issue.charactersArray
+    #expect(charactersArray == ["Spider-Man", "Peter Parker", "J. Jonah Jameson", "Aunt May"])
+  }
 }
