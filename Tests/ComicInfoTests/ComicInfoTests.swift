@@ -6,7 +6,8 @@ import Testing
 struct ComicInfoTests {
 
   @Test func testComicInfoExists() {
-    #expect(ComicInfo.self != nil)
+    // ComicInfo enum exists and can be referenced
+    #expect(ComicInfo.self == ComicInfo.self)
   }
 
   @Test func testLoadMethodExists() throws {
