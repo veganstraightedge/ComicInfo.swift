@@ -37,6 +37,130 @@ extension ComicInfoError: LocalizedError {
 /// Main entry point for loading ComicInfo data
 public enum ComicInfo {
 
+  /// Manga enum representing manga reading direction
+  public enum Manga: String, CaseIterable, Equatable {
+    case unknown = "Unknown"
+    case no = "No"
+    case yes = "Yes"
+    case yesAndRightToLeft = "YesAndRightToLeft"
+
+    /// String value for XML serialization
+    public var stringValue: String {
+      return self.rawValue
+    }
+
+    /// Create from string, defaulting to unknown for invalid values
+    public static func from(string: String?) -> Manga {
+      guard let string = string, !string.isEmpty else {
+        return .unknown
+      }
+      return Manga(rawValue: string) ?? .unknown
+    }
+
+    /// Create from string with validation (throws on invalid values)
+    public static func validated(from string: String) throws -> Manga {
+      guard let manga = Manga(rawValue: string) else {
+        throw ComicInfoError.invalidEnum(
+          field: "Manga",
+          value: string,
+          validValues: Manga.allCases.map { $0.stringValue }
+        )
+      }
+      return manga
+    }
+
+    /// True if this represents a manga (Yes or YesAndRightToLeft)
+    public var isManga: Bool {
+      return self == .yes || self == .yesAndRightToLeft
+    }
+
+    /// True if this represents right-to-left reading direction
+    public var isRightToLeft: Bool {
+      return self == .yesAndRightToLeft
+    }
+  }
+
+  /// Age rating enum
+  public enum AgeRating: String, CaseIterable, Equatable {
+    case unknown = "Unknown"
+    case adultsOnly18Plus = "Adults Only 18+"
+    case earlyChildhood = "Early Childhood"
+    case everyone = "Everyone"
+    case everyone10Plus = "Everyone 10+"
+    case g = "G"
+    case kidsToAdults = "Kids to Adults"
+    case m = "M"
+    case ma15Plus = "MA15+"
+    case mature17Plus = "Mature 17+"
+    case pg = "PG"
+    case r18Plus = "R18+"
+    case ratingPending = "Rating Pending"
+    case teen = "Teen"
+    case x18Plus = "X18+"
+
+    /// String value for XML serialization
+    public var stringValue: String {
+      return self.rawValue
+    }
+
+    /// Create from string, defaulting to unknown for invalid values
+    public static func from(string: String?) -> AgeRating {
+      guard let string = string, !string.isEmpty else {
+        return .unknown
+      }
+      return AgeRating(rawValue: string) ?? .unknown
+    }
+
+    /// Create from string with validation (throws on invalid values)
+    public static func validated(from string: String) throws -> AgeRating {
+      guard let rating = AgeRating(rawValue: string) else {
+        throw ComicInfoError.invalidEnum(
+          field: "AgeRating",
+          value: string,
+          validValues: AgeRating.allCases.map { $0.stringValue }
+        )
+      }
+      return rating
+    }
+  }
+
+  /// Black and white enum
+  public enum BlackAndWhite: String, CaseIterable, Equatable {
+    case unknown = "Unknown"
+    case no = "No"
+    case yes = "Yes"
+
+    /// String value for XML serialization
+    public var stringValue: String {
+      return self.rawValue
+    }
+
+    /// Create from string, defaulting to unknown for invalid values
+    public static func from(string: String?) -> BlackAndWhite {
+      guard let string = string, !string.isEmpty else {
+        return .unknown
+      }
+      return BlackAndWhite(rawValue: string) ?? .unknown
+    }
+
+    /// Create from string with validation (throws on invalid values)
+    public static func validated(from string: String) throws -> BlackAndWhite {
+      guard let blackAndWhite = BlackAndWhite(rawValue: string) else {
+        throw ComicInfoError.invalidEnum(
+          field: "BlackAndWhite",
+          value: string,
+          validValues: BlackAndWhite.allCases.map { $0.stringValue }
+        )
+      }
+      return blackAndWhite
+    }
+
+    /// True if this represents black and white
+    public var isBlackAndWhite: Bool {
+      return self == .yes
+    }
+  }
+
   /// Load ComicInfo from an XML string
   public static func load(fromXML xmlString: String) throws -> Issue {
     return try Issue.load(fromXML: xmlString)
@@ -103,11 +227,11 @@ public enum ComicInfo {
 
   /// Represents a comic book issue with metadata from ComicInfo.xml
   public struct Issue {
-    public let ageRating: String?
+    public let ageRating: AgeRating?
     public let alternateCount: Int?
     public let alternateNumber: String?
     public let alternateSeries: String?
-    public let blackAndWhite: String?
+    public let blackAndWhite: BlackAndWhite?
     public let characters: String?
     public let colorist: String?
     public let communityRating: Double?
@@ -123,7 +247,7 @@ public enum ComicInfo {
     public let letterer: String?
     public let locations: String?
     public let mainCharacterOrTeam: String?
-    public let manga: String?
+    public let manga: Manga?
     public let month: Int?
     public let notes: String?
     public let number: String?
@@ -146,11 +270,11 @@ public enum ComicInfo {
     public let year: Int?
 
     public init(
-      ageRating: String? = nil,
+      ageRating: AgeRating? = nil,
       alternateCount: Int? = nil,
       alternateNumber: String? = nil,
       alternateSeries: String? = nil,
-      blackAndWhite: String? = nil,
+      blackAndWhite: BlackAndWhite? = nil,
       characters: String? = nil,
       colorist: String? = nil,
       communityRating: Double? = nil,
@@ -166,7 +290,7 @@ public enum ComicInfo {
       letterer: String? = nil,
       locations: String? = nil,
       mainCharacterOrTeam: String? = nil,
-      manga: String? = nil,
+      manga: Manga? = nil,
       month: Int? = nil,
       notes: String? = nil,
       number: String? = nil,
@@ -256,11 +380,15 @@ public enum ComicInfo {
         throw ComicInfoError.parseError("No ComicInfo root element found")
       }
 
-      let ageRating = root.elements(forName: "AgeRating").first?.stringValue
+      let ageRating = try root.elements(forName: "AgeRating").first?.stringValue.map {
+        try AgeRating.validated(from: $0)
+      }
       let alternateCount = root.elements(forName: "AlternateCount").first?.stringValue.flatMap { Int($0) }
       let alternateNumber = root.elements(forName: "AlternateNumber").first?.stringValue
       let alternateSeries = root.elements(forName: "AlternateSeries").first?.stringValue
-      let blackAndWhite = root.elements(forName: "BlackAndWhite").first?.stringValue
+      let blackAndWhite = try root.elements(forName: "BlackAndWhite").first?.stringValue.map {
+        try BlackAndWhite.validated(from: $0)
+      }
       let characters = root.elements(forName: "Characters").first?.stringValue
       let colorist = root.elements(forName: "Colorist").first?.stringValue
       let communityRating = root.elements(forName: "CommunityRating").first?.stringValue.flatMap { Double($0) }
@@ -276,7 +404,9 @@ public enum ComicInfo {
       let letterer = root.elements(forName: "Letterer").first?.stringValue
       let locations = root.elements(forName: "Locations").first?.stringValue
       let mainCharacterOrTeam = root.elements(forName: "MainCharacterOrTeam").first?.stringValue
-      let manga = root.elements(forName: "Manga").first?.stringValue
+      let manga = try root.elements(forName: "Manga").first?.stringValue.map {
+        try Manga.validated(from: $0)
+      }
       let month = root.elements(forName: "Month").first?.stringValue.flatMap { Int($0) }
       let notes = root.elements(forName: "Notes").first?.stringValue
       let number = root.elements(forName: "Number").first?.stringValue
