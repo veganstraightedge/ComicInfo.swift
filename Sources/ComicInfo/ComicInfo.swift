@@ -42,6 +42,65 @@ public enum ComicInfo {
     return try Issue.load(fromXML: xmlString)
   }
 
+  /// Load ComicInfo from a file path or XML string (smart detection)
+  public static func load(from input: String) throws -> Issue {
+    guard !input.isEmpty else {
+      throw ComicInfoError.parseError("Input cannot be nil or empty")
+    }
+
+    guard looksLikeXML(input) else {
+      return try loadFromFile(input)
+    }
+    return try load(fromXML: input)
+  }
+
+  /// Load ComicInfo from a URL
+  public static func load(from url: URL) throws -> Issue {
+    do {
+      let xmlContent = try String(contentsOf: url, encoding: .utf8)
+      return try load(fromXML: xmlContent)
+    } catch let error as ComicInfoError {
+      // Re-throw ComicInfo errors
+      throw error
+    } catch {
+      throw ComicInfoError.fileError("Failed to read file '\(url.path)': \(error.localizedDescription)")
+    }
+  }
+
+  /// Check if input looks like XML (starts with <)
+  private static func looksLikeXML(_ input: String) -> Bool {
+    return input.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<")
+  }
+
+  /// Load from file path
+  private static func loadFromFile(_ filePath: String) throws -> Issue {
+    try validateFilePath(filePath)
+
+    guard FileManager.default.fileExists(atPath: filePath) else {
+      throw ComicInfoError.fileError("File does not exist: '\(filePath)'")
+    }
+
+    do {
+      let xmlContent = try String(contentsOfFile: filePath, encoding: .utf8)
+      return try load(fromXML: xmlContent)
+    } catch let error as ComicInfoError {
+      // Re-throw ComicInfo errors
+      throw error
+    } catch {
+      throw ComicInfoError.fileError("Failed to read file '\(filePath)': \(error.localizedDescription)")
+    }
+  }
+
+  /// Validate file path to ensure it's not ambiguous with XML
+  private static func validateFilePath(_ input: String) throws {
+    // Check for patterns that might be mistaken for XML or are clearly invalid paths
+    if input.range(of: "^\\d+$", options: .regularExpression) != nil
+      || (!input.contains(".") && !input.contains("/") && !input.contains("\\"))
+    {
+      throw ComicInfoError.parseError("Input '\(input)' does not appear to be valid XML or a file path")
+    }
+  }
+
   /// Represents a comic book issue with metadata from ComicInfo.xml
   public struct Issue {
     public let ageRating: String?
