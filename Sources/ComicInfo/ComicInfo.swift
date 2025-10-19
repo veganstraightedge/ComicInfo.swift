@@ -10,18 +10,7 @@ public enum ComicInfo {
 
   /// Load ComicInfo from an XML string
   public static func load(fromXML xmlString: String) throws -> Issue {
-    guard let data = xmlString.data(using: .utf8) else {
-      throw NSError(domain: "ComicInfo", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not convert XML to data"])
-    }
-
-    let document = try XMLDocument(data: data, options: [])
-    let root = document.rootElement()
-
-    let title = root?.elements(forName: "Title").first?.stringValue
-    let series = root?.elements(forName: "Series").first?.stringValue
-    let number = root?.elements(forName: "Number").first?.stringValue
-
-    return Issue(title: title, series: series, number: number)
+    return try Issue.load(fromXML: xmlString)
   }
 
   /// Represents a comic book issue with metadata from ComicInfo.xml
@@ -34,6 +23,22 @@ public enum ComicInfo {
       self.title = title
       self.series = series
       self.number = number
+    }
+
+    /// Load Issue from an XML string
+    public static func load(fromXML xmlString: String) throws -> Issue {
+      guard let data = xmlString.data(using: .utf8) else {
+        throw NSError(domain: "ComicInfo", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not convert XML to data"])
+      }
+
+      let document = try XMLDocument(data: data, options: [])
+      let root = document.rootElement()
+
+      let title = root?.elements(forName: "Title").first?.stringValue
+      let series = root?.elements(forName: "Series").first?.stringValue
+      let number = root?.elements(forName: "Number").first?.stringValue
+
+      return Issue(title: title, series: series, number: number)
     }
   }
 }

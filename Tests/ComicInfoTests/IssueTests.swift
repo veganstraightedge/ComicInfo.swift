@@ -13,4 +13,10 @@ struct IssueTests {
     _ = issue.series
     _ = issue.number
   }
+
+  @Test func testIssueLoadMethod() throws {
+    let xml = "<ComicInfo><Title>Test</Title></ComicInfo>"
+    let issue = try ComicInfo.Issue.load(fromXML: xml)
+    #expect(issue.title == "Test")
+  }
 }
