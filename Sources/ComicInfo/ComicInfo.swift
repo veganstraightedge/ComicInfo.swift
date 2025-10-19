@@ -18,7 +18,22 @@ public enum ComicInfo {
     let root = document.rootElement()
 
     let title = root?.elements(forName: "Title").first?.stringValue
+    let series = root?.elements(forName: "Series").first?.stringValue
+    let number = root?.elements(forName: "Number").first?.stringValue
 
-    return Issue(title: title)
+    return Issue(title: title, series: series, number: number)
+  }
+
+  /// Represents a comic book issue with metadata from ComicInfo.xml
+  public struct Issue {
+    public let title: String?
+    public let series: String?
+    public let number: String?
+
+    public init(title: String? = nil, series: String? = nil, number: String? = nil) {
+      self.title = title
+      self.series = series
+      self.number = number
+    }
   }
 }

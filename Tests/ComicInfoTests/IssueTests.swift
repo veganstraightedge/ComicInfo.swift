@@ -4,12 +4,12 @@ import Testing
 struct IssueTests {
 
   @Test func testIssueTitleProperty() throws {
-    let issue = Issue()
+    let issue = ComicInfo.Issue()
     _ = issue.title
   }
 
   @Test func testIssueSeriesAndNumberProperties() throws {
-    let issue = Issue()
+    let issue = ComicInfo.Issue()
     _ = issue.series
     _ = issue.number
   }
