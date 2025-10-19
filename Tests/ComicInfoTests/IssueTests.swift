@@ -20,4 +20,12 @@ struct IssueTests {
     let issue = try ComicInfo.Issue.load(fromXML: xml)
     #expect(issue.title == "Test")
   }
+
+  @Test func testLoadCompleteFixture() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.title == "The Amazing Spider-Man")
+    #expect(issue.series == "The Amazing Spider-Man")
+    #expect(issue.count == 600)
+    #expect(issue.volume == 3)
+  }
 }

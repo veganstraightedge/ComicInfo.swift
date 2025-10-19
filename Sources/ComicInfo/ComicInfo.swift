@@ -18,11 +18,15 @@ public enum ComicInfo {
     public let title: String?
     public let series: String?
     public let number: String?
+    public let count: Int?
+    public let volume: Int?
 
-    public init(title: String? = nil, series: String? = nil, number: String? = nil) {
+    public init(title: String? = nil, series: String? = nil, number: String? = nil, count: Int? = nil, volume: Int? = nil) {
       self.title = title
       self.series = series
       self.number = number
+      self.count = count
+      self.volume = volume
     }
 
     /// Load Issue from an XML string
@@ -37,8 +41,10 @@ public enum ComicInfo {
       let title = root?.elements(forName: "Title").first?.stringValue
       let series = root?.elements(forName: "Series").first?.stringValue
       let number = root?.elements(forName: "Number").first?.stringValue
+      let count = root?.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
+      let volume = root?.elements(forName: "Volume").first?.stringValue.flatMap { Int($0) }
 
-      return Issue(title: title, series: series, number: number)
+      return Issue(title: title, series: series, number: number, count: count, volume: volume)
     }
   }
 }
