@@ -11,4 +11,9 @@ struct ComicInfoTests {
     let xml = "<ComicInfo></ComicInfo>"
     _ = try ComicInfo.load(fromXML: xml)
   }
+
+  @Test func testIssueTitleProperty() throws {
+    let issue = Issue()
+    _ = issue.title
+  }
 }

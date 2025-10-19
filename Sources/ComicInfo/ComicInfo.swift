@@ -16,5 +16,9 @@ public enum ComicInfo {
 
 /// Represents a comic book issue with metadata from ComicInfo.xml
 public struct Issue {
-  public init() {}
+  public let title: String?
+
+  public init(title: String? = nil) {
+    self.title = title
+  }
 }
