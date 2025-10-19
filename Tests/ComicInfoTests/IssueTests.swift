@@ -83,4 +83,10 @@ struct IssueTests {
     #expect(issue.seriesGroup == "Spider-Man Family")
     #expect(issue.mainCharacterOrTeam == "Spider-Man")
   }
+
+  @Test func testReviewAndRatingFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.review?.contains("excellent start") == true)
+    #expect(issue.communityRating == 4.25)
+  }
 }
