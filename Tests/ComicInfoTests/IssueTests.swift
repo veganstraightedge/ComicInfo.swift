@@ -46,4 +46,12 @@ struct IssueTests {
     #expect(issue.editor == "Nick Lowe")
     #expect(issue.translator == "John Smith")
   }
+
+  @Test func testPublicationFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.publisher == "Marvel Comics")
+    #expect(issue.imprint == "Marvel")
+    #expect(issue.format == "Digital")
+    #expect(issue.languageISO == "en-US")
+  }
 }

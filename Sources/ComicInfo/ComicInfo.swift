@@ -30,12 +30,17 @@ public enum ComicInfo {
     public let coverArtist: String?
     public let editor: String?
     public let translator: String?
+    public let publisher: String?
+    public let imprint: String?
+    public let format: String?
+    public let languageISO: String?
 
     public init(
       title: String? = nil, series: String? = nil, number: String? = nil, count: Int? = nil, volume: Int? = nil,
       summary: String? = nil, notes: String? = nil, writer: String? = nil, penciller: String? = nil,
       inker: String? = nil, colorist: String? = nil, letterer: String? = nil, coverArtist: String? = nil,
-      editor: String? = nil, translator: String? = nil
+      editor: String? = nil, translator: String? = nil, publisher: String? = nil, imprint: String? = nil,
+      format: String? = nil, languageISO: String? = nil
     ) {
       self.title = title
       self.series = series
@@ -52,6 +57,10 @@ public enum ComicInfo {
       self.coverArtist = coverArtist
       self.editor = editor
       self.translator = translator
+      self.publisher = publisher
+      self.imprint = imprint
+      self.format = format
+      self.languageISO = languageISO
     }
 
     /// Load Issue from an XML string
@@ -78,11 +87,16 @@ public enum ComicInfo {
       let coverArtist = root?.elements(forName: "CoverArtist").first?.stringValue
       let editor = root?.elements(forName: "Editor").first?.stringValue
       let translator = root?.elements(forName: "Translator").first?.stringValue
+      let publisher = root?.elements(forName: "Publisher").first?.stringValue
+      let imprint = root?.elements(forName: "Imprint").first?.stringValue
+      let format = root?.elements(forName: "Format").first?.stringValue
+      let languageISO = root?.elements(forName: "LanguageISO").first?.stringValue
 
       return Issue(
         title: title, series: series, number: number, count: count, volume: volume, summary: summary, notes: notes,
-        writer: writer, penciller: penciller, inker: inker, colorist: colorist, letterer: letterer, coverArtist: coverArtist,
-        editor: editor, translator: translator)
+        writer: writer, penciller: penciller, inker: inker, colorist: colorist, letterer: letterer,
+        coverArtist: coverArtist, editor: editor, translator: translator, publisher: publisher, imprint: imprint,
+        format: format, languageISO: languageISO)
     }
   }
 }
