@@ -42,20 +42,6 @@ struct ComicInfoTests {
     #expect(issue.series == "Test Series")
   }
 
-  @Test func testLoadFromURL() throws {
-    // Test loading from a URL
-    let testBundle = Bundle.module
-    guard
-      let fixtureURL = testBundle.url(forResource: "ComicInfo", withExtension: "xml", subdirectory: "Fixtures/valid_minimal")
-    else {
-      throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Fixture not found"])
-    }
-
-    let issue = try ComicInfo.load(from: fixtureURL)
-    #expect(issue.title == "Minimal Comic")
-    #expect(issue.series == "Test Series")
-  }
-
   @Test func testLoadFromInvalidFilePath() throws {
     // Test loading from non-existent file path
     do {

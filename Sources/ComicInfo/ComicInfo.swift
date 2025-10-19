@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Errors that can occur during ComicInfo parsing and processing
+/// Errors that can occur during ComicInfo parsing and processing.
 public enum ComicInfoError: Error, Equatable {
   case parseError(String)
   case fileError(String)
@@ -34,22 +34,22 @@ extension ComicInfoError: LocalizedError {
   }
 }
 
-/// Main entry point for loading ComicInfo data
+/// Main entry point for loading ComicInfo data.
 public enum ComicInfo {
 
-  /// Manga enum representing manga reading direction
+  /// Manga enum representing manga reading direction.
   public enum Manga: String, CaseIterable, Equatable {
     case unknown = "Unknown"
     case no = "No"
     case yes = "Yes"
     case yesAndRightToLeft = "YesAndRightToLeft"
 
-    /// String value for XML serialization
+    /// String value for XML serialization.
     public var stringValue: String {
       return self.rawValue
     }
 
-    /// Create from string, defaulting to unknown for invalid values
+    /// Create from string, defaulting to unknown for invalid values.
     public static func from(string: String?) -> Manga {
       guard let string = string, !string.isEmpty else {
         return .unknown
@@ -57,7 +57,7 @@ public enum ComicInfo {
       return Manga(rawValue: string) ?? .unknown
     }
 
-    /// Create from string with validation (throws on invalid values)
+    /// Create from string with validation (throws on invalid values).
     public static func validated(from string: String) throws -> Manga {
       guard let manga = Manga(rawValue: string) else {
         throw ComicInfoError.invalidEnum(
@@ -69,18 +69,18 @@ public enum ComicInfo {
       return manga
     }
 
-    /// True if this represents a manga (Yes or YesAndRightToLeft)
+    /// True if this represents a manga (Yes or YesAndRightToLeft).
     public var isManga: Bool {
       return self == .yes || self == .yesAndRightToLeft
     }
 
-    /// True if this represents right-to-left reading direction
+    /// True if this represents right-to-left reading direction.
     public var isRightToLeft: Bool {
       return self == .yesAndRightToLeft
     }
   }
 
-  /// Age rating enum
+  /// Age rating enum.
   public enum AgeRating: String, CaseIterable, Equatable {
     case unknown = "Unknown"
     case adultsOnly18Plus = "Adults Only 18+"
@@ -98,12 +98,12 @@ public enum ComicInfo {
     case teen = "Teen"
     case x18Plus = "X18+"
 
-    /// String value for XML serialization
+    /// String value for XML serialization.
     public var stringValue: String {
       return self.rawValue
     }
 
-    /// Create from string, defaulting to unknown for invalid values
+    /// Create from string, defaulting to unknown for invalid values.
     public static func from(string: String?) -> AgeRating {
       guard let string = string, !string.isEmpty else {
         return .unknown
@@ -111,7 +111,7 @@ public enum ComicInfo {
       return AgeRating(rawValue: string) ?? .unknown
     }
 
-    /// Create from string with validation (throws on invalid values)
+    /// Create from string with validation (throws on invalid values).
     public static func validated(from string: String) throws -> AgeRating {
       guard let rating = AgeRating(rawValue: string) else {
         throw ComicInfoError.invalidEnum(
@@ -124,18 +124,18 @@ public enum ComicInfo {
     }
   }
 
-  /// Black and white enum
+  /// Black and white enum.
   public enum BlackAndWhite: String, CaseIterable, Equatable {
     case unknown = "Unknown"
     case no = "No"
     case yes = "Yes"
 
-    /// String value for XML serialization
+    /// String value for XML serialization.
     public var stringValue: String {
       return self.rawValue
     }
 
-    /// Create from string, defaulting to unknown for invalid values
+    /// Create from string, defaulting to unknown for invalid values.
     public static func from(string: String?) -> BlackAndWhite {
       guard let string = string, !string.isEmpty else {
         return .unknown
@@ -143,7 +143,7 @@ public enum ComicInfo {
       return BlackAndWhite(rawValue: string) ?? .unknown
     }
 
-    /// Create from string with validation (throws on invalid values)
+    /// Create from string with validation (throws on invalid values).
     public static func validated(from string: String) throws -> BlackAndWhite {
       guard let blackAndWhite = BlackAndWhite(rawValue: string) else {
         throw ComicInfoError.invalidEnum(
@@ -155,18 +155,18 @@ public enum ComicInfo {
       return blackAndWhite
     }
 
-    /// True if this represents black and white
+    /// True if this represents black and white.
     public var isBlackAndWhite: Bool {
       return self == .yes
     }
   }
 
-  /// Load ComicInfo from an XML string
+  /// Load ComicInfo from an XML string.
   public static func load(fromXML xmlString: String) throws -> Issue {
     return try Issue.load(fromXML: xmlString)
   }
 
-  /// Load ComicInfo from a file path or XML string (smart detection)
+  /// Load ComicInfo from a file path or XML string (smart detection).
   public static func load(from input: String) throws -> Issue {
     guard !input.isEmpty else {
       throw ComicInfoError.parseError("Input cannot be nil or empty")
@@ -178,25 +178,12 @@ public enum ComicInfo {
     return try load(fromXML: input)
   }
 
-  /// Load ComicInfo from a URL
-  public static func load(from url: URL) throws -> Issue {
-    do {
-      let xmlContent = try String(contentsOf: url, encoding: .utf8)
-      return try load(fromXML: xmlContent)
-    } catch let error as ComicInfoError {
-      // Re-throw ComicInfo errors
-      throw error
-    } catch {
-      throw ComicInfoError.fileError("Failed to read file '\(url.path)': \(error.localizedDescription)")
-    }
-  }
-
-  /// Check if input looks like XML (starts with <)
+  /// Check if input looks like XML (starts with <).
   private static func looksLikeXML(_ input: String) -> Bool {
     return input.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<")
   }
 
-  /// Load from file path
+  /// Load from file path.
   private static func loadFromFile(_ filePath: String) throws -> Issue {
     try validateFilePath(filePath)
 
@@ -215,7 +202,7 @@ public enum ComicInfo {
     }
   }
 
-  /// Validate file path to ensure it's not ambiguous with XML
+  /// Validate file path to ensure it's not ambiguous with XML.
   private static func validateFilePath(_ input: String) throws {
     // Check for patterns that might be mistaken for XML or are clearly invalid paths
     if input.range(of: "^\\d+$", options: .regularExpression) != nil
@@ -225,7 +212,7 @@ public enum ComicInfo {
     }
   }
 
-  /// Represents a comic book issue with metadata from ComicInfo.xml
+  /// Represents a comic book issue with metadata from ComicInfo.xml.
   public struct Issue {
     public let ageRating: AgeRating?
     public let alternateCount: Int?
@@ -355,7 +342,7 @@ public enum ComicInfo {
       self.year = year
     }
 
-    /// Load Issue from an XML string
+    /// Load Issue from an XML string.
     public static func load(fromXML xmlString: String) throws -> Issue {
       guard !xmlString.isEmpty else {
         throw ComicInfoError.parseError("XML string cannot be nil or empty")
