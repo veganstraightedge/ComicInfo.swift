@@ -54,4 +54,13 @@ struct IssueTests {
     #expect(issue.format == "Digital")
     #expect(issue.languageISO == "en-US")
   }
+
+  @Test func testDateAndIntegerFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.year == 2018)
+    #expect(issue.month == 3)
+    #expect(issue.day == 15)
+    #expect(issue.alternateCount == 7)
+    #expect(issue.pageCount == 20)
+  }
 }

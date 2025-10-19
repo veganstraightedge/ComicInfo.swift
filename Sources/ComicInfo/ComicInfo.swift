@@ -34,13 +34,19 @@ public enum ComicInfo {
     public let imprint: String?
     public let format: String?
     public let languageISO: String?
+    public let year: Int?
+    public let month: Int?
+    public let day: Int?
+    public let alternateCount: Int?
+    public let pageCount: Int?
 
     public init(
       title: String? = nil, series: String? = nil, number: String? = nil, count: Int? = nil, volume: Int? = nil,
       summary: String? = nil, notes: String? = nil, writer: String? = nil, penciller: String? = nil,
       inker: String? = nil, colorist: String? = nil, letterer: String? = nil, coverArtist: String? = nil,
       editor: String? = nil, translator: String? = nil, publisher: String? = nil, imprint: String? = nil,
-      format: String? = nil, languageISO: String? = nil
+      format: String? = nil, languageISO: String? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil,
+      alternateCount: Int? = nil, pageCount: Int? = nil
     ) {
       self.title = title
       self.series = series
@@ -61,6 +67,11 @@ public enum ComicInfo {
       self.imprint = imprint
       self.format = format
       self.languageISO = languageISO
+      self.year = year
+      self.month = month
+      self.day = day
+      self.alternateCount = alternateCount
+      self.pageCount = pageCount
     }
 
     /// Load Issue from an XML string
@@ -91,12 +102,18 @@ public enum ComicInfo {
       let imprint = root?.elements(forName: "Imprint").first?.stringValue
       let format = root?.elements(forName: "Format").first?.stringValue
       let languageISO = root?.elements(forName: "LanguageISO").first?.stringValue
+      let year = root?.elements(forName: "Year").first?.stringValue.flatMap { Int($0) }
+      let month = root?.elements(forName: "Month").first?.stringValue.flatMap { Int($0) }
+      let day = root?.elements(forName: "Day").first?.stringValue.flatMap { Int($0) }
+      let alternateCount = root?.elements(forName: "AlternateCount").first?.stringValue.flatMap { Int($0) }
+      let pageCount = root?.elements(forName: "PageCount").first?.stringValue.flatMap { Int($0) }
 
       return Issue(
         title: title, series: series, number: number, count: count, volume: volume, summary: summary, notes: notes,
         writer: writer, penciller: penciller, inker: inker, colorist: colorist, letterer: letterer,
         coverArtist: coverArtist, editor: editor, translator: translator, publisher: publisher, imprint: imprint,
-        format: format, languageISO: languageISO)
+        format: format, languageISO: languageISO, year: year, month: month, day: day,
+        alternateCount: alternateCount, pageCount: pageCount)
     }
   }
 }
