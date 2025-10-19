@@ -219,7 +219,7 @@ public enum ComicInfo {
     public let alternateNumber: String?
     public let alternateSeries: String?
     public let blackAndWhite: BlackAndWhite?
-    public let characters: String?
+    public let charactersRawData: String?
     public let colorist: String?
     public let communityRating: Double?
     public let count: Int?
@@ -232,7 +232,7 @@ public enum ComicInfo {
     public let inker: String?
     public let languageISO: String?
     public let letterer: String?
-    public let locations: String?
+    public let locationsRawData: String?
     public let mainCharacterOrTeam: String?
     public let manga: Manga?
     public let month: Int?
@@ -248,7 +248,7 @@ public enum ComicInfo {
     public let storyArc: String?
     public let storyArcNumber: String?
     public let summary: String?
-    public let teams: String?
+    public let teamsRawData: String?
     public let title: String?
     public let translator: String?
     public let volume: Int?
@@ -262,7 +262,7 @@ public enum ComicInfo {
       alternateNumber: String? = nil,
       alternateSeries: String? = nil,
       blackAndWhite: BlackAndWhite? = nil,
-      characters: String? = nil,
+      charactersRawData: String? = nil,
       colorist: String? = nil,
       communityRating: Double? = nil,
       count: Int? = nil,
@@ -275,7 +275,7 @@ public enum ComicInfo {
       inker: String? = nil,
       languageISO: String? = nil,
       letterer: String? = nil,
-      locations: String? = nil,
+      locationsRawData: String? = nil,
       mainCharacterOrTeam: String? = nil,
       manga: Manga? = nil,
       month: Int? = nil,
@@ -291,7 +291,7 @@ public enum ComicInfo {
       storyArc: String? = nil,
       storyArcNumber: String? = nil,
       summary: String? = nil,
-      teams: String? = nil,
+      teamsRawData: String? = nil,
       title: String? = nil,
       translator: String? = nil,
       volume: Int? = nil,
@@ -304,7 +304,7 @@ public enum ComicInfo {
       self.alternateNumber = alternateNumber
       self.alternateSeries = alternateSeries
       self.blackAndWhite = blackAndWhite
-      self.characters = characters
+      self.charactersRawData = charactersRawData
       self.colorist = colorist
       self.communityRating = communityRating
       self.count = count
@@ -317,7 +317,7 @@ public enum ComicInfo {
       self.inker = inker
       self.languageISO = languageISO
       self.letterer = letterer
-      self.locations = locations
+      self.locationsRawData = locationsRawData
       self.mainCharacterOrTeam = mainCharacterOrTeam
       self.manga = manga
       self.month = month
@@ -333,7 +333,7 @@ public enum ComicInfo {
       self.storyArc = storyArc
       self.storyArcNumber = storyArcNumber
       self.summary = summary
-      self.teams = teams
+      self.teamsRawData = teamsRawData
       self.title = title
       self.translator = translator
       self.volume = volume
@@ -342,9 +342,9 @@ public enum ComicInfo {
       self.year = year
     }
 
-    /// Array of characters split from comma-separated characters string.
-    public var charactersArray: [String] {
-      return splitCommaSeparated(characters)
+    /// Array of characters split from comma-separated string.
+    public var characters: [String] {
+      return splitCommaSeparated(charactersRawData)
     }
 
     /// Split comma-separated string into array of trimmed strings.
@@ -389,7 +389,7 @@ public enum ComicInfo {
       let blackAndWhite = try root.elements(forName: "BlackAndWhite").first?.stringValue.map {
         try BlackAndWhite.validated(from: $0)
       }
-      let characters = root.elements(forName: "Characters").first?.stringValue
+      let charactersRawData = root.elements(forName: "Characters").first?.stringValue
       let colorist = root.elements(forName: "Colorist").first?.stringValue
       let communityRating = root.elements(forName: "CommunityRating").first?.stringValue.flatMap { Double($0) }
       let count = root.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
@@ -402,7 +402,7 @@ public enum ComicInfo {
       let inker = root.elements(forName: "Inker").first?.stringValue
       let languageISO = root.elements(forName: "LanguageISO").first?.stringValue
       let letterer = root.elements(forName: "Letterer").first?.stringValue
-      let locations = root.elements(forName: "Locations").first?.stringValue
+      let locationsRawData = root.elements(forName: "Locations").first?.stringValue
       let mainCharacterOrTeam = root.elements(forName: "MainCharacterOrTeam").first?.stringValue
       let manga = try root.elements(forName: "Manga").first?.stringValue.map {
         try Manga.validated(from: $0)
@@ -420,7 +420,7 @@ public enum ComicInfo {
       let storyArc = root.elements(forName: "StoryArc").first?.stringValue
       let storyArcNumber = root.elements(forName: "StoryArcNumber").first?.stringValue
       let summary = root.elements(forName: "Summary").first?.stringValue
-      let teams = root.elements(forName: "Teams").first?.stringValue
+      let teamsRawData = root.elements(forName: "Teams").first?.stringValue
       let title = root.elements(forName: "Title").first?.stringValue
       let translator = root.elements(forName: "Translator").first?.stringValue
       let volume = root.elements(forName: "Volume").first?.stringValue.flatMap { Int($0) }
@@ -434,7 +434,7 @@ public enum ComicInfo {
         alternateNumber: alternateNumber,
         alternateSeries: alternateSeries,
         blackAndWhite: blackAndWhite,
-        characters: characters,
+        charactersRawData: charactersRawData,
         colorist: colorist,
         communityRating: communityRating,
         count: count,
@@ -447,7 +447,7 @@ public enum ComicInfo {
         inker: inker,
         languageISO: languageISO,
         letterer: letterer,
-        locations: locations,
+        locationsRawData: locationsRawData,
         mainCharacterOrTeam: mainCharacterOrTeam,
         manga: manga,
         month: month,
@@ -463,7 +463,7 @@ public enum ComicInfo {
         storyArc: storyArc,
         storyArcNumber: storyArcNumber,
         summary: summary,
-        teams: teams,
+        teamsRawData: teamsRawData,
         title: title,
         translator: translator,
         volume: volume,

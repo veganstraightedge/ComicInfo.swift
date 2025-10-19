@@ -74,9 +74,9 @@ struct IssueTests {
 
   @Test func testMultiValueAndStoryFields() throws {
     let issue = try loadFixture("valid_complete")
-    #expect(issue.characters == "Spider-Man, Peter Parker, J. Jonah Jameson, Aunt May")
-    #expect(issue.teams == "Avengers")
-    #expect(issue.locations == "New York City, Manhattan, Queens")
+    #expect(issue.charactersRawData == "Spider-Man, Peter Parker, J. Jonah Jameson, Aunt May")
+    #expect(issue.teamsRawData == "Avengers")
+    #expect(issue.locationsRawData == "New York City, Manhattan, Queens")
     #expect(issue.scanInformation == "Scanned at 300dpi, cleaned and leveled")
     #expect(issue.storyArc == "Brand New Day, Spider-Island")
     #expect(issue.storyArcNumber == "1, 5")
@@ -98,9 +98,14 @@ struct IssueTests {
   }
 
   @Test func testCharactersArray() throws {
-    // Test that characters string is split into array
+    // Test both raw data and array access for characters
     let issue = try loadFixture("valid_complete")
-    let charactersArray = issue.charactersArray
+
+    // Test raw data (string) access
+    #expect(issue.charactersRawData == "Spider-Man, Peter Parker, J. Jonah Jameson, Aunt May")
+
+    // Test array access (split by comma, trimmed)
+    let charactersArray = issue.characters
     #expect(charactersArray == ["Spider-Man", "Peter Parker", "J. Jonah Jameson", "Aunt May"])
   }
 }
