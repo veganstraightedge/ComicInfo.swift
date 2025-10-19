@@ -89,4 +89,11 @@ struct IssueTests {
     #expect(issue.review?.contains("excellent start") == true)
     #expect(issue.communityRating == 4.25)
   }
+
+  @Test func testEnumFields() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.blackAndWhite == "No")
+    #expect(issue.manga == "No")
+    #expect(issue.ageRating == "Teen")
+  }
 }

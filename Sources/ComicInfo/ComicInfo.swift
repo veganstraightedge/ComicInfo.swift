@@ -48,6 +48,9 @@ public enum ComicInfo {
     public let mainCharacterOrTeam: String?
     public let review: String?
     public let communityRating: Double?
+    public let blackAndWhite: String?
+    public let manga: String?
+    public let ageRating: String?
     public let year: Int?
     public let month: Int?
     public let day: Int?
@@ -64,7 +67,8 @@ public enum ComicInfo {
       characters: String? = nil, teams: String? = nil, locations: String? = nil,
       scanInformation: String? = nil, storyArc: String? = nil, storyArcNumber: String? = nil,
       seriesGroup: String? = nil, mainCharacterOrTeam: String? = nil, review: String? = nil,
-      communityRating: Double? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil,
+      communityRating: Double? = nil, blackAndWhite: String? = nil, manga: String? = nil,
+      ageRating: String? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil,
       alternateCount: Int? = nil, pageCount: Int? = nil
     ) {
       self.title = title
@@ -100,6 +104,9 @@ public enum ComicInfo {
       self.mainCharacterOrTeam = mainCharacterOrTeam
       self.review = review
       self.communityRating = communityRating
+      self.blackAndWhite = blackAndWhite
+      self.manga = manga
+      self.ageRating = ageRating
       self.year = year
       self.month = month
       self.day = day
@@ -149,6 +156,9 @@ public enum ComicInfo {
       let mainCharacterOrTeam = root?.elements(forName: "MainCharacterOrTeam").first?.stringValue
       let review = root?.elements(forName: "Review").first?.stringValue
       let communityRating = root?.elements(forName: "CommunityRating").first?.stringValue.flatMap { Double($0) }
+      let blackAndWhite = root?.elements(forName: "BlackAndWhite").first?.stringValue
+      let manga = root?.elements(forName: "Manga").first?.stringValue
+      let ageRating = root?.elements(forName: "AgeRating").first?.stringValue
       let year = root?.elements(forName: "Year").first?.stringValue.flatMap { Int($0) }
       let month = root?.elements(forName: "Month").first?.stringValue.flatMap { Int($0) }
       let day = root?.elements(forName: "Day").first?.stringValue.flatMap { Int($0) }
@@ -156,14 +166,21 @@ public enum ComicInfo {
       let pageCount = root?.elements(forName: "PageCount").first?.stringValue.flatMap { Int($0) }
 
       return Issue(
-        title: title, series: series, number: number, count: count, volume: volume, summary: summary, notes: notes,
+        title: title,
+        series: series,
+        number: number,
+        count: count,
+        volume: volume,
+        summary: summary,
+        notes: notes,
         writer: writer, penciller: penciller, inker: inker, colorist: colorist, letterer: letterer,
         coverArtist: coverArtist, editor: editor, translator: translator, publisher: publisher, imprint: imprint,
         format: format, languageISO: languageISO, alternateSeries: alternateSeries,
         alternateNumber: alternateNumber, genre: genre, web: web, characters: characters, teams: teams,
         locations: locations, scanInformation: scanInformation, storyArc: storyArc,
         storyArcNumber: storyArcNumber, seriesGroup: seriesGroup, mainCharacterOrTeam: mainCharacterOrTeam,
-        review: review, communityRating: communityRating, year: year, month: month, day: day,
+        review: review, communityRating: communityRating, blackAndWhite: blackAndWhite, manga: manga,
+        ageRating: ageRating, year: year, month: month, day: day,
         alternateCount: alternateCount, pageCount: pageCount)
     }
   }
