@@ -108,4 +108,16 @@ struct IssueTests {
     let charactersArray = issue.characters
     #expect(charactersArray == ["Spider-Man", "Peter Parker", "J. Jonah Jameson", "Aunt May"])
   }
+
+  @Test func testTeamsArray() throws {
+    // Test both raw data and array access for teams
+    let issue = try loadFixture("valid_complete")
+
+    // Test raw data (string) access
+    #expect(issue.teamsRawData == "Avengers")
+
+    // Test array access (split by comma, trimmed)
+    let teamsArray = issue.teams
+    #expect(teamsArray == ["Avengers"])
+  }
 }
