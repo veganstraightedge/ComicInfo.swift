@@ -352,6 +352,11 @@ public enum ComicInfo {
       return splitCommaSeparated(teamsRawData)
     }
 
+    /// Array of locations split from comma-separated string.
+    public var locations: [String] {
+      return splitCommaSeparated(locationsRawData)
+    }
+
     /// Split comma-separated string into array of trimmed strings.
     private func splitCommaSeparated(_ text: String?) -> [String] {
       guard let text = text, !text.isEmpty else {

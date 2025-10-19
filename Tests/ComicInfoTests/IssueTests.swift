@@ -120,4 +120,16 @@ struct IssueTests {
     let teamsArray = issue.teams
     #expect(teamsArray == ["Avengers"])
   }
+
+  @Test func testLocationsArray() throws {
+    // Test both raw data and array access for locations
+    let issue = try loadFixture("valid_complete")
+
+    // Test raw data (string) access
+    #expect(issue.locationsRawData == "New York City, Manhattan, Queens")
+
+    // Test array access (split by comma, trimmed)
+    let locationsArray = issue.locations
+    #expect(locationsArray == ["New York City", "Manhattan", "Queens"])
+  }
 }
