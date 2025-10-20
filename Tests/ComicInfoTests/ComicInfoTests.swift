@@ -77,6 +77,73 @@ struct ComicInfoTests {
     let issue = try ComicInfo.load(from: fixtureURL.path)
     #expect(issue.title == "Minimal Comic")
   }
+
+  @Test func testLoadFromInvalidXML() throws {
+    // Test loading from malformed XML
+    do {
+      _ = try loadFixture("invalid_root_element")
+      #expect(Bool(false), "Expected parseError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .parseError(_):
+        // Expected
+        break
+      default:
+        #expect(Bool(false), "Expected parseError, got \(error)")
+      }
+    }
+  }
+
+  @Test func testLoadFromInvalidEnum() throws {
+    // Test loading from invalid enum value
+    do {
+      _ = try loadFixture("invalid_enum")
+      #expect(Bool(false), "Expected invalidEnum error to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .invalidEnum(let field, let value, _):
+        #expect(field == "Manga")
+        #expect(value == "InvalidValue")
+        break
+      default:
+        #expect(Bool(false), "Expected invalidEnum, got \(error)")
+      }
+    }
+  }
+
+  @Test func testLoadFromInvalidRange() throws {
+    // Test loading from out of range value
+    do {
+      _ = try loadFixture("invalid_range")
+      #expect(Bool(false), "Expected rangeError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .rangeError(let field, let value, _, _):
+        #expect(field == "CommunityRating")
+        #expect(value == "5.1")
+        break
+      default:
+        #expect(Bool(false), "Expected rangeError, got \(error)")
+      }
+    }
+  }
+
+  @Test func testLoadFromInvalidYear() throws {
+    // Test loading from out of range value for Year
+    do {
+      _ = try loadFixture("invalid_year")
+      #expect(Bool(false), "Expected rangeError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .rangeError(let field, let value, _, _):
+        #expect(field == "Year")
+        #expect(value == "999")
+        break
+      default:
+        #expect(Bool(false), "Expected rangeError, got \(error)")
+      }
+    }
+  }
 }
 
 // MARK: - Test Helpers

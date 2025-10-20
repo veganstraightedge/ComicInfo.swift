@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# script/cibuild:
+# Setup environment for CI to run tests
+# Part of Scripts To Rule Them All pattern
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "==> Setting up CI environment..."
+
+# Set default values if running outside Xcode
+if [ -z "${SRCROOT}" ]; then
+  export SRCROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
+
+if [ -z "${DERIVED_FILE_DIR}" ]; then
+  export DERIVED_FILE_DIR="${SRCROOT}/.build/script-outputs"
+fi
+
+# Check if swift format is available (built into Swift 6+)
+if ! swift format --help >/dev/null 2>&1; then
+  echo "==> ERROR: Swift format not available. Requires Swift 6+ with Package Manager support"
+  exit 1
+fi
+
+# Check if .swift-format config exists
+if [ ! -f "${SRCROOT}/.swift-format" ]; then
+  echo "==> ERROR: .swift-format configuration file not found"
+  exit 1
+fi
+
+# Create output directory if it doesn't exist
+mkdir -p "${DERIVED_FILE_DIR}"
+
+echo "==> CI environment setup complete"

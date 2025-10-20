@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# script/test
+# Test runner script for the project
+# Part of Scripts To Rule Them All pattern
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "==> Running lint and format checks..."
+
+# Run lint first to check for formatting issues
+"$(dirname "$0")/lint"
+
+# Format code to ensure consistency
+"$(dirname "$0")/format"
+
+echo "==> Running Swift tests..."
+
+# Use Swift Package Manager's test command
+# This automatically discovers and runs Swift Testing tests
+swift test
+
+echo "==> Tests completed successfully!"

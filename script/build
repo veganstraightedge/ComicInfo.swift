@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# script/build
+# Build the app from command line
+# Part of Scripts To Rule Them All pattern
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Default to macOS if no platform specified
+PLATFORM=${1:-macos}
+CONFIGURATION=${2:-Debug}
+
+case $PLATFORM in
+  macos)
+    echo "==> Building for macOS ($CONFIGURATION)..."
+    xcodebuild -project       Outbox.xcodeproj \
+               -scheme        Outbox \
+               -destination   "platform=macOS,arch=arm64" \
+               -configuration $CONFIGURATION \
+               -quiet \
+               build
+    ;;
+  ios)
+    echo "==> Building for iOS ($CONFIGURATION)..."
+    xcodebuild -project       Outbox.xcodeproj \
+               -scheme        Outbox \
+               -destination   "platform=iOS Simulator,name=iPhone 16,arch=arm64" \
+               -configuration $CONFIGURATION \
+               -quiet \
+               build
+    ;;
+  all)
+    echo "==> Building for all platforms ($CONFIGURATION)..."
+    $0 macos $CONFIGURATION
+    $0 ios $CONFIGURATION
+    ;;
+  *)
+    echo "==> Usage: $0 [macos|ios|all] [Debug|Release]"
+    echo ""
+    echo "Examples:"
+    echo "  $0                    # Build macOS Debug (default)"
+    echo "  $0 macos Release      # Build macOS Release"
+    echo "  $0 ios                # Build iOS Debug"
+    echo "  $0 all Release        # Build all platforms Release"
+    exit 1
+    ;;
+esac
+
+echo "==> Build completed successfully!"

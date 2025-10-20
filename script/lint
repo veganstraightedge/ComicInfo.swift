@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# script/lint
+# Lint Swift source code using swift-format
+# Part of Scripts To Rule Them All pattern
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Call cibuild for environment setup and validation
+"$(dirname "$0")/cibuild"
+
+echo "==> Linting Swift code..."
+
+# Lint specific source directories to avoid sandbox/permission issues
+for dir in "ComicInfo" "ComicInfoTests"; do
+  if [ -d "$dir" ]; then
+    find "$dir" -name "*.swift" \
+      -not -path "*/build/*" \
+      -not -path "*/.build/*" \
+      -print0 | xargs -0 -r swift format lint --strict --configuration .swift-format
+  fi
+done
+
+echo "==> Code linting completed successfully!"

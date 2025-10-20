@@ -34,6 +34,28 @@ extension ComicInfoError: LocalizedError {
   }
 }
 
+private extension ComicInfo {
+  static func validateCommunityRating(_ value: String) throws -> Double {
+    guard let rating = Double(value) else {
+      throw ComicInfoError.typeCoercionError(field: "CommunityRating", value: value, expectedType: "Double")
+    }
+    if !(0.0...5.0).contains(rating) {
+      throw ComicInfoError.rangeError(field: "CommunityRating", value: value, min: "0.0", max: "5.0")
+    }
+    return rating
+  }
+
+  static func validateYear(_ value: String) throws -> Int {
+    guard let year = Int(value) else {
+      throw ComicInfoError.typeCoercionError(field: "Year", value: value, expectedType: "Int")
+    }
+    if !(1000...9999).contains(year) {
+      throw ComicInfoError.rangeError(field: "Year", value: value, min: "1000", max: "9999")
+    }
+    return year
+  }
+}
+
 /// Main entry point for loading ComicInfo data.
 public enum ComicInfo {
 
@@ -401,7 +423,9 @@ public enum ComicInfo {
       }
       let charactersRawData = root.elements(forName: "Characters").first?.stringValue
       let colorist = root.elements(forName: "Colorist").first?.stringValue
-      let communityRating = root.elements(forName: "CommunityRating").first?.stringValue.flatMap { Double($0) }
+      let communityRating = try root.elements(forName: "CommunityRating").first?.stringValue.map {
+        try ComicInfo.validateCommunityRating($0)
+      }
       let count = root.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
       let coverArtist = root.elements(forName: "CoverArtist").first?.stringValue
       let day = root.elements(forName: "Day").first?.stringValue.flatMap { Int($0) }
@@ -436,7 +460,9 @@ public enum ComicInfo {
       let volume = root.elements(forName: "Volume").first?.stringValue.flatMap { Int($0) }
       let web = root.elements(forName: "Web").first?.stringValue
       let writer = root.elements(forName: "Writer").first?.stringValue
-      let year = root.elements(forName: "Year").first?.stringValue.flatMap { Int($0) }
+      let year = try root.elements(forName: "Year").first?.stringValue.map {
+        try ComicInfo.validateYear($0)
+      }
 
       return Issue(
         ageRating: ageRating,

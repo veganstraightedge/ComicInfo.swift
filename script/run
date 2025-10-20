@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# script/run
+# Build and run the app from command line
+# Part of Scripts To Rule Them All pattern
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Handle help flag
+if [[ "$1" == "--help" || "$1" == "-h" || "$1" == "help" ]]; then
+  echo "==> Usage: $0 [macos|ios] [Debug|Release]"
+  echo ""
+  echo "Examples:"
+  echo "  $0                    # Build and run macOS Debug (default)"
+  echo "  $0 macos Release      # Build and run macOS Release"
+  echo "  $0 ios                # Build and run iOS Debug in Simulator"
+  echo ""
+  echo "This script builds the app and launches it:"
+  echo "  • macOS: Opens the .app bundle"
+  echo "  • iOS: Launches in iOS Simulator"
+  exit 0
+fi
+
+# Default to macOS if no platform specified
+PLATFORM=${1:-macos}
+CONFIGURATION=${2:-Debug}
+
+# Validate platform before building
+case $PLATFORM in
+  macos|ios)
+    # Valid platforms, continue
+    ;;
+  *)
+    echo "❌ Invalid platform: $PLATFORM"
+    echo ""
+    echo "==> Usage: $0 [macos|ios] [Debug|Release]"
+    echo ""
+    echo "Examples:"
+    echo "  $0                    # Build and run macOS Debug (default)"
+    echo "  $0 macos Release      # Build and run macOS Release"
+    echo "  $0 ios                # Build and run iOS Debug in Simulator"
+    echo ""
+    echo "Use '$0 --help' for more information"
+    exit 1
+    ;;
+esac
+
+# First, build the app
+echo "==> Building app..."
+if ! script/build $PLATFORM $CONFIGURATION; then
+  echo "❌ Build failed - cannot run app"
+  exit 1
+fi
+
+case $PLATFORM in
+  macos)
+    echo "==> Launching macOS app..."
+
+    # Find the built app in the build directory
+    BUILD_DIR=$(xcodebuild -project Outbox.xcodeproj -scheme Outbox -showBuildSettings -configuration $CONFIGURATION | grep "BUILT_PRODUCTS_DIR" | head -n 1 | sed 's/.*= //')
+    APP_PATH="$BUILD_DIR/Outbox.app"
+
+    if [ -d "$APP_PATH" ]; then
+      echo "==> Opening $APP_PATH"
+      open "$APP_PATH"
+      echo "==> App launched successfully!"
+    else
+      echo "❌ Could not find built app at $APP_PATH"
+      echo "    Try running 'script/build $PLATFORM $CONFIGURATION' first"
+      exit 1
+    fi
+    ;;
+
+  ios)
+    echo "==> Launching iOS Simulator..."
+
+    # Launch the app in iOS Simulator
+    xcodebuild -project       Outbox.xcodeproj \
+               -scheme        Outbox \
+               -destination   "platform=iOS Simulator,name=iPhone 16,arch=arm64" \
+               -configuration $CONFIGURATION \
+               -quiet \
+               run
+    ;;
+
+  all)
+    echo "==> Cannot run all platforms simultaneously"
+    echo "    Choose either 'macos' or 'ios'"
+    exit 1
+    ;;
+
+  *)
+    echo "❌ Invalid platform: $PLATFORM"
+    echo ""
+    echo "==> Usage: $0 [macos|ios] [Debug|Release]"
+    echo ""
+    echo "Examples:"
+    echo "  $0                    # Build and run macOS Debug (default)"
+    echo "  $0 macos Release      # Build and run macOS Release"
+    echo "  $0 ios                # Build and run iOS Debug in Simulator"
+    echo ""
+    echo "Use '$0 --help' for more information"
+    exit 1
+    ;;
+esac

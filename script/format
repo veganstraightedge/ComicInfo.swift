@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# script/format
+# Format Swift source code using swift-format
+# Part of Scripts To Rule Them All pattern
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Call cibuild for environment setup and validation
+"$(dirname "$0")/cibuild"
+
+echo "==> Formatting Swift code..."
+
+# Format specific source directories to avoid sandbox/permission issues
+for dir in "ComicInfo" "ComicInfoTests"; do
+  if [ -d "$dir" ]; then
+    find "$dir" -name "*.swift" \
+      -not -path "*/build/*" \
+      -not -path "*/.build/*" \
+      -print0 | xargs -0 -r swift format --in-place --configuration .swift-format
+  fi
+done
+
+echo "==> Code formatting completed successfully!"
