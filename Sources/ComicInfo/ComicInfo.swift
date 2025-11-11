@@ -96,7 +96,7 @@ extension ComicInfo {
 public enum ComicInfo {
 
   /// Manga enum representing manga reading direction.
-  public enum Manga: String, CaseIterable, Equatable {
+  public enum Manga: String, CaseIterable, Equatable, Codable {
     case unknown = "Unknown"
     case no = "No"
     case yes = "Yes"
@@ -139,7 +139,7 @@ public enum ComicInfo {
   }
 
   /// Age rating enum.
-  public enum AgeRating: String, CaseIterable, Equatable {
+  public enum AgeRating: String, CaseIterable, Equatable, Codable {
     case unknown = "Unknown"
     case adultsOnly18Plus = "Adults Only 18+"
     case earlyChildhood = "Early Childhood"
@@ -183,7 +183,7 @@ public enum ComicInfo {
   }
 
   /// Black and white enum.
-  public enum BlackAndWhite: String, CaseIterable, Equatable {
+  public enum BlackAndWhite: String, CaseIterable, Equatable, Codable {
     case unknown = "Unknown"
     case no = "No"
     case yes = "Yes"
@@ -220,7 +220,7 @@ public enum ComicInfo {
   }
 
   /// Page type enum for comic pages.
-  public enum PageType: String, CaseIterable, Equatable {
+  public enum PageType: String, CaseIterable, Equatable, Codable {
     case frontCover = "FrontCover"
     case innerCover = "InnerCover"
     case roundup = "Roundup"
@@ -275,7 +275,7 @@ public enum ComicInfo {
   }
 
   /// Represents a single page in a comic book with metadata.
-  public struct Page: Equatable, Hashable {
+  public struct Page: Equatable, Hashable, Codable {
     public let image: Int
     public let type: PageType
     public let doublePage: Bool
@@ -455,7 +455,7 @@ public enum ComicInfo {
   /// let genreString = issue.genreRawData    // "Action, Adventure, Superhero"
   /// let genreArray = issue.genres           // ["Action", "Adventure", "Superhero"]
   /// ```
-  public struct Issue {
+  public struct Issue: Codable {
     public let ageRating: AgeRating?
     public let alternateCount: Int?
     public let alternateNumber: String?
@@ -498,6 +498,17 @@ public enum ComicInfo {
     public let writer: String?
     public let year: Int?
     public let pages: [Page]
+
+    private enum CodingKeys: String, CodingKey {
+      case ageRating, alternateCount, alternateNumber, alternateSeries
+      case blackAndWhite, charactersRawData, colorist, communityRating
+      case count, coverArtist, day, editor, format, genreRawData
+      case imprint, inker, languageISO, letterer, locationsRawData
+      case mainCharacterOrTeam, manga, month, notes, number, pageCount
+      case penciller, publisher, review, scanInformation, series
+      case seriesGroup, storyArc, storyArcNumber, summary, teamsRawData
+      case title, translator, volume, webRawData, writer, year, pages
+    }
 
     public init(
       ageRating: AgeRating? = nil,
@@ -712,6 +723,27 @@ public enum ComicInfo {
 
       let components = DateComponents(year: year, month: month, day: day)
       return Calendar.current.date(from: components)
+    }
+
+    /// Export to JSON Data.
+    /// - Returns: JSON Data representation of the Issue
+    /// - Throws: EncodingError if the Issue cannot be encoded
+    public func toJSONData() throws -> Data {
+      let encoder = JSONEncoder()
+      encoder.outputFormatting = .prettyPrinted
+      encoder.dateEncodingStrategy = .iso8601
+      return try encoder.encode(self)
+    }
+
+    /// Export to JSON String.
+    /// - Returns: JSON String representation of the Issue
+    /// - Throws: EncodingError if the Issue cannot be encoded
+    public func toJSONString() throws -> String {
+      let data = try toJSONData()
+      guard let string = String(data: data, encoding: .utf8) else {
+        throw ComicInfoError.parseError("Failed to convert JSON data to string")
+      }
+      return string
     }
 
     /// Split comma-separated string into array of trimmed strings.

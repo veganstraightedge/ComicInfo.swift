@@ -420,4 +420,47 @@ struct IssueTests {
     #expect(issue.coverPages.count > 0)
     #expect(issue.storyPages.count > 0)
   }
+
+  @Test func testJSONExport() throws {
+    // Test JSON export functionality
+    let issue = try loadFixture("valid_complete")
+
+    // Test JSON data export
+    let jsonData = try issue.toJSONData()
+    #expect(jsonData.count > 0)
+
+    // Test JSON string export
+    let jsonString = try issue.toJSONString()
+    #expect(!jsonString.isEmpty)
+    #expect(jsonString.contains("The Amazing Spider-Man"))
+    #expect(jsonString.contains("Spider-Man"))
+
+    // Test round trip: JSON -> Issue
+    let decoder = JSONDecoder()
+    let decodedIssue = try decoder.decode(ComicInfo.Issue.self, from: jsonData)
+
+    #expect(decodedIssue.title == issue.title)
+    #expect(decodedIssue.series == issue.series)
+    #expect(decodedIssue.number == issue.number)
+    #expect(decodedIssue.year == issue.year)
+    #expect(decodedIssue.pages.count == issue.pages.count)
+  }
+
+  @Test func testCodableConformance() throws {
+    // Test that Issue and Page conform to Codable properly
+    let originalIssue = try loadFixture("valid_minimal")
+
+    // Encode to JSON
+    let encoder = JSONEncoder()
+    let jsonData = try encoder.encode(originalIssue)
+
+    // Decode from JSON
+    let decoder = JSONDecoder()
+    let decodedIssue = try decoder.decode(ComicInfo.Issue.self, from: jsonData)
+
+    // Verify key properties are preserved
+    #expect(decodedIssue.title == originalIssue.title)
+    #expect(decodedIssue.series == originalIssue.series)
+    #expect(decodedIssue.year == originalIssue.year)
+  }
 }
