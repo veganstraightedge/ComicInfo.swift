@@ -196,6 +196,41 @@ struct ComicInfoTests {
       }
     }
   }
+
+  @Test func testLoadFromURL() throws {
+    // Test loading from a file URL
+    let testBundle = Bundle.module
+    guard
+      let fixtureURL = testBundle.url(
+        forResource: "ComicInfo",
+        withExtension: "xml",
+        subdirectory: "Fixtures/valid_minimal"
+      )
+    else {
+      throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Fixture not found"])
+    }
+
+    let issue = try ComicInfo.load(from: fixtureURL)
+    #expect(issue.title == "Minimal Comic")
+  }
+
+  @Test func testLoadFromInvalidURL() throws {
+    // Test loading from non-existent URL
+    let invalidURL = URL(fileURLWithPath: "/nonexistent/path/ComicInfo.xml")
+
+    do {
+      _ = try ComicInfo.load(from: invalidURL)
+      #expect(Bool(false), "Expected fileError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .fileError(let message):
+        #expect(message.contains("Failed to read from URL"))
+        break
+      default:
+        #expect(Bool(false), "Expected fileError, got \(error)")
+      }
+    }
+  }
 }
 
 // MARK: - Test Helpers

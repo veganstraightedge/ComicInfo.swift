@@ -352,6 +352,19 @@ public enum ComicInfo {
     return try load(fromXML: input)
   }
 
+  /// Load ComicInfo from a URL.
+  public static func load(from url: URL) throws -> Issue {
+    do {
+      let xmlContent = try String(contentsOf: url, encoding: .utf8)
+      return try load(fromXML: xmlContent)
+    } catch let error as ComicInfoError {
+      // Re-throw ComicInfo errors
+      throw error
+    } catch {
+      throw ComicInfoError.fileError("Failed to read from URL '\(url)': \(error.localizedDescription)")
+    }
+  }
+
   /// Check if input looks like XML (starts with <).
   private static func looksLikeXML(_ input: String) -> Bool {
     return input.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<")
