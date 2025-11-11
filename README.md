@@ -49,14 +49,14 @@ Or add it through Xcode:
 import ComicInfo
 
 // Load from file path
-let issue = try ComicInfo.load(from: "/path/to/ComicInfo.xml")
+let comic = try ComicInfo.load(from: "/path/to/ComicInfo.xml")
 
 // Load from URL
 let url = URL(fileURLWithPath: "/path/to/ComicInfo.xml")
-let issue = try ComicInfo.load(from: url)
+let comic = try ComicInfo.load(from: url)
 
 // Load asynchronously (Swift 6.2+)
-let issue = try await ComicInfo.load(from: url)
+let comic = try await ComicInfo.load(from: url)
 
 // Load from XML string
 let xmlString = """
@@ -67,7 +67,7 @@ let xmlString = """
   <Year>2023</Year>
 </ComicInfo>
 """
-let issue = try ComicInfo.load(fromXML: xmlString)
+let comic = try ComicInfo.load(fromXML: xmlString)
 ```
 
 ### Accessing Issue Data
@@ -76,35 +76,35 @@ let issue = try ComicInfo.load(fromXML: xmlString)
 let issue = try ComicInfo.load(from: "ComicInfo.xml")
 
 // Basic properties
-print("Title: \(issue.title ?? "Unknown")")
-print("Series: \(issue.series ?? "Unknown")")
-print("Issue #: \(issue.number ?? "Unknown")")
-print("Year: \(issue.year ?? 0)")
+print("Title: \(comic.title ?? "Unknown")")
+print("Series: \(comic.series ?? "Unknown")")
+print("Issue #: \(comic.number ?? "Unknown")")
+print("Year: \(comic.year ?? 0)")
 
 // Creator information
-print("Writer: \(issue.writer ?? "Unknown")")
-print("Artist: \(issue.penciller ?? "Unknown")")
-print("Publisher: \(issue.publisher ?? "Unknown")")
+print("Writer: \(comic.writer ?? "Unknown")")
+print("Artist: \(comic.penciller ?? "Unknown")")
+print("Publisher: \(comic.publisher ?? "Unknown")")
 
 // Multi-value fields (comma-separated in XML)
-let genres = issue.genres          // ["Action", "Adventure", "Superhero"]
-let characters = issue.characters  // ["Spider-Man", "Peter Parker"]
-let locations = issue.locations    // ["New York", "Manhattan"]
+let genres = comic.genres          // ["Action", "Adventure", "Superhero"]
+let characters = comic.characters  // ["Spider-Man", "Peter Parker"]
+let locations = comic.locations    // ["New York", "Manhattan"]
 
 // Boolean helpers
-if issue.isManga {
+if comics.isManga {
   print("This is a manga")
-  if issue.isRightToLeft {
+  if comics.isRightToLeft {
     print("Read right-to-left")
   }
 }
 
-if issue.isBlackAndWhite {
+if comics.isBlackAndWhite {
   print("Black and white comic")
 }
 
 // Publication date
-if let pubDate = issue.publicationDate {
+if let pubDate = comic.publicationDate {
   print("Published: \(pubDate)")
 }
 ```
@@ -115,18 +115,18 @@ if let pubDate = issue.publicationDate {
 let issue = try ComicInfo.load(from: "ComicInfo.xml")
 
 // Check if issue has page information
-if issue.hasPages {
-  print("Total pages: \(issue.pages.count)")
+if comic.hasPages {
+  print("Total pages: \(comic.pages.count)")
 
   // Filter pages by type
-  let coverPages = issue.coverPages
-  let storyPages = issue.storyPages
+  let coverPages = comic.coverPages
+  let storyPages = comic.storyPages
 
   print("Cover pages: \(coverPages.count)")
   print("Story pages: \(storyPages.count)")
 
   // Access individual pages
-  for page in issue.pages {
+  for page in comic.pages {
     print("Page \(page.image): \(page.type)")
 
     if page.isCover {
@@ -153,25 +153,25 @@ if issue.hasPages {
 #### JSON Export
 
 ```swift
-let issue = try ComicInfo.load(from: "ComicInfo.xml")
+let comic = try ComicInfo.load(from: "ComicInfo.xml")
 
 // Export to JSON string
-let jsonString = try issue.toJSONString()
+let jsonString = try comic.toJSONString()
 print(jsonString)
 
 // Export to JSON data
-let jsonData = try issue.toJSONData()
+let jsonData = try comic.toJSONData()
 try jsonData.write(to: URL(fileURLWithPath: "output.json"))
 
 // Round-trip: JSON -> Issue
 let decoder = JSONDecoder()
-let reimported = try decoder.decode(ComicInfo.Issue.self, from: jsonData)
+let reimported = try decoder.decode(ComicInfo.comic.self, from: jsonData)
 ```
 
 #### XML Export
 
 ```swift
-let issue = ComicInfo.Issue(
+let comic = ComicInfo.Issue(
   title: "My Comic",
   series: "My Series",
   number: "1",
@@ -180,7 +180,7 @@ let issue = ComicInfo.Issue(
 )
 
 // Export to XML string
-let xmlString = try issue.toXMLString()
+let xmlString = try comic.toXMLString()
 print(xmlString)
 
 // Save to file
@@ -199,8 +199,8 @@ let xmlString2 = try reimported.toXMLString()
 
 ```swift
 do {
-  let issue = try ComicInfo.load(from: "ComicInfo.xml")
-  print("Loaded: \(issue.title ?? "Unknown")")
+  let comic = try ComicInfo.load(from: "ComicInfo.xml")
+  print("Loaded: \(comic.title ?? "Unknown")")
 } catch ComicInfoError.fileError(let message) {
   print("File error: \(message)")
 } catch ComicInfoError.parseError(let message) {
@@ -220,7 +220,7 @@ do {
 import ComicInfo
 
 // Create a new comic issue
-let issue = ComicInfo.Issue(
+let comic = ComicInfo.Issue(
   ageRating: .teen,
   colorist: "Steve Oliff",
   charactersRawData: "Spider-Man, Peter Parker, Mary Jane Watson",
@@ -256,8 +256,8 @@ let issue = ComicInfo.Issue(
 )
 
 // Export to XML
-let xml = try issue.toXMLString()
-try xml.write(to: URL(fileURLWithPath: "MyComic.xml"),
+let xml = try comic.toXMLString()
+try xml.write(to: URL(fileURLWithPath: "ComicInfo.xml"),
               atomically: true, encoding: .utf8)
 ```
 
@@ -340,7 +340,6 @@ Represents a comic book issue with all metadata.
 - `pageCount: Int?` - Total page count
 
 #### Computed Properties
-
 - `isManga: Bool` - True if manga format
 - `isRightToLeft: Bool` - True if right-to-left reading
 - `isBlackAndWhite: Bool` - True if black and white
@@ -350,7 +349,6 @@ Represents a comic book issue with all metadata.
 - `publicationDate: Date?` - Computed publication date
 
 #### Methods
-
 - `toJSONString() throws -> String` - Export to JSON string
 - `toJSONData() throws -> Data` - Export to JSON data
 - `toXMLString() throws -> String` - Export to XML string
@@ -360,7 +358,6 @@ Represents a comic book issue with all metadata.
 Represents a single page in a comic.
 
 #### Properties
-
 - `image: Int` - Page number/index
 - `type: PageType` - Page type enum
 - `doublePage: Bool` - Double-page spread flag
@@ -371,7 +368,6 @@ Represents a single page in a comic.
 - `imageHeight: Int` - Image height (-1 if unknown)
 
 #### Computed Properties
-
 - `isCover: Bool` - True if cover page type
 - `isStory: Bool` - True if story page type
 - `isDeleted: Bool` - True if deleted page type
@@ -401,20 +397,17 @@ Represents a single page in a comic.
 - `.x18Plus`
 
 #### Manga
-
 - `.unknown`
 - `.no`
 - `.yes`
 - `.yesAndRightToLeft`
 
 #### BlackAndWhite
-
 - `.unknown`
 - `.no`
 - `.yes`
 
 #### PageType
-
 - `.frontCover`
 - `.innerCover`
 - `.roundup`
