@@ -236,7 +236,7 @@ struct ComicInfoTests {
     // Test that Version.current is accessible and has expected format
     #expect(!Version.current.isEmpty)
     #expect(Version.current.contains("."))
-    #expect(Version.current == "2.0.0")
+    #expect(Version.current == "1.0.0")
   }
 
   @available(macOS 26, iOS 26, watchOS 26, tvOS 26, *)

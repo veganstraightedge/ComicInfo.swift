@@ -74,6 +74,27 @@ swift-format lint --recursive Sources Tests
 swift-format format --recursive Sources Tests --in-place
 ```
 
+### Package Validation
+
+Validate the package structure and dependencies:
+
+```bash
+# Describe package structure
+swift package describe --type json
+
+# Resolve dependencies
+swift package resolve
+
+# Show dependency tree
+swift package show-dependencies
+
+# Build in debug mode
+swift build --configuration debug
+
+# Build in release mode
+swift build --configuration release
+```
+
 ### Continuous Integration
 
 The project uses GitHub Actions for CI with the following checks:

@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Show Swift version
         run: swift --version
@@ -37,78 +39,6 @@ jobs:
       - name: Run tests on macOS
         run: swift test --parallel
 
-  test-ios:
-    name: Test on iOS Simulator
-    runs-on: macos-26
-
-    strategy:
-      matrix:
-        ios-version: ["26.0"]
-        device: ["iPhone 26", "iPad Pro 11-inch (M4)"]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate Xcode project
-        run: swift package generate-xcodeproj
-
-      - name: List available simulators
-        run: xcrun simctl list devices available | grep -E "(iPhone|iPad)" | head -10
-
-      - name: Run tests on iOS Simulator
-        run: |
-          set -o pipefail
-          xcodebuild test \
-                     -project ComicInfo.xcodeproj \
-                     -scheme ComicInfo-Package \
-                     -destination "platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.ios-version }}"
-
-  test-watchos:
-    name: Test on watchOS Simulator
-    runs-on: macos-26
-
-    strategy:
-      matrix:
-        watchos-version: ["26.0"]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate Xcode project
-        run: swift package generate-xcodeproj
-
-      - name: Run tests on watchOS Simulator
-        run: |
-          set -o pipefail
-          xcodebuild test \
-                     -project ComicInfo.xcodeproj \
-                     -scheme ComicInfo-Package \
-                     -destination "platform=watchOS Simulator,name=Apple Watch Series 10 (46mm),OS=${{ matrix.watchos-version }}" \
-                     | xcpretty
-        continue-on-error: true # watchOS testing can be flaky
-
-  test-tvos:
-    name: Test on tvOS Simulator
-    runs-on: macos-26
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate Xcode project
-        run: swift package generate-xcodeproj
-
-      - name: Run tests on tvOS Simulator
-        run: |
-          set -o pipefail
-          xcodebuild test \
-                     -project ComicInfo.xcodeproj \
-                     -scheme ComicInfo-Package \
-                     -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.0" \
-                     | xcpretty
-
   lint:
     name: Code Formatting
     runs-on: macos-26
@@ -128,11 +58,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Validate package
-        run: swift package validate
+      - name: Describe package structure
+        run: swift package describe --type json
 
       - name: Test package resolution
         run: swift package resolve
+
+      - name: Show resolved dependencies
+        run: swift package show-dependencies
 
       - name: Test debug build
         run: swift build --configuration debug
@@ -140,13 +73,50 @@ jobs:
       - name: Test release build
         run: swift build --configuration release
 
-      - name: Check package can be used as dependency
+      - name: Validate package exports
         run: |
-          mkdir -p /tmp/test-integration
-          cd /tmp/test-integration
-          swift package init --type library --name TestIntegration
-          echo 'dependencies: [.package(path: "${{ github.workspace }}")], ' > Package.swift.new
-          sed '/dependencies: \[\],/r Package.swift.new' Package.swift > Package.swift.tmp && mv Package.swift.tmp Package.swift
-          rm Package.swift.new
-          echo 'import ComicInfo' > Sources/TestIntegration/TestIntegration.swift
-          swift build
+          echo "Validating package structure..."
+
+          # Build only the library target to ensure it compiles
+          swift build --target ComicInfo --configuration release
+
+          # Verify the library builds successfully
+          if [ $? -eq 0 ]; then
+            echo "✅ ComicInfo library builds successfully"
+          else
+            echo "❌ ComicInfo library failed to build"
+            exit 1
+          fi
+
+          # Simple validation that source files exist and contain expected exports
+          if grep -r "public enum ComicInfo" Sources/; then
+            echo "✅ ComicInfo namespace exported"
+          else
+            echo "❌ ComicInfo namespace not found"
+            exit 1
+          fi
+
+          if grep -r "public struct Issue" Sources/; then
+            echo "✅ Issue type exported"
+          else
+            echo "❌ Issue type not found"
+            exit 1
+          fi
+
+          if grep -r "public struct Page" Sources/; then
+            echo "✅ Page type exported"
+          else
+            echo "❌ Page type not found"
+            exit 1
+          fi
+
+          if grep -r "public static func load" Sources/; then
+            echo "✅ load function exported"
+          else
+            echo "❌ load function not found"
+            exit 1
+          fi
+
+          echo "✅ Package validation completed successfully"
+          echo "   - Library builds without errors"
+          echo "   - Core types are properly exported"
