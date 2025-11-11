@@ -161,11 +161,11 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [x] Add proper documentation comments
 - [x] Test: API surface area matches expected usage
 
-### 6.2 Export Features (Optional - Future)
-- [ ] Add Codable conformance to Issue and Page
-- [ ] Implement JSON export functionality
+### 6.2 Export Features ✅
+- [x] Add Codable conformance to Issue and Page
+- [x] Implement JSON export functionality
 - [ ] Implement PropertyList export functionality
-- [ ] Test: Export and re-import round trips
+- [x] Test: Export and re-import round trips
 
 ### 6.3 Performance and Memory
 - [ ] Profile XML parsing performance
@@ -204,7 +204,7 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 
 ## Current Priority
 
-**Next Task**: Phase 6.2 - Export features (Codable conformance) or Phase 7 - Documentation and Polish.
+**Next Task**: Phase 7 - Documentation and Polish or Phase 6.3 - Performance optimization.
 
 ## Notes
 
