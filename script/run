@@ -79,7 +79,7 @@ case $PLATFORM in
     # Launch the app in iOS Simulator
     xcodebuild -project       Outbox.xcodeproj \
                -scheme        Outbox \
-               -destination   "platform=iOS Simulator,name=iPhone 16,arch=arm64" \
+               -destination   "platform=iOS Simulator,name=iPhone 26,arch=arm64" \
                -configuration $CONFIGURATION \
                -quiet \
                run

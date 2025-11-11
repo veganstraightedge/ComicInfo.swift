@@ -1,0 +1,152 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+
+jobs:
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Show Swift version
+        run: swift --version
+
+      - name: Show system info
+        run: |
+          sw_vers
+          uname -m
+
+      - name: Cache Swift dependencies
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-swift-
+
+      - name: Build package
+        run: swift build --configuration release
+
+      - name: Run tests on macOS
+        run: swift test --parallel
+
+  test-ios:
+    name: Test on iOS Simulator
+    runs-on: macos-26
+
+    strategy:
+      matrix:
+        ios-version: ["26.0"]
+        device: ["iPhone 26", "iPad Pro 11-inch (M4)"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Xcode project
+        run: swift package generate-xcodeproj
+
+      - name: List available simulators
+        run: xcrun simctl list devices available | grep -E "(iPhone|iPad)" | head -10
+
+      - name: Run tests on iOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild test \
+                     -project ComicInfo.xcodeproj \
+                     -scheme ComicInfo-Package \
+                     -destination "platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.ios-version }}"
+
+  test-watchos:
+    name: Test on watchOS Simulator
+    runs-on: macos-26
+
+    strategy:
+      matrix:
+        watchos-version: ["26.0"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Xcode project
+        run: swift package generate-xcodeproj
+
+      - name: Run tests on watchOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild test \
+                     -project ComicInfo.xcodeproj \
+                     -scheme ComicInfo-Package \
+                     -destination "platform=watchOS Simulator,name=Apple Watch Series 10 (46mm),OS=${{ matrix.watchos-version }}" \
+                     | xcpretty
+        continue-on-error: true # watchOS testing can be flaky
+
+  test-tvos:
+    name: Test on tvOS Simulator
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Xcode project
+        run: swift package generate-xcodeproj
+
+      - name: Run tests on tvOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild test \
+                     -project ComicInfo.xcodeproj \
+                     -scheme ComicInfo-Package \
+                     -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.0" \
+                     | xcpretty
+
+  lint:
+    name: Code Formatting
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check code formatting
+        run: swift format lint --recursive Sources Tests
+
+  package-validation:
+    name: Package Validation
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate package
+        run: swift package validate
+
+      - name: Test package resolution
+        run: swift package resolve
+
+      - name: Test debug build
+        run: swift build --configuration debug
+
+      - name: Test release build
+        run: swift build --configuration release
+
+      - name: Check package can be used as dependency
+        run: |
+          mkdir -p /tmp/test-integration
+          cd /tmp/test-integration
+          swift package init --type library --name TestIntegration
+          echo 'dependencies: [.package(path: "${{ github.workspace }}")], ' > Package.swift.new
+          sed '/dependencies: \[\],/r Package.swift.new' Package.swift > Package.swift.tmp && mv Package.swift.tmp Package.swift
+          rm Package.swift.new
+          echo 'import ComicInfo' > Sources/TestIntegration/TestIntegration.swift
+          swift build

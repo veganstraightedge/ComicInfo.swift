@@ -41,6 +41,52 @@ Or add it through Xcode:
 2. Enter the repository URL
 3. Choose your version requirements
 
+## Development
+
+### Running Tests
+
+```bash
+swift test
+```
+
+### Running Tests on iOS Simulator
+
+```bash
+# Generate Xcode project first
+swift package generate-xcodeproj
+
+# Run on iOS Simulator
+xcodebuild test \
+  -project ComicInfo.xcodeproj \
+  -scheme ComicInfo-Package \
+  -destination "platform=iOS Simulator,name=iPhone 26,OS=26.0"
+```
+
+### Code Formatting
+
+This project uses `swift-format` for code formatting:
+
+```bash
+# Check formatting
+swift-format lint --recursive Sources Tests
+
+# Auto-format code
+swift-format format --recursive Sources Tests --in-place
+```
+
+### Continuous Integration
+
+The project uses GitHub Actions for CI with the following checks:
+
+- **macOS Tests**: Run full test suite on macOS 26
+- **iOS Tests**: Run tests on iOS 26 simulators (iPhone and iPad)
+- **watchOS Tests**: Run tests on watchOS 26 simulators
+- **tvOS Tests**: Run tests on tvOS 26 simulators
+- **Code Formatting**: Verify code follows formatting standards
+- **Package Validation**: Ensure package can be resolved and built
+
+CI runs on every push to `main` branches and on pull requests.
+
 ## Usage
 
 ### Loading ComicInfo Files

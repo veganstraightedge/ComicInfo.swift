@@ -26,7 +26,7 @@ case $PLATFORM in
     echo "==> Building for iOS ($CONFIGURATION)..."
     xcodebuild -project       Outbox.xcodeproj \
                -scheme        Outbox \
-               -destination   "platform=iOS Simulator,name=iPhone 16,arch=arm64" \
+               -destination   "platform=iOS Simulator,name=iPhone 26,arch=arm64" \
                -configuration $CONFIGURATION \
                -quiet \
                build
