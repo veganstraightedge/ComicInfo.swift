@@ -218,4 +218,61 @@ struct IssueTests {
     #expect(issue.coverPages.isEmpty)
     #expect(issue.storyPages.isEmpty)
   }
+
+  @Test func testIssueMangaHelpers() throws {
+    // Test manga convenience methods
+    let mangaIssue = ComicInfo.Issue(manga: .yes)
+    let rightToLeftIssue = ComicInfo.Issue(manga: .yesAndRightToLeft)
+    let nonMangaIssue = ComicInfo.Issue(manga: .no)
+    let unknownMangaIssue = ComicInfo.Issue(manga: .unknown)
+
+    #expect(mangaIssue.isManga == true)
+    #expect(mangaIssue.isRightToLeft == false)
+
+    #expect(rightToLeftIssue.isManga == true)
+    #expect(rightToLeftIssue.isRightToLeft == true)
+
+    #expect(nonMangaIssue.isManga == false)
+    #expect(nonMangaIssue.isRightToLeft == false)
+
+    #expect(unknownMangaIssue.isManga == false)
+    #expect(unknownMangaIssue.isRightToLeft == false)
+  }
+
+  @Test func testIssueBlackAndWhiteHelper() throws {
+    // Test black and white convenience method
+    let blackAndWhiteIssue = ComicInfo.Issue(blackAndWhite: .yes)
+    let colorIssue = ComicInfo.Issue(blackAndWhite: .no)
+    let unknownIssue = ComicInfo.Issue(blackAndWhite: .unknown)
+
+    #expect(blackAndWhiteIssue.isBlackAndWhite == true)
+    #expect(colorIssue.isBlackAndWhite == false)
+    #expect(unknownIssue.isBlackAndWhite == false)
+  }
+
+  @Test func testPublicationDate() throws {
+    // Test publicationDate computed property
+    let fullDateIssue = ComicInfo.Issue(day: 15, month: 3, year: 2018)
+    let yearOnlyIssue = ComicInfo.Issue(year: 2020)
+    let noDateIssue = ComicInfo.Issue()
+
+    // Full date should create proper Date object
+    let fullDate = fullDateIssue.publicationDate
+    #expect(fullDate != nil)
+    let components = Calendar.current.dateComponents([.year, .month, .day], from: fullDate!)
+    #expect(components.year == 2018)
+    #expect(components.month == 3)
+    #expect(components.day == 15)
+
+    // Year only should default month/day to 1
+    let yearOnlyDate = yearOnlyIssue.publicationDate
+    #expect(yearOnlyDate != nil)
+    let yearComponents = Calendar.current.dateComponents([.year, .month, .day], from: yearOnlyDate!)
+    #expect(yearComponents.year == 2020)
+    #expect(yearComponents.month == 1)
+    #expect(yearComponents.day == 1)
+
+    // No date should return nil
+    #expect(noDateIssue.publicationDate == nil)
+  }
 }

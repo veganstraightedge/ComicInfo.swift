@@ -562,6 +562,35 @@ public enum ComicInfo {
       return pages.filter { $0.isStory }
     }
 
+    /// True if this issue is a manga (Yes or YesAndRightToLeft).
+    public var isManga: Bool {
+      return manga?.isManga == true
+    }
+
+    /// True if this issue uses right-to-left reading direction.
+    public var isRightToLeft: Bool {
+      return manga?.isRightToLeft == true
+    }
+
+    /// True if this issue is black and white.
+    public var isBlackAndWhite: Bool {
+      return blackAndWhite?.isBlackAndWhite == true
+    }
+
+    /// Get publication date as Date object if available.
+    /// Uses year, month, day fields with defaults for missing components.
+    public var publicationDate: Date? {
+      guard let year = year, year > 0 else {
+        return nil
+      }
+
+      let month = self.month ?? 1
+      let day = self.day ?? 1
+
+      let components = DateComponents(year: year, month: month, day: day)
+      return Calendar.current.date(from: components)
+    }
+
     /// Split comma-separated string into array of trimmed strings.
     private func splitCommaSeparated(_ text: String?) -> [String] {
       guard let text = text, !text.isEmpty else {
