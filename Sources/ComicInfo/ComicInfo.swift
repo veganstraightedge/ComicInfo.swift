@@ -34,8 +34,8 @@ extension ComicInfoError: LocalizedError {
   }
 }
 
-private extension ComicInfo {
-  static func validateCommunityRating(_ value: String) throws -> Double {
+extension ComicInfo {
+  fileprivate static func validateCommunityRating(_ value: String) throws -> Double {
     guard let rating = Double(value) else {
       throw ComicInfoError.typeCoercionError(field: "CommunityRating", value: value, expectedType: "Double")
     }
@@ -45,7 +45,7 @@ private extension ComicInfo {
     return rating
   }
 
-  static func validateYear(_ value: String) throws -> Int {
+  fileprivate static func validateYear(_ value: String) throws -> Int {
     guard let year = Int(value) else {
       throw ComicInfoError.typeCoercionError(field: "Year", value: value, expectedType: "Int")
     }
@@ -53,6 +53,26 @@ private extension ComicInfo {
       throw ComicInfoError.rangeError(field: "Year", value: value, min: "1000", max: "9999")
     }
     return year
+  }
+
+  fileprivate static func validateMonth(_ value: String) throws -> Int {
+    guard let month = Int(value) else {
+      throw ComicInfoError.typeCoercionError(field: "Month", value: value, expectedType: "Int")
+    }
+    if !(1...12).contains(month) {
+      throw ComicInfoError.rangeError(field: "Month", value: value, min: "1", max: "12")
+    }
+    return month
+  }
+
+  fileprivate static func validateDay(_ value: String) throws -> Int {
+    guard let day = Int(value) else {
+      throw ComicInfoError.typeCoercionError(field: "Day", value: value, expectedType: "Int")
+    }
+    if !(1...31).contains(day) {
+      throw ComicInfoError.rangeError(field: "Day", value: value, min: "1", max: "31")
+    }
+    return day
   }
 }
 
@@ -183,6 +203,138 @@ public enum ComicInfo {
     }
   }
 
+  /// Page type enum for comic pages.
+  public enum PageType: String, CaseIterable, Equatable {
+    case frontCover = "FrontCover"
+    case innerCover = "InnerCover"
+    case roundup = "Roundup"
+    case story = "Story"
+    case advertisement = "Advertisement"
+    case editorial = "Editorial"
+    case letters = "Letters"
+    case preview = "Preview"
+    case backCover = "BackCover"
+    case other = "Other"
+    case deleted = "Deleted"
+
+    /// String value for XML serialization.
+    public var stringValue: String {
+      return self.rawValue
+    }
+
+    /// Create from string, defaulting to story for invalid values.
+    public static func from(string: String?) -> PageType {
+      guard let string = string, !string.isEmpty else {
+        return .story
+      }
+      return PageType(rawValue: string) ?? .story
+    }
+
+    /// Create from string with validation (throws on invalid values).
+    public static func validated(from string: String) throws -> PageType {
+      guard let pageType = PageType(rawValue: string) else {
+        throw ComicInfoError.invalidEnum(
+          field: "PageType",
+          value: string,
+          validValues: PageType.allCases.map { $0.stringValue }
+        )
+      }
+      return pageType
+    }
+
+    /// True if this is a cover page type.
+    public var isCover: Bool {
+      return self == .frontCover || self == .backCover || self == .innerCover
+    }
+
+    /// True if this is a story page.
+    public var isStory: Bool {
+      return self == .story
+    }
+
+    /// True if this page is deleted.
+    public var isDeleted: Bool {
+      return self == .deleted
+    }
+  }
+
+  /// Represents a single page in a comic book with metadata.
+  public struct Page: Equatable, Hashable {
+    public let image: Int
+    public let type: PageType
+    public let doublePage: Bool
+    public let imageSize: Int
+    public let key: String
+    public let bookmark: String
+    public let imageWidth: Int
+    public let imageHeight: Int
+
+    public init(
+      image: Int,
+      type: PageType = .story,
+      doublePage: Bool = false,
+      imageSize: Int = 0,
+      key: String = "",
+      bookmark: String = "",
+      imageWidth: Int = -1,
+      imageHeight: Int = -1
+    ) {
+      self.image = image
+      self.type = type
+      self.doublePage = doublePage
+      self.imageSize = imageSize
+      self.key = key
+      self.bookmark = bookmark
+      self.imageWidth = imageWidth
+      self.imageHeight = imageHeight
+    }
+
+    /// True if this page is a cover page.
+    public var isCover: Bool {
+      return type.isCover
+    }
+
+    /// True if this page is a story page.
+    public var isStory: Bool {
+      return type.isStory
+    }
+
+    /// True if this page is deleted.
+    public var isDeleted: Bool {
+      return type.isDeleted
+    }
+
+    /// True if this is a double-page spread.
+    public var isDoublePage: Bool {
+      return doublePage
+    }
+
+    /// True if this page has a bookmark.
+    public var isBookmarked: Bool {
+      return !bookmark.isEmpty
+    }
+
+    /// Get image dimensions as optional values.
+    public var dimensions: (width: Int?, height: Int?) {
+      let width = imageWidth == -1 ? nil : imageWidth
+      let height = imageHeight == -1 ? nil : imageHeight
+      return (width: width, height: height)
+    }
+
+    /// True if both width and height dimensions are available.
+    public var dimensionsAvailable: Bool {
+      return imageWidth != -1 && imageHeight != -1
+    }
+
+    /// Calculate aspect ratio if dimensions are available.
+    public var aspectRatio: Double? {
+      guard dimensionsAvailable, imageHeight != 0 else {
+        return nil
+      }
+      return Double(imageWidth) / Double(imageHeight)
+    }
+  }
+
   /// Load ComicInfo from an XML string.
   public static func load(fromXML xmlString: String) throws -> Issue {
     return try Issue.load(fromXML: xmlString)
@@ -249,7 +401,7 @@ public enum ComicInfo {
     public let day: Int?
     public let editor: String?
     public let format: String?
-    public let genre: String?
+    public let genreRawData: String?
     public let imprint: String?
     public let inker: String?
     public let languageISO: String?
@@ -274,7 +426,7 @@ public enum ComicInfo {
     public let title: String?
     public let translator: String?
     public let volume: Int?
-    public let web: String?
+    public let webRawData: String?
     public let writer: String?
     public let year: Int?
 
@@ -292,7 +444,7 @@ public enum ComicInfo {
       day: Int? = nil,
       editor: String? = nil,
       format: String? = nil,
-      genre: String? = nil,
+      genreRawData: String? = nil,
       imprint: String? = nil,
       inker: String? = nil,
       languageISO: String? = nil,
@@ -317,7 +469,7 @@ public enum ComicInfo {
       title: String? = nil,
       translator: String? = nil,
       volume: Int? = nil,
-      web: String? = nil,
+      webRawData: String? = nil,
       writer: String? = nil,
       year: Int? = nil
     ) {
@@ -334,7 +486,7 @@ public enum ComicInfo {
       self.day = day
       self.editor = editor
       self.format = format
-      self.genre = genre
+      self.genreRawData = genreRawData
       self.imprint = imprint
       self.inker = inker
       self.languageISO = languageISO
@@ -359,7 +511,7 @@ public enum ComicInfo {
       self.title = title
       self.translator = translator
       self.volume = volume
-      self.web = web
+      self.webRawData = webRawData
       self.writer = writer
       self.year = year
     }
@@ -377,6 +529,19 @@ public enum ComicInfo {
     /// Array of locations split from comma-separated string.
     public var locations: [String] {
       return splitCommaSeparated(locationsRawData)
+    }
+
+    /// Array of genres split from comma-separated string.
+    public var genres: [String] {
+      return splitCommaSeparated(genreRawData)
+    }
+
+    /// Array of web URLs split from whitespace-separated string.
+    public var webUrls: [URL] {
+      guard let web = webRawData, !web.isEmpty else {
+        return []
+      }
+      return web.split(separator: " ").compactMap { URL(string: String($0)) }
     }
 
     /// Split comma-separated string into array of trimmed strings.
@@ -428,10 +593,12 @@ public enum ComicInfo {
       }
       let count = root.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
       let coverArtist = root.elements(forName: "CoverArtist").first?.stringValue
-      let day = root.elements(forName: "Day").first?.stringValue.flatMap { Int($0) }
+      let day = try root.elements(forName: "Day").first?.stringValue.map {
+        try ComicInfo.validateDay($0)
+      }
       let editor = root.elements(forName: "Editor").first?.stringValue
       let format = root.elements(forName: "Format").first?.stringValue
-      let genre = root.elements(forName: "Genre").first?.stringValue
+      let genreRawData = root.elements(forName: "Genre").first?.stringValue
       let imprint = root.elements(forName: "Imprint").first?.stringValue
       let inker = root.elements(forName: "Inker").first?.stringValue
       let languageISO = root.elements(forName: "LanguageISO").first?.stringValue
@@ -441,7 +608,9 @@ public enum ComicInfo {
       let manga = try root.elements(forName: "Manga").first?.stringValue.map {
         try Manga.validated(from: $0)
       }
-      let month = root.elements(forName: "Month").first?.stringValue.flatMap { Int($0) }
+      let month = try root.elements(forName: "Month").first?.stringValue.map {
+        try ComicInfo.validateMonth($0)
+      }
       let notes = root.elements(forName: "Notes").first?.stringValue
       let number = root.elements(forName: "Number").first?.stringValue
       let pageCount = root.elements(forName: "PageCount").first?.stringValue.flatMap { Int($0) }
@@ -458,7 +627,7 @@ public enum ComicInfo {
       let title = root.elements(forName: "Title").first?.stringValue
       let translator = root.elements(forName: "Translator").first?.stringValue
       let volume = root.elements(forName: "Volume").first?.stringValue.flatMap { Int($0) }
-      let web = root.elements(forName: "Web").first?.stringValue
+      let webRawData = root.elements(forName: "Web").first?.stringValue
       let writer = root.elements(forName: "Writer").first?.stringValue
       let year = try root.elements(forName: "Year").first?.stringValue.map {
         try ComicInfo.validateYear($0)
@@ -478,7 +647,7 @@ public enum ComicInfo {
         day: day,
         editor: editor,
         format: format,
-        genre: genre,
+        genreRawData: genreRawData,
         imprint: imprint,
         inker: inker,
         languageISO: languageISO,
@@ -503,7 +672,7 @@ public enum ComicInfo {
         title: title,
         translator: translator,
         volume: volume,
-        web: web,
+        webRawData: webRawData,
         writer: writer,
         year: year)
     }

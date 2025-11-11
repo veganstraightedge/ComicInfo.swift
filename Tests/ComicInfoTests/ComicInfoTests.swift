@@ -144,6 +144,58 @@ struct ComicInfoTests {
       }
     }
   }
+
+  @Test func testLoadFromInvalidMonth() throws {
+    // Test loading from out of range value for Month
+    do {
+      _ = try loadFixture("invalid_month")
+      #expect(Bool(false), "Expected rangeError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .rangeError(let field, let value, _, _):
+        #expect(field == "Month")
+        #expect(value == "13")
+        break
+      default:
+        #expect(Bool(false), "Expected rangeError, got \(error)")
+      }
+    }
+  }
+
+  @Test func testLoadFromInvalidDay() throws {
+    // Test loading from out of range value for Day
+    do {
+      _ = try loadFixture("invalid_day")
+      #expect(Bool(false), "Expected rangeError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .rangeError(let field, let value, _, _):
+        #expect(field == "Day")
+        #expect(value == "32")
+        break
+      default:
+        #expect(Bool(false), "Expected rangeError, got \(error)")
+      }
+    }
+  }
+
+  @Test func testLoadFromInvalidType() throws {
+    // Test loading from a value that cannot be coerced
+    do {
+      _ = try loadFixture("invalid_type")
+      #expect(Bool(false), "Expected typeCoercionError to be thrown")
+    } catch let error as ComicInfoError {
+      switch error {
+      case .typeCoercionError(let field, let value, let expectedType):
+        #expect(field == "Day")
+        #expect(value == "not a number")
+        #expect(expectedType == "Int")
+        break
+      default:
+        #expect(Bool(false), "Expected typeCoercionError, got \(error)")
+      }
+    }
+  }
 }
 
 // MARK: - Test Helpers

@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 
 @testable import ComicInfo
@@ -68,8 +69,8 @@ struct IssueTests {
     let issue = try loadFixture("valid_complete")
     #expect(issue.alternateSeries == "Civil War")
     #expect(issue.alternateNumber == "2")
-    #expect(issue.genre == "Superhero, Action, Adventure")
-    #expect(issue.web?.contains("marvel.com") == true)
+    #expect(issue.genreRawData == "Superhero, Action, Adventure")
+    #expect(issue.webRawData?.contains("marvel.com") == true)
   }
 
   @Test func testMultiValueAndStoryFields() throws {
@@ -131,5 +132,32 @@ struct IssueTests {
     // Test array access (split by comma, trimmed)
     let locationsArray = issue.locations
     #expect(locationsArray == ["New York City", "Manhattan", "Queens"])
+  }
+
+  @Test func testGenresArray() throws {
+    // Test both raw data and array access for genres
+    let issue = try loadFixture("valid_complete")
+
+    // Test raw data (string) access
+    #expect(issue.genreRawData == "Superhero, Action, Adventure")
+
+    // Test array access (split by comma, trimmed)
+    let genresArray = issue.genres
+    #expect(genresArray == ["Superhero", "Action", "Adventure"])
+  }
+
+  @Test func testWebUrlsArray() throws {
+    // Test both raw data and array access for web
+    let issue = try loadFixture("valid_complete")
+
+    // Test raw data (string) access
+    #expect(issue.webRawData == "https://marvel.com/comics/issue/12345 https://comicvine.gamespot.com/amazing-spider-man-1/4000-67890/")
+
+    // Test array access (split by whitespace, converted to URL)
+    let webUrlsArray = issue.webUrls
+    #expect(webUrlsArray == [
+      URL(string: "https://marvel.com/comics/issue/12345")!,
+      URL(string: "https://comicvine.gamespot.com/amazing-spider-man-1/4000-67890/")!
+    ])
   }
 }

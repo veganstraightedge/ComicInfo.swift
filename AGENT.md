@@ -2,6 +2,13 @@
 
 This document tracks the development process, decisions, and progress of porting the ComicInfo Ruby gem to a Swift package.
 
+
+## Communication style
+- Be terse, not verbose
+- Say as little as possible
+- Don't write a long summary at the end
+- Do write a short one-line summary that for my git commit message
+
 ## Project Overview
 
 - **Source**: Ruby gem `comicinfo-ruby` (complete) https://github.com/veganstraightedge/comicinfo
