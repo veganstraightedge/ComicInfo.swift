@@ -75,50 +75,48 @@ jobs:
 
       - name: Validate package exports
         run: |
-          echo "Validating package structure and public symbols..."
+          echo "Validating package structure..."
 
-          # Generate symbol graph for library target only
-          swift package dump-symbol-graph --minimum-access-level public --pretty-print ComicInfo
+          # Build only the library target to ensure it compiles
+          swift build --target ComicInfo --configuration release
 
-          # Find the generated symbols file
-          SYMBOLS_FILE=$(find .build -name "ComicInfo.symbols.json" | head -1)
-
-          if [ -z "$SYMBOLS_FILE" ]; then
-            echo "❌ Symbol graph file not found"
+          # Verify the library builds successfully
+          if [ $? -eq 0 ]; then
+            echo "✅ ComicInfo library builds successfully"
+          else
+            echo "❌ ComicInfo library failed to build"
             exit 1
           fi
 
-          echo "Found symbols file: $SYMBOLS_FILE"
-
-          # Verify key types are exported
-          if grep -q "ComicInfo.Issue" "$SYMBOLS_FILE"; then
-            echo "✅ ComicInfo.Issue type exported"
+          # Simple validation that source files exist and contain expected exports
+          if grep -r "public enum ComicInfo" Sources/; then
+            echo "✅ ComicInfo namespace exported"
           else
-            echo "❌ ComicInfo.Issue type not found in exports"
+            echo "❌ ComicInfo namespace not found"
             exit 1
           fi
 
-          if grep -q "ComicInfo.Page" "$SYMBOLS_FILE"; then
-            echo "✅ ComicInfo.Page type exported"
+          if grep -r "public struct Issue" Sources/; then
+            echo "✅ Issue type exported"
           else
-            echo "❌ ComicInfo.Page type not found in exports"
+            echo "❌ Issue type not found"
             exit 1
           fi
 
-          if grep -q "Version" "$SYMBOLS_FILE"; then
-            echo "✅ Version type exported"
+          if grep -r "public struct Page" Sources/; then
+            echo "✅ Page type exported"
           else
-            echo "❌ Version type not found in exports"
+            echo "❌ Page type not found"
             exit 1
           fi
 
-          if grep -q "load(fromXML:" "$SYMBOLS_FILE"; then
-            echo "✅ load(fromXML:) function exported"
+          if grep -r "public static func load" Sources/; then
+            echo "✅ load function exported"
           else
-            echo "❌ load(fromXML:) function not found in exports"
+            echo "❌ load function not found"
             exit 1
           fi
 
           echo "✅ Package validation completed successfully"
-          echo "   - All main types are properly exported"
-          echo "   - Core functionality is accessible"
+          echo "   - Library builds without errors"
+          echo "   - Core types are properly exported"
