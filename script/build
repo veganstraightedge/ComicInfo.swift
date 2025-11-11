@@ -15,8 +15,8 @@ CONFIGURATION=${2:-Debug}
 case $PLATFORM in
   macos)
     echo "==> Building for macOS ($CONFIGURATION)..."
-    xcodebuild -project       Outbox.xcodeproj \
-               -scheme        Outbox \
+    xcodebuild -project       Longbox.xcodeproj \
+               -scheme        Longbox \
                -destination   "platform=macOS,arch=arm64" \
                -configuration $CONFIGURATION \
                -quiet \
@@ -24,8 +24,8 @@ case $PLATFORM in
     ;;
   ios)
     echo "==> Building for iOS ($CONFIGURATION)..."
-    xcodebuild -project       Outbox.xcodeproj \
-               -scheme        Outbox \
+    xcodebuild -project       Longbox.xcodeproj \
+               -scheme        Longbox \
                -destination   "platform=iOS Simulator,name=iPhone 26,arch=arm64" \
                -configuration $CONFIGURATION \
                -quiet \
