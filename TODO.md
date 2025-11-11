@@ -154,12 +154,12 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 
 ## Phase 6: API Polish and Export
 
-### 6.1 API Completeness
-- [ ] Review all Ruby public methods are ported
-- [ ] Add missing convenience methods from Ruby gem
-- [ ] Ensure Swift naming conventions are followed
-- [ ] Add proper documentation comments
-- [ ] Test: API surface area matches expected usage
+### 6.1 API Completeness ✅
+- [x] Review all Ruby public methods are ported
+- [x] Add missing convenience methods from Ruby gem
+- [x] Ensure Swift naming conventions are followed
+- [x] Add proper documentation comments
+- [x] Test: API surface area matches expected usage
 
 ### 6.2 Export Features (Optional - Future)
 - [ ] Add Codable conformance to Issue and Page
@@ -204,7 +204,7 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 
 ## Current Priority
 
-**Next Task**: Phase 6.1 - Review API completeness and documentation.
+**Next Task**: Phase 6.2 - Export features (Codable conformance) or Phase 7 - Documentation and Polish.
 
 ## Notes
 
