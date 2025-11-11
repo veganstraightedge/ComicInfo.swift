@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # script/run
 # Build and run the app from command line

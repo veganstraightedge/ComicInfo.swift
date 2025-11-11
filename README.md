@@ -41,76 +41,9 @@ Or add it through Xcode:
 2. Enter the repository URL
 3. Choose your version requirements
 
-## Development
-
-### Running Tests
-
-```bash
-swift test
-```
-
-### Running Tests on iOS Simulator
-
-```bash
-# Generate Xcode project first
-swift package generate-xcodeproj
-
-# Run on iOS Simulator
-xcodebuild test \
-  -project ComicInfo.xcodeproj \
-  -scheme ComicInfo-Package \
-  -destination "platform=iOS Simulator,name=iPhone 26,OS=26.0"
-```
-
-### Code Formatting
-
-This project uses `swift-format` for code formatting:
-
-```bash
-# Check formatting
-swift-format lint --recursive Sources Tests
-
-# Auto-format code
-swift-format format --recursive Sources Tests --in-place
-```
-
-### Package Validation
-
-Validate the package structure and dependencies:
-
-```bash
-# Describe package structure
-swift package describe --type json
-
-# Resolve dependencies
-swift package resolve
-
-# Show dependency tree
-swift package show-dependencies
-
-# Build in debug mode
-swift build --configuration debug
-
-# Build in release mode
-swift build --configuration release
-```
-
-### Continuous Integration
-
-The project uses GitHub Actions for CI with the following checks:
-
-- **macOS Tests**: Run full test suite on macOS 26
-- **iOS Tests**: Run tests on iOS 26 simulators (iPhone and iPad)
-- **watchOS Tests**: Run tests on watchOS 26 simulators
-- **tvOS Tests**: Run tests on tvOS 26 simulators
-- **Code Formatting**: Verify code follows formatting standards
-- **Package Validation**: Ensure package can be resolved and built
-
-CI runs on every push to `main` branches and on pull requests.
-
 ## Usage
 
-### Loading ComicInfo Files
+### Loading ComicInfo.xml Files
 
 ```swift
 import ComicInfo
@@ -407,6 +340,7 @@ Represents a comic book issue with all metadata.
 - `pageCount: Int?` - Total page count
 
 #### Computed Properties
+
 - `isManga: Bool` - True if manga format
 - `isRightToLeft: Bool` - True if right-to-left reading
 - `isBlackAndWhite: Bool` - True if black and white
@@ -425,6 +359,7 @@ Represents a comic book issue with all metadata.
 Represents a single page in a comic.
 
 #### Properties
+
 - `image: Int` - Page number/index
 - `type: PageType` - Page type enum
 - `doublePage: Bool` - Double-page spread flag
@@ -435,6 +370,7 @@ Represents a single page in a comic.
 - `imageHeight: Int` - Image height (-1 if unknown)
 
 #### Computed Properties
+
 - `isCover: Bool` - True if cover page type
 - `isStory: Bool` - True if story page type
 - `isDeleted: Bool` - True if deleted page type
@@ -447,6 +383,7 @@ Represents a single page in a comic.
 ### Enums
 
 #### AgeRating
+
 - `.unknown`
 - `.adultsOnly18Plus`
 - `.earlyChildhood`
@@ -464,17 +401,20 @@ Represents a single page in a comic.
 - `.x18Plus`
 
 #### Manga
+
 - `.unknown`
 - `.no`
 - `.yes`
 - `.yesAndRightToLeft`
 
 #### BlackAndWhite
+
 - `.unknown`
 - `.no`
 - `.yes`
 
 #### PageType
+
 - `.frontCover`
 - `.innerCover`
 - `.roundup`
@@ -498,10 +438,21 @@ All errors conform to `ComicInfoError` enum:
 - `.typeCoercionError(field:value:expectedType:)` - Type conversion errors
 - `.schemaError(String)` - Schema validation errors
 
+---
+
 ## Platform Support
 
 - **macOS** 26+ (Tahoe)
 - **iOS** 26.0+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Anansi Project](https://github.com/anansi-project/comicinfo) for ComicInfo schema specification
+- [ComicRack](http://comicrack.cyolito.com/) for the original ComicInfo.xml format
 
 ## Contributing
 
@@ -514,11 +465,67 @@ All errors conform to `ComicInfoError` enum:
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
 
-## License
+## Development
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Running Tests
 
-## Acknowledgments
+```sh
+swift test
+```
 
-- [Anansi Project](https://github.com/anansi-project/comicinfo) for ComicInfo schema specification
-- [ComicRack](http://comicrack.cyolito.com/) for the original ComicInfo.xml format
+### Running Tests on iOS Simulator
+
+```sh
+# Generate Xcode project first
+swift package generate-xcodeproj
+
+# Run on iOS Simulator
+xcodebuild test \
+  -project ComicInfo.xcodeproj \
+  -scheme ComicInfo-Package \
+  -destination "platform=iOS Simulator,name=iPhone 26,OS=26.0"
+```
+
+### Code Formatting
+
+This project uses `swift-format` for code formatting:
+
+```sh
+# Check formatting
+swift-format lint --recursive Sources Tests
+
+# Auto-format code
+swift-format format --recursive Sources Tests --in-place
+```
+
+### Package Validation
+
+Validate the package structure and dependencies:
+
+```sh
+# Describe package structure
+swift package describe --type json
+
+# Resolve dependencies
+swift package resolve
+
+# Show dependency tree
+swift package show-dependencies
+
+# Build in debug mode
+swift build --configuration debug
+
+# Build in release mode
+swift build --configuration release
+```
+
+### Continuous Integration
+
+The project uses GitHub Actions for CI with the following checks:
+
+- **macOS Tests**: Run full test suite on macOS 26
+- **iOS Tests**: Run tests on iOS 26 simulators (iPhone and iPad)
+- **Code Formatting**: Verify code follows formatting standards
+- **Package Validation**: Ensure package can be resolved and built
+
+CI runs on every push to `main` branches and on pull requests.

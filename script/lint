@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # script/lint
 # Lint Swift source code using swift-format

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # script/format
 # Format Swift source code using swift-format

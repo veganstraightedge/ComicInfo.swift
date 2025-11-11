@@ -63,7 +63,7 @@ The CI configuration is designed to work with GitHub Actions' available runners 
 
 Test CI commands locally before pushing:
 
-```bash
+```sh
 # Test macOS build
 swift test
 ```
