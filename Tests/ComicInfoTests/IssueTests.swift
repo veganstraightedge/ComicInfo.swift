@@ -338,4 +338,86 @@ struct IssueTests {
     #expect(webUrls.count == 1)
     #expect(webUrls[0].absoluteString == "https://example.com")
   }
+
+  @Test func testMissingRequiredElements() throws {
+    // Test that missing typical elements are handled gracefully
+    let issue = try loadFixture("missing_elements")
+
+    // Should parse successfully even with minimal elements
+    #expect(issue.number == "1")
+    #expect(issue.year == 2020)
+    #expect(issue.genreRawData == "Action")
+
+    // Missing elements should be nil
+    #expect(issue.title == nil)
+    #expect(issue.series == nil)
+    #expect(issue.summary == nil)
+    #expect(issue.writer == nil)
+    #expect(issue.publisher == nil)
+
+    // Pages should be empty array
+    #expect(issue.pages.isEmpty)
+    #expect(issue.hasPages == false)
+  }
+
+  @Test func testVeryLargePageArray() throws {
+    // Test handling of large page arrays (50+ pages)
+    let issue = try loadFixture("large_pages")
+
+    #expect(issue.title == "Large Page Array Test")
+    #expect(issue.pages.count == 51)  // 50 pages plus covers
+
+    // Test first and last pages
+    let firstPage = issue.pages[0]
+    #expect(firstPage.image == 0)
+    #expect(firstPage.type == .frontCover)
+
+    let lastPage = issue.pages[50]
+    #expect(lastPage.image == 50)
+    #expect(lastPage.type == .backCover)
+
+    // Test story page filtering works with large arrays
+    let storyPages = issue.storyPages
+    #expect(storyPages.count == 48)  // All except covers
+
+    // Test cover page filtering
+    let coverPages = issue.coverPages
+    #expect(coverPages.count == 3)  // Front, inner, and back covers
+
+    // Test performance - should handle large arrays efficiently
+    let allStoryPages = issue.pages.filter { $0.isStory }
+    #expect(allStoryPages.count == storyPages.count)
+  }
+
+  @Test func testStoryArcsMethods() throws {
+    // Test story arcs array parsing
+    let issue = try loadFixture("valid_complete")
+
+    let storyArcs = issue.storyArcs
+    #expect(storyArcs == ["Brand New Day", "Spider-Island"])
+
+    let storyArcNumbers = issue.storyArcNumbers
+    #expect(storyArcNumbers == ["1", "5"])
+
+    // Test raw data access
+    #expect(issue.storyArcsRawData == "Brand New Day, Spider-Island")
+    #expect(issue.storyArcNumbersRawData == "1, 5")
+  }
+
+  @Test func testDocumentationExamples() throws {
+    // Test examples from documentation comments work correctly
+    let issue = try loadFixture("valid_complete")
+
+    // Test multi-value field access patterns
+    let genreString = issue.genreRawData  // "Superhero, Action, Adventure"
+    let genreArray = issue.genres  // ["Superhero", "Action", "Adventure"]
+
+    #expect(genreString == "Superhero, Action, Adventure")
+    #expect(genreArray == ["Superhero", "Action", "Adventure"])
+
+    // Test convenience boolean methods documentation
+    #expect(issue.hasPages == true)
+    #expect(issue.coverPages.count > 0)
+    #expect(issue.storyPages.count > 0)
+  }
 }

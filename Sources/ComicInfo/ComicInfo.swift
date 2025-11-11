@@ -433,6 +433,28 @@ public enum ComicInfo {
   }
 
   /// Represents a comic book issue with metadata from ComicInfo.xml.
+  ///
+  /// This structure contains all the metadata fields defined in the ComicInfo v2.0 schema,
+  /// including publication information, creator details, story metadata, and page information.
+  ///
+  /// ## Loading ComicInfo Data
+  /// ```swift
+  /// // Load from XML string
+  /// let issue = try ComicInfo.load(fromXML: xmlString)
+  ///
+  /// // Load from file path
+  /// let issue = try ComicInfo.load(from: filePath)
+  ///
+  /// // Load from URL
+  /// let issue = try ComicInfo.load(from: url)
+  /// ```
+  ///
+  /// ## Accessing Multi-value Fields
+  /// Multi-value fields provide both raw string access and parsed array access:
+  /// ```swift
+  /// let genreString = issue.genreRawData    // "Action, Adventure, Superhero"
+  /// let genreArray = issue.genres           // ["Action", "Adventure", "Superhero"]
+  /// ```
   public struct Issue {
     public let ageRating: AgeRating?
     public let alternateCount: Int?
@@ -566,26 +588,46 @@ public enum ComicInfo {
     }
 
     /// Array of characters split from comma-separated string.
+    ///
+    /// Splits the `charactersRawData` string on commas and trims whitespace.
+    /// Empty entries are filtered out.
+    /// - Returns: Array of character names, or empty array if no characters.
     public var characters: [String] {
       return splitCommaSeparated(charactersRawData)
     }
 
     /// Array of teams split from comma-separated string.
+    ///
+    /// Splits the `teamsRawData` string on commas and trims whitespace.
+    /// Empty entries are filtered out.
+    /// - Returns: Array of team names, or empty array if no teams.
     public var teams: [String] {
       return splitCommaSeparated(teamsRawData)
     }
 
     /// Array of locations split from comma-separated string.
+    ///
+    /// Splits the `locationsRawData` string on commas and trims whitespace.
+    /// Empty entries are filtered out.
+    /// - Returns: Array of location names, or empty array if no locations.
     public var locations: [String] {
       return splitCommaSeparated(locationsRawData)
     }
 
     /// Array of genres split from comma-separated string.
+    ///
+    /// Splits the `genreRawData` string on commas and trims whitespace.
+    /// Empty entries are filtered out.
+    /// - Returns: Array of genre names, or empty array if no genres.
     public var genres: [String] {
       return splitCommaSeparated(genreRawData)
     }
 
     /// Array of web URLs split from whitespace-separated string.
+    ///
+    /// Splits the `webRawData` string on whitespace and converts to URL objects.
+    /// Invalid URLs are filtered out.
+    /// - Returns: Array of valid URLs, or empty array if no valid URLs.
     public var webUrls: [URL] {
       guard let web = webRawData, !web.isEmpty else {
         return []
@@ -594,37 +636,72 @@ public enum ComicInfo {
     }
 
     /// True if this issue has pages.
+    /// - Returns: `true` if the pages array is not empty, `false` otherwise.
     public var hasPages: Bool {
       return !pages.isEmpty
     }
 
     /// Get only cover pages from the pages array.
+    ///
+    /// Filters pages to include only those with cover page types (FrontCover, BackCover, InnerCover).
+    /// - Returns: Array of cover pages, or empty array if no cover pages.
     public var coverPages: [Page] {
       return pages.filter { $0.isCover }
     }
 
     /// Get only story pages from the pages array.
+    ///
+    /// Filters pages to include only those with Story page type.
+    /// - Returns: Array of story pages, or empty array if no story pages.
     public var storyPages: [Page] {
       return pages.filter { $0.isStory }
     }
 
+    /// Array of story arcs split from comma-separated string.
+    ///
+    /// Splits the `storyArc` string on commas and trims whitespace.
+    /// Empty entries are filtered out.
+    /// - Returns: Array of story arc names, or empty array if no story arcs.
+    public var storyArcs: [String] {
+      return splitCommaSeparated(storyArc)
+    }
+
+    /// Array of story arc numbers split from comma-separated string.
+    ///
+    /// Splits the `storyArcNumber` string on commas and trims whitespace.
+    /// Empty entries are filtered out.
+    /// - Returns: Array of story arc numbers, or empty array if no story arc numbers.
+    public var storyArcNumbers: [String] {
+      return splitCommaSeparated(storyArcNumber)
+    }
+
+    /// Raw data access methods for compatibility with Ruby API.
+    public var storyArcsRawData: String? { return storyArc }
+    public var storyArcNumbersRawData: String? { return storyArcNumber }
+
     /// True if this issue is a manga (Yes or YesAndRightToLeft).
+    /// - Returns: `true` if manga field is Yes or YesAndRightToLeft, `false` otherwise.
     public var isManga: Bool {
       return manga?.isManga == true
     }
 
     /// True if this issue uses right-to-left reading direction.
+    /// - Returns: `true` if manga field is YesAndRightToLeft, `false` otherwise.
     public var isRightToLeft: Bool {
       return manga?.isRightToLeft == true
     }
 
     /// True if this issue is black and white.
+    /// - Returns: `true` if blackAndWhite field is Yes, `false` otherwise.
     public var isBlackAndWhite: Bool {
       return blackAndWhite?.isBlackAndWhite == true
     }
 
     /// Get publication date as Date object if available.
+    ///
     /// Uses year, month, day fields with defaults for missing components.
+    /// Missing month defaults to 1 (January), missing day defaults to 1.
+    /// - Returns: Date object if year is available and valid, nil otherwise.
     public var publicationDate: Date? {
       guard let year = year, year > 0 else {
         return nil

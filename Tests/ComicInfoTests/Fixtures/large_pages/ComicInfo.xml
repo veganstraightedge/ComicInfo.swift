@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ComicInfo>
+  <Title>Large Page Array Test</Title>
+  <Series>Test Series</Series>
+  <Number>1</Number>
+  <Year>2020</Year>
+  <Pages>
+    <Page Image="0" Type="FrontCover" DoublePage="false" ImageSize="1024000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="1" Type="InnerCover" DoublePage="false" ImageSize="512000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="2" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="Chapter 1" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="3" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="4" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="5" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="6" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="7" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="8" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="9" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="10" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="11" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="12" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="13" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="14" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="15" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="16" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="17" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="18" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="19" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="20" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="21" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="22" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="23" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="24" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="25" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="26" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="27" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="28" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="29" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="30" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="31" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="32" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="33" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="34" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="35" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="36" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="37" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="38" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="39" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="40" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="41" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="42" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="43" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="44" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="45" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="46" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="47" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="48" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="49" Type="Story" DoublePage="false" ImageSize="768000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+    <Page Image="50" Type="BackCover" DoublePage="false" ImageSize="1024000" Key="" Bookmark="" ImageWidth="1600" ImageHeight="2400"/>
+  </Pages>
+</ComicInfo>
