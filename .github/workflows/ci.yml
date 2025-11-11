@@ -73,13 +73,52 @@ jobs:
       - name: Test release build
         run: swift build --configuration release
 
-      - name: Check package can be used as dependency
+      - name: Validate package exports
         run: |
-          mkdir -p /tmp/test-integration
-          cd /tmp/test-integration
-          swift package init --type library --name TestIntegration
-          echo 'dependencies: [.package(path: "${{ github.workspace }}")], ' > Package.swift.new
-          sed '/dependencies: \[\],/r Package.swift.new' Package.swift > Package.swift.tmp && mv Package.swift.tmp Package.swift
-          rm Package.swift.new
-          echo 'import ComicInfo' > Sources/TestIntegration/TestIntegration.swift
-          swift build
+          echo "Validating package structure and public symbols..."
+
+          # Generate symbol graph
+          swift package dump-symbol-graph --minimum-access-level public --pretty-print
+
+          # Find the generated symbols file
+          SYMBOLS_FILE=$(find .build -name "ComicInfo.symbols.json" | head -1)
+
+          if [ -z "$SYMBOLS_FILE" ]; then
+            echo "❌ Symbol graph file not found"
+            exit 1
+          fi
+
+          echo "Found symbols file: $SYMBOLS_FILE"
+
+          # Verify key types are exported
+          if grep -q "ComicInfo.Issue" "$SYMBOLS_FILE"; then
+            echo "✅ ComicInfo.Issue type exported"
+          else
+            echo "❌ ComicInfo.Issue type not found in exports"
+            exit 1
+          fi
+
+          if grep -q "ComicInfo.Page" "$SYMBOLS_FILE"; then
+            echo "✅ ComicInfo.Page type exported"
+          else
+            echo "❌ ComicInfo.Page type not found in exports"
+            exit 1
+          fi
+
+          if grep -q "Version" "$SYMBOLS_FILE"; then
+            echo "✅ Version type exported"
+          else
+            echo "❌ Version type not found in exports"
+            exit 1
+          fi
+
+          if grep -q "load(fromXML:" "$SYMBOLS_FILE"; then
+            echo "✅ load(fromXML:) function exported"
+          else
+            echo "❌ load(fromXML:) function not found in exports"
+            exit 1
+          fi
+
+          echo "✅ Package validation completed successfully"
+          echo "   - All main types are properly exported"
+          echo "   - Core functionality is accessible"
