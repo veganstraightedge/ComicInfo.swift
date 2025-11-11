@@ -1,8 +1,6 @@
-# Scripts Directory
+# Development scripts
 
-This directory contains development scripts following the
-[Scripts To Rule Them All](https://github.com/github/scripts-to-rule-them-all)
-pattern.
+This directory contains development scripts following the [Scripts To Rule Them All](https://github.com/github/scripts-to-rule-them-all) pattern.
 
 ## Available Scripts
 
@@ -16,10 +14,10 @@ script/build [macos|ios|all] [Debug|Release]
 
 **Examples:**
 ```sh
-script/build                    # Build macOS Debug (default)
-script/build macos Release      # Build macOS Release
-script/build ios                # Build iOS Debug
-script/build all Release        # Build all platforms Release
+script/build               # Build macOS Debug (default)
+script/build macos Release # Build macOS Release
+script/build ios           # Build iOS Debug
+script/build all Release   # Build all platforms Release
 ```
 
 ### `script/run`
@@ -32,9 +30,9 @@ script/run [macos|ios] [Debug|Release]
 
 **Examples:**
 ```sh
-script/run                      # Build and run macOS Debug (default)
-script/run macos Release        # Build and run macOS Release
-script/run ios                  # Build and run iOS Debug in Simulator
+script/run               # Build and run macOS Debug (default)
+script/run macos Release # Build and run macOS Release
+script/run ios           # Build and run iOS Debug in Simulator
 ```
 
 **Behavior:**
@@ -77,9 +75,9 @@ script/cibuild
 
 1. **Development workflow:**
    ```sh
-   script/format    # Format code
-   script/test      # Run tests
-   script/run       # Build and run the app
+   script/format # Format code
+   script/test   # Run tests
+   script/run    # Build and run the app
    ```
 
 2. **Release workflow:**

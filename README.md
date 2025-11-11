@@ -89,25 +89,25 @@ print("Artist: \(issue.penciller ?? "Unknown")")
 print("Publisher: \(issue.publisher ?? "Unknown")")
 
 // Multi-value fields (comma-separated in XML)
-let genres = issue.genres  // ["Action", "Adventure", "Superhero"]
+let genres = issue.genres          // ["Action", "Adventure", "Superhero"]
 let characters = issue.characters  // ["Spider-Man", "Peter Parker"]
-let locations = issue.locations  // ["New York", "Manhattan"]
+let locations = issue.locations    // ["New York", "Manhattan"]
 
 // Boolean helpers
 if issue.isManga {
-    print("This is a manga")
-    if issue.isRightToLeft {
-        print("Read right-to-left")
-    }
+  print("This is a manga")
+  if issue.isRightToLeft {
+    print("Read right-to-left")
+  }
 }
 
 if issue.isBlackAndWhite {
-    print("Black and white comic")
+  print("Black and white comic")
 }
 
 // Publication date
 if let pubDate = issue.publicationDate {
-    print("Published: \(pubDate)")
+  print("Published: \(pubDate)")
 }
 ```
 
@@ -118,35 +118,35 @@ let issue = try ComicInfo.load(from: "ComicInfo.xml")
 
 // Check if issue has page information
 if issue.hasPages {
-    print("Total pages: \(issue.pages.count)")
-    
-    // Filter pages by type
-    let coverPages = issue.coverPages
-    let storyPages = issue.storyPages
-    
-    print("Cover pages: \(coverPages.count)")
-    print("Story pages: \(storyPages.count)")
-    
-    // Access individual pages
-    for page in issue.pages {
-        print("Page \(page.image): \(page.type)")
-        
-        if page.isCover {
-            print("  This is a cover page")
-        }
-        
-        if page.isDoublePage {
-            print("  Double-page spread")
-        }
-        
-        if let (width, height) = page.dimensions, 
-           page.dimensionsAvailable {
-            print("  Size: \(width)x\(height)")
-            if let ratio = page.aspectRatio {
-                print("  Aspect ratio: \(ratio)")
-            }
-        }
+  print("Total pages: \(issue.pages.count)")
+
+  // Filter pages by type
+  let coverPages = issue.coverPages
+  let storyPages = issue.storyPages
+
+  print("Cover pages: \(coverPages.count)")
+  print("Story pages: \(storyPages.count)")
+
+  // Access individual pages
+  for page in issue.pages {
+    print("Page \(page.image): \(page.type)")
+
+    if page.isCover {
+      print("  This is a cover page")
     }
+
+    if page.isDoublePage {
+      print("  Double-page spread")
+    }
+
+    if let (width, height) = page.dimensions,
+      page.dimensionsAvailable {
+      print("  Size: \(width)x\(height)")
+      if let ratio = page.aspectRatio {
+        print("  Aspect ratio: \(ratio)")
+      }
+    }
+  }
 }
 ```
 
@@ -174,11 +174,11 @@ let reimported = try decoder.decode(ComicInfo.Issue.self, from: jsonData)
 
 ```swift
 let issue = ComicInfo.Issue(
-    title: "My Comic",
-    series: "My Series", 
-    number: "1",
-    year: 2023,
-    writer: "John Doe"
+  title: "My Comic",
+  series: "My Series",
+  number: "1",
+  year: 2023,
+  writer: "John Doe"
 )
 
 // Export to XML string
@@ -187,9 +187,9 @@ print(xmlString)
 
 // Save to file
 try xmlString.write(
-    to: URL(fileURLWithPath: "ComicInfo.xml"),
-    atomically: true,
-    encoding: .utf8
+  to: URL(fileURLWithPath: "ComicInfo.xml"),
+  atomically: true,
+  encoding: .utf8
 )
 
 // Round-trip: XML -> Issue -> XML
@@ -201,18 +201,18 @@ let xmlString2 = try reimported.toXMLString()
 
 ```swift
 do {
-    let issue = try ComicInfo.load(from: "ComicInfo.xml")
-    print("Loaded: \(issue.title ?? "Unknown")")
+  let issue = try ComicInfo.load(from: "ComicInfo.xml")
+  print("Loaded: \(issue.title ?? "Unknown")")
 } catch ComicInfoError.fileError(let message) {
-    print("File error: \(message)")
+  print("File error: \(message)")
 } catch ComicInfoError.parseError(let message) {
-    print("Parse error: \(message)")
+  print("Parse error: \(message)")
 } catch ComicInfoError.invalidEnum(let field, let value, let validValues) {
-    print("Invalid \(field): '\(value)'. Valid values: \(validValues)")
+  print("Invalid \(field): '\(value)'. Valid values: \(validValues)")
 } catch ComicInfoError.rangeError(let field, let value, let min, let max) {
-    print("\(field) value '\(value)' out of range (\(min)..\(max))")
+  print("\(field) value '\(value)' out of range (\(min)..\(max))")
 } catch {
-    print("Other error: \(error)")
+  print("Other error: \(error)")
 }
 ```
 
@@ -223,43 +223,43 @@ import ComicInfo
 
 // Create a new comic issue
 let issue = ComicInfo.Issue(
-    ageRating: .teen,
-    charactersRawData: "Spider-Man, Peter Parker, Mary Jane Watson",
-    colorist: "Steve Oliff",
-    communityRating: 4.5,
-    count: 100,
-    coverArtist: "Todd McFarlane",
-    day: 15,
-    genreRawData: "Superhero, Action, Adventure",
-    inker: "Todd McFarlane", 
-    languageISO: "en",
-    letterer: "Rick Parker",
-    locationsRawData: "New York City, Manhattan",
-    manga: .no,
-    month: 8,
-    notes: "First appearance of Venom",
-    number: "300",
-    pageCount: 22,
-    penciller: "Todd McFarlane",
-    publisher: "Marvel Comics",
-    series: "The Amazing Spider-Man",
-    summary: "Spider-Man faces his greatest challenge yet...",
-    title: "The Amazing Spider-Man",
-    volume: 1,
-    writer: "David Michelinie",
-    year: 1988,
-    pages: [
-        ComicInfo.Page(image: 0, type: .frontCover),
-        ComicInfo.Page(image: 1, type: .story),
-        ComicInfo.Page(image: 2, type: .story),
-        // ... more pages
-        ComicInfo.Page(image: 21, type: .backCover)
-    ]
+  ageRating: .teen,
+  colorist: "Steve Oliff",
+  charactersRawData: "Spider-Man, Peter Parker, Mary Jane Watson",
+  communityRating: 4.5,
+  count: 100,
+  coverArtist: "Todd McFarlane",
+  day: 15,
+  genreRawData: "Superhero, Action, Adventure",
+  inker: "Todd McFarlane",
+  languageISO: "en",
+  letterer: "Rick Parker",
+  locationsRawData: "New York City, Manhattan",
+  manga: .no,
+  month: 8,
+  notes: "First appearance of Venom",
+  number: "300",
+  pageCount: 22,
+  penciller: "Todd McFarlane",
+  publisher: "Marvel Comics",
+  series: "The Amazing Spider-Man",
+  summary: "Spider-Man faces his greatest challenge yet...",
+  title: "The Amazing Spider-Man",
+  volume: 1,
+  writer: "David Michelinie",
+  year: 1988,
+  pages: [
+    ComicInfo.Page(image: 0, type: .frontCover),
+    ComicInfo.Page(image: 1, type: .story),
+    ComicInfo.Page(image: 2, type: .story),
+    // ... more pages
+    ComicInfo.Page(image: 21, type: .backCover)
+  ]
 )
 
 // Export to XML
 let xml = try issue.toXMLString()
-try xml.write(to: URL(fileURLWithPath: "MyComic.xml"), 
+try xml.write(to: URL(fileURLWithPath: "MyComic.xml"),
               atomically: true, encoding: .utf8)
 ```
 
@@ -272,7 +272,7 @@ The main namespace containing all types and loading methods.
 #### Static Methods
 
 - `load(from: String)` - Smart load from file path or XML string
-- `load(from: URL)` - Load from file URL  
+- `load(from: URL)` - Load from file URL
 - `load(from: URL) async` - Async load from URL
 - `load(fromXML: String)` - Load from XML string
 
@@ -294,7 +294,7 @@ Represents a comic book issue with all metadata.
 
 **Creator Fields:**
 - `writer: String?` - Writer(s)
-- `penciller: String?` - Penciller(s) 
+- `penciller: String?` - Penciller(s)
 - `inker: String?` - Inker(s)
 - `colorist: String?` - Colorist(s)
 - `letterer: String?` - Letterer(s)
@@ -320,7 +320,7 @@ Represents a comic book issue with all metadata.
 **Multi-value Fields (String):**
 - `charactersRawData: String?` - Characters (comma-separated)
 - `teamsRawData: String?` - Teams (comma-separated)
-- `locationsRawData: String?` - Locations (comma-separated) 
+- `locationsRawData: String?` - Locations (comma-separated)
 - `genreRawData: String?` - Genres (comma-separated)
 - `webRawData: String?` - Web URLs (space-separated)
 
@@ -348,7 +348,7 @@ Represents a comic book issue with all metadata.
 - `isBlackAndWhite: Bool` - True if black and white
 - `hasPages: Bool` - True if pages array is not empty
 - `coverPages: [Page]` - Filter to cover pages only
-- `storyPages: [Page]` - Filter to story pages only  
+- `storyPages: [Page]` - Filter to story pages only
 - `publicationDate: Date?` - Computed publication date
 
 #### Methods
@@ -386,16 +386,48 @@ Represents a single page in a comic.
 ### Enums
 
 #### AgeRating
-- `.unknown`, `.adultsOnly18Plus`, `.earlyChildhood`, `.everyone`, `.everyone10Plus`, `.g`, `.kidsToAdults`, `.m`, `.ma15Plus`, `.mature17Plus`, `.pg`, `.r18Plus`, `.ratingPending`, `.teen`, `.x18Plus`
+- `.unknown`
+- `.adultsOnly18Plus`
+- `.earlyChildhood`
+- `.everyone`
+- `.everyone10Plus`
+- `.g`
+- `.kidsToAdults`
+- `.m`
+- `.ma15Plus`
+- `.mature17Plus`
+- `.pg`
+- `.r18Plus`
+- `.ratingPending`
+- `.teen`
+- `.x18Plus`
 
-#### Manga  
-- `.unknown`, `.no`, `.yes`, `.yesAndRightToLeft`
+#### Manga
+
+- `.unknown`
+- `.no`
+- `.yes`
+- `.yesAndRightToLeft`
 
 #### BlackAndWhite
-- `.unknown`, `.no`, `.yes`
+
+- `.unknown`
+- `.no`
+- `.yes`
 
 #### PageType
-- `.frontCover`, `.innerCover`, `.roundup`, `.story`, `.advertisement`, `.editorial`, `.letters`, `.preview`, `.backCover`, `.other`, `.deleted`
+
+- `.frontCover`
+- `.innerCover`
+- `.roundup`
+- `.story`
+- `.advertisement`
+- `.editorial`
+- `.letters`
+- `.preview`
+- `.backCover`
+- `.other`
+- `.deleted`
 
 ### Error Types
 
@@ -405,7 +437,7 @@ All errors conform to `ComicInfoError` enum:
 - `.parseError(String)` - XML parsing errors
 - `.invalidEnum(field:value:validValues:)` - Invalid enum values
 - `.rangeError(field:value:min:max:)` - Numeric range violations
-- `.typeCoercionError(field:value:expectedType:)` - Type conversion errors  
+- `.typeCoercionError(field:value:expectedType:)` - Type conversion errors
 - `.schemaError(String)` - Schema validation errors
 
 ## Platform Support
@@ -490,8 +522,8 @@ print(comic.isRightToLeft)   // false
 print(comic.isBlackAndWhite) // false
 
 // Page information
-print(comic.hasPages)     // true
-print(comic.pages.count)  // 12
+print(comic.hasPages)    // true
+print(comic.pages.count) // 12
 
 // Get specific page types
 let covers = comic.coverPages
@@ -589,7 +621,18 @@ This package fully supports the ComicInfo v2.0 XSD schema with all field types:
 
 ### Complex Fields
 - Pages: Array of `ComicPage` objects with full attribute support
-- Page types: `.frontCover`, `.backCover`, `.innerCover`, `.roundup`, `.story`, `.advertisement`, `.editorial`, `.letters`, `.preview`, `.other`, `.deleted`
+- Page types:
+  - `.frontCover`
+  - `.backCover`
+  - `.innerCover`
+  - `.roundup`
+  - `.story`
+  - `.advertisement`
+  - `.editorial`
+  - `.letters`
+  - `.preview`
+  - `.other`
+  - `.deleted`
 
 ## Development
 
