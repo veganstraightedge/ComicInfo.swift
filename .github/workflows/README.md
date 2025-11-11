@@ -1,6 +1,6 @@
 # GitHub Actions CI Configuration
 
-This directory contains the Continuous Integration (CI) configuration for the ComicInfo Swift package.
+This directory contains the Continuous Integration (CI) configuration for the ComicInfo.swift package.
 
 ## Workflows
 

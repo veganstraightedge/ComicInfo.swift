@@ -1,4 +1,4 @@
-# ComicInfo Swift Package
+# ComicInfo.swift
 
 A Swift package for reading and writing ComicInfo.xml files, following ComicInfo schema specifications from the [Anansi Project](https://github.com/anansi-project/comicinfo).
 
