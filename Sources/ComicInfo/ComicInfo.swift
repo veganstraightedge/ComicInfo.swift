@@ -429,6 +429,7 @@ public enum ComicInfo {
     public let webRawData: String?
     public let writer: String?
     public let year: Int?
+    public let pages: [Page]
 
     public init(
       ageRating: AgeRating? = nil,
@@ -471,7 +472,8 @@ public enum ComicInfo {
       volume: Int? = nil,
       webRawData: String? = nil,
       writer: String? = nil,
-      year: Int? = nil
+      year: Int? = nil,
+      pages: [Page] = []
     ) {
       self.ageRating = ageRating
       self.alternateCount = alternateCount
@@ -514,6 +516,7 @@ public enum ComicInfo {
       self.webRawData = webRawData
       self.writer = writer
       self.year = year
+      self.pages = pages
     }
 
     /// Array of characters split from comma-separated string.
@@ -542,6 +545,21 @@ public enum ComicInfo {
         return []
       }
       return web.split(separator: " ").compactMap { URL(string: String($0)) }
+    }
+
+    /// True if this issue has pages.
+    public var hasPages: Bool {
+      return !pages.isEmpty
+    }
+
+    /// Get only cover pages from the pages array.
+    public var coverPages: [Page] {
+      return pages.filter { $0.isCover }
+    }
+
+    /// Get only story pages from the pages array.
+    public var storyPages: [Page] {
+      return pages.filter { $0.isStory }
     }
 
     /// Split comma-separated string into array of trimmed strings.
@@ -633,6 +651,9 @@ public enum ComicInfo {
         try ComicInfo.validateYear($0)
       }
 
+      // Parse Pages
+      let pages = try parsePagesElement(root)
+
       return Issue(
         ageRating: ageRating,
         alternateCount: alternateCount,
@@ -674,7 +695,75 @@ public enum ComicInfo {
         volume: volume,
         webRawData: webRawData,
         writer: writer,
-        year: year)
+        year: year,
+        pages: pages)
+    }
+
+    /// Parse Pages element from XML root and return array of Page objects.
+    private static func parsePagesElement(_ root: XMLElement) throws -> [Page] {
+      guard let pagesElement = root.elements(forName: "Pages").first else {
+        return []
+      }
+
+      let pageElements = pagesElement.elements(forName: "Page")
+      var pages: [Page] = []
+
+      for pageElement in pageElements {
+        // Required attribute: Image
+        guard let imageAttr = pageElement.attribute(forName: "Image")?.stringValue else {
+          throw ComicInfoError.schemaError("Page element missing required Image attribute")
+        }
+        guard let image = Int(imageAttr) else {
+          throw ComicInfoError.typeCoercionError(field: "Page.Image", value: imageAttr, expectedType: "Int")
+        }
+
+        // Optional attributes with defaults
+        let typeValue = pageElement.attribute(forName: "Type")?.stringValue ?? "Story"
+        let type = try PageType.validated(from: typeValue)
+
+        let doublePageValue = pageElement.attribute(forName: "DoublePage")?.stringValue ?? "false"
+        let doublePage = parseBoolean(doublePageValue, field: "DoublePage")
+
+        let imageSizeValue = pageElement.attribute(forName: "ImageSize")?.stringValue ?? "0"
+        let imageSize = Int(imageSizeValue) ?? 0
+
+        let key = pageElement.attribute(forName: "Key")?.stringValue ?? ""
+        let bookmark = pageElement.attribute(forName: "Bookmark")?.stringValue ?? ""
+
+        let imageWidthValue = pageElement.attribute(forName: "ImageWidth")?.stringValue ?? "-1"
+        let imageWidth = Int(imageWidthValue) ?? -1
+
+        let imageHeightValue = pageElement.attribute(forName: "ImageHeight")?.stringValue ?? "-1"
+        let imageHeight = Int(imageHeightValue) ?? -1
+
+        let page = Page(
+          image: image,
+          type: type,
+          doublePage: doublePage,
+          imageSize: imageSize,
+          key: key,
+          bookmark: bookmark,
+          imageWidth: imageWidth,
+          imageHeight: imageHeight
+        )
+
+        pages.append(page)
+      }
+
+      return pages
+    }
+
+    /// Parse boolean value from string for page attributes.
+    private static func parseBoolean(_ value: String, field: String) -> Bool {
+      switch value.lowercased() {
+      case "true", "1", "yes":
+        return true
+      case "false", "0", "no", "":
+        return false
+      default:
+        // Non-throwing, return false for invalid values
+        return false
+      }
     }
   }
 }

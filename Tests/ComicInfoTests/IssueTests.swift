@@ -151,13 +151,71 @@ struct IssueTests {
     let issue = try loadFixture("valid_complete")
 
     // Test raw data (string) access
-    #expect(issue.webRawData == "https://marvel.com/comics/issue/12345 https://comicvine.gamespot.com/amazing-spider-man-1/4000-67890/")
+    #expect(
+      issue.webRawData
+        == "https://marvel.com/comics/issue/12345 https://comicvine.gamespot.com/amazing-spider-man-1/4000-67890/")
 
     // Test array access (split by whitespace, converted to URL)
     let webUrlsArray = issue.webUrls
-    #expect(webUrlsArray == [
-      URL(string: "https://marvel.com/comics/issue/12345")!,
-      URL(string: "https://comicvine.gamespot.com/amazing-spider-man-1/4000-67890/")!
-    ])
+    #expect(
+      webUrlsArray == [
+        URL(string: "https://marvel.com/comics/issue/12345")!,
+        URL(string: "https://comicvine.gamespot.com/amazing-spider-man-1/4000-67890/")!,
+      ])
+  }
+
+  @Test func testPagesArray() throws {
+    // Test parsing of Pages element with Page objects
+    let issue = try loadFixture("valid_complete")
+
+    #expect(issue.pages.count == 12)
+    #expect(issue.hasPages == true)
+
+    // Test first page (cover)
+    let firstPage = issue.pages[0]
+    #expect(firstPage.image == 0)
+    #expect(firstPage.type == .frontCover)
+    #expect(firstPage.doublePage == false)
+    #expect(firstPage.imageSize == 1_024_000)
+    #expect(firstPage.imageWidth == 1600)
+    #expect(firstPage.imageHeight == 2400)
+
+    // Test double page spread
+    let doublePage = issue.pages[3]
+    #expect(doublePage.image == 3)
+    #expect(doublePage.type == .story)
+    #expect(doublePage.doublePage == true)
+    #expect(doublePage.imageWidth == 3200)
+  }
+
+  @Test func testCoverPagesFilter() throws {
+    // Test coverPages computed property
+    let issue = try loadFixture("valid_complete")
+    let coverPages = issue.coverPages
+
+    #expect(coverPages.count == 3)  // Front, Inner, Back covers
+    #expect(coverPages.allSatisfy { $0.isCover })
+    #expect(coverPages[0].type == .frontCover)
+    #expect(coverPages[1].type == .innerCover)
+    #expect(coverPages[2].type == .backCover)
+  }
+
+  @Test func testStoryPagesFilter() throws {
+    // Test storyPages computed property
+    let issue = try loadFixture("valid_complete")
+    let storyPages = issue.storyPages
+
+    #expect(storyPages.count == 6)  // Pages 2, 3, 4, 5, 7, 8 are story pages
+    #expect(storyPages.allSatisfy { $0.isStory })
+  }
+
+  @Test func testMinimalIssueHasNoPages() throws {
+    // Test that minimal fixture has no pages
+    let issue = try loadFixture("valid_minimal")
+
+    #expect(issue.pages.isEmpty)
+    #expect(issue.hasPages == false)
+    #expect(issue.coverPages.isEmpty)
+    #expect(issue.storyPages.isEmpty)
   }
 }
