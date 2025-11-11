@@ -1,9 +1,9 @@
 # Agent
 
-This document tracks the development process, decisions, and progress of porting the ComicInfo Ruby gem to a Swift package.
-
+This document describes the development process of the ComicInfo.swift package.
 
 ## Communication style
+
 - Be terse, not verbose
 - Say as little as possible
 - Don't write a long summary at the end
@@ -50,17 +50,7 @@ Sources/ComicInfo/
 └── Version.swift   # Version constant
 ```
 
-## Key Ruby Features to Port
-
-### Core Functionality
-- [ ] XML parsing from file paths or strings
-- [ ] Complete ComicInfo v2.0 schema support
-- [ ] Custom error handling with detailed messages
-- [ ] Enum validation and type coercion
-- [ ] Multi-value field support (string and array access)
-- [ ] Page object hierarchy with type checking
-
-### Ruby-specific Features → Swift Equivalents
+## Ruby-specific Features → Swift Equivalents
 - `ComicInfo.load(path_or_xml)` → `ComicInfo.load(from:)` and `ComicInfo.load(fromXML:)`
 - Ruby `attr_reader` → Swift computed properties
 - Ruby arrays/strings for multi-values → Swift arrays with convenience string properties
@@ -102,39 +92,6 @@ end
 }
 ```
 
-## Development Phases
-
-### Phase 1: Foundation ✅
-- [x] Create README.md
-- [x] Create AGENT.md
-- [x] Create TODO.md
-- [x] Set up basic project structure
-- [x] Copy fixture files
-
-### Phase 2: Core Types
-- [ ] Define error types (`ComicInfoError`)
-- [ ] Define enums (`AgeRating`, `Manga`, `BlackAndWhite`, `PageType`)
-- [ ] Create basic `ComicInfo.Issue` structure
-- [ ] Create basic `ComicInfo.Page` structure
-
-### Phase 3: XML Parsing
-- [ ] Implement basic XML loading from string
-- [ ] Implement file loading
-- [ ] Add basic field parsing (title, series, number)
-- [ ] Add comprehensive field parsing
-
-### Phase 4: Advanced Features
-- [ ] Multi-value field support
-- [ ] Page array parsing
-- [ ] Enum validation and error handling
-- [ ] Type coercion and validation
-
-### Phase 5: API Completeness
-- [ ] Convenience methods (`isManga`, `isRightToLeft`, etc.)
-- [ ] Page type filtering (`coverPages`, `storyPages`)
-- [ ] Array access for multi-value fields
-- [ ] Export functionality (JSON, YAML, ComicInfo.xml)
-
 ## Design Decisions
 
 ### Swift Naming Conventions
@@ -165,7 +122,7 @@ public enum ComicInfo {
 **Why nested types:**
 - Matches Ruby module structure exactly: `ComicInfo::Issue` → `ComicInfo.Issue`
 - Solves `Testing.Issue` name collision naturally
-- Issue is not a standalone type, it's part of ComicInfo namespace
+- Issue is not a standalone type, it's part of ComicInfo `namespace`
 - Swift doesn't support reopening types to add nested types (no extensions with nested types)
 - Therefore: ALL nested types must be in the same file as parent
 
@@ -222,24 +179,6 @@ ComicInfo.load(fromXML:) → Issue.load(fromXML:) → Issue(...)
 - Signals intent: "this is a namespace, not meant to be instantiated"
 - Common pattern in Swift (e.g., CommandLine)
 
-## Progress Tracking
-
-### Completed Features
-- [x] Project setup with Swift 6.2
-- [x] README.md documentation
-- [x] AGENT.md development log
-
-### Current Focus
-- [x] TODO.md task tracking
-- [x] Fixture file setup
-- [ ] Basic error type definitions
-
-### Next Steps
-- [x] Create comprehensive TODO.md
-- [x] Set up fixture files
-- [ ] Start with basic error types
-- [ ] Implement first failing test for minimal XML loading
-
 ## Common Mistakes to Avoid
 
 ### DON'T
@@ -282,37 +221,10 @@ public enum ComicInfo {  // Can't instantiate
 }
 ```
 
-## Progress Tracking
-
-### Completed ✅
-- [x] Project structure and organization
-- [x] Nested Issue inside ComicInfo enum
-- [x] Issue.load(fromXML:) delegation pattern
-- [x] Basic string fields (title, series, number, summary, notes)
-- [x] Integer fields (count, volume)
-- [x] Creator fields (writer, penciller, inker, colorist, letterer, coverArtist, editor, translator)
-- [x] Test fixture loading helper
-- [x] Swift format integration
-
-### In Progress 🚧
-- [ ] Remaining string fields (publisher, imprint, format, etc.)
-- [ ] Date fields (year, month, day)
-- [ ] Enum fields (ageRating, manga, blackAndWhite)
-- [ ] Decimal fields (communityRating)
-- [ ] Multi-value fields (characters, teams, locations, etc.)
-- [ ] Page support
-- [ ] Error handling (proper error types)
-
-### Future 📋
-- [ ] File loading (not just XML strings)
-- [ ] Convenience methods (isManga, isRightToLeft, etc.)
-- [ ] Page filtering methods
-- [ ] Export functionality
-
 ## Resources
 
 - [Swift Testing Documentation](https://developer.apple.com/documentation/testing)
 - [Swift 6.2 Language Guide](https://docs.swift.org/swift-book/)
 - [Foundation XMLParser](https://developer.apple.com/documentation/foundation/xmlparser)
 - [ComicInfo Schema Specification](https://github.com/anansi-project/comicinfo)
-- [Ruby Source Code](../comicinfo-rb/)
+- [Ruby Source Code](https://github.com/veganstraightedge/comicinfo)
