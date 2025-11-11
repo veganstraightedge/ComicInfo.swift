@@ -463,4 +463,66 @@ struct IssueTests {
     #expect(decodedIssue.series == originalIssue.series)
     #expect(decodedIssue.year == originalIssue.year)
   }
+
+  @Test func testXMLExport() throws {
+    // Test XML export functionality
+    let issue = try loadFixture("valid_complete")
+
+    // Test XML string export
+    let xmlString = try issue.toXMLString()
+    #expect(!xmlString.isEmpty)
+    #expect(xmlString.contains("<ComicInfo"))
+    #expect(xmlString.contains("</ComicInfo>"))
+    #expect(xmlString.contains("<Title>The Amazing Spider-Man</Title>"))
+    #expect(xmlString.contains("<Series>The Amazing Spider-Man</Series>"))
+    #expect(xmlString.contains("<Writer>Dan Slott, Christos Gage</Writer>"))
+    #expect(xmlString.contains("<Pages>"))
+
+    // Test round trip: XML -> Issue -> XML
+    let reimportedIssue = try ComicInfo.load(fromXML: xmlString)
+    #expect(reimportedIssue.title == issue.title)
+    #expect(reimportedIssue.series == issue.series)
+    #expect(reimportedIssue.writer == issue.writer)
+    #expect(reimportedIssue.pages.count == issue.pages.count)
+  }
+
+  @Test func testXMLExportMinimal() throws {
+    // Test XML export with minimal issue
+    let issue = ComicInfo.Issue(
+      number: "1",
+      series: "Test Series",
+      title: "Test Issue",
+      year: 2023
+    )
+
+    let xmlString = try issue.toXMLString()
+    #expect(xmlString.contains("<Title>Test Issue</Title>"))
+    #expect(xmlString.contains("<Series>Test Series</Series>"))
+    #expect(xmlString.contains("<Number>1</Number>"))
+    #expect(xmlString.contains("<Year>2023</Year>"))
+
+    // Should not contain nil fields
+    #expect(!xmlString.contains("<Writer>"))
+    #expect(!xmlString.contains("<Publisher>"))
+  }
+
+  @Test func testXMLExportUnicode() throws {
+    // Test XML export with Unicode characters
+    let issue = ComicInfo.Issue(
+      charactersRawData: "スパイダーマン, ピーター・パーカー",
+      title: "スパイダーマン 🕷️",
+      writer: "丹・スロット"
+    )
+
+    let xmlString = try issue.toXMLString()
+    #expect(xmlString.contains("スパイダーマン 🕷️"))
+    #expect(xmlString.contains("丹・スロット"))
+    #expect(xmlString.contains("スパイダーマン, ピーター・パーカー"))
+
+    // Test round trip with Unicode
+    let reimported = try ComicInfo.load(fromXML: xmlString)
+    #expect(reimported.title == issue.title)
+    #expect(reimported.writer == issue.writer)
+    #expect(reimported.charactersRawData == issue.charactersRawData)
+  }
 }

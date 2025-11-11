@@ -2,24 +2,55 @@
 // ComicInfo.swift
 // ComicInfo
 //
+// A Swift package for reading and writing ComicInfo.xml metadata files.
+//
+// This package provides a complete implementation of the ComicInfo v2.0 schema
+// for parsing and generating comic book metadata XML files.
+//
 
 import Foundation
 
-/// String extension for handling empty values
+/// String extension for handling empty values in ComicInfo parsing
 extension String {
   /// Returns nil if the string is empty, otherwise returns self
+  /// Used internally to convert empty XML text content to nil values
   fileprivate var nilIfEmpty: String? {
     return self.isEmpty ? nil : self
   }
 }
 
 /// Errors that can occur during ComicInfo parsing and processing.
+///
+/// All ComicInfo operations throw errors conforming to this enum, providing
+/// detailed information about what went wrong and how to fix it.
+///
+/// ## Usage
+/// ```swift
+/// do {
+///   let issue = try ComicInfo.load(from: "ComicInfo.xml")
+/// } catch ComicInfoError.fileError(let message) {
+///   print("File error: \(message)")
+/// } catch ComicInfoError.parseError(let message) {
+///   print("Parse error: \(message)")
+/// }
+/// ```
 public enum ComicInfoError: Error, Equatable {
+  /// XML parsing failed due to malformed XML or missing required elements
   case parseError(String)
+
+  /// File system error occurred (file not found, permission denied, etc.)
   case fileError(String)
+
+  /// Invalid value for an enum field with list of valid values
   case invalidEnum(field: String, value: String, validValues: [String])
+
+  /// Numeric value outside allowed range
   case rangeError(field: String, value: String, min: String, max: String)
+
+  /// Cannot convert string value to expected type (Int, Double, etc.)
   case typeCoercionError(field: String, value: String, expectedType: String)
+
+  /// ComicInfo schema validation error
   case schemaError(String)
 }
 
@@ -138,7 +169,16 @@ public enum ComicInfo {
     }
   }
 
-  /// Age rating enum.
+  /// Age rating classification for content appropriateness.
+  ///
+  /// Provides standardized age ratings compatible with various rating systems
+  /// including ESRB, PEGI, and regional classification standards.
+  ///
+  /// ## Common Values
+  /// - `.everyone`: Suitable for all ages
+  /// - `.teen`: 13+ content
+  /// - `.mature17Plus`: 17+ mature content
+  /// - `.adultsOnly18Plus`: 18+ adult content only
   public enum AgeRating: String, CaseIterable, Equatable, Codable {
     case unknown = "Unknown"
     case adultsOnly18Plus = "Adults Only 18+"
@@ -182,7 +222,15 @@ public enum ComicInfo {
     }
   }
 
-  /// Black and white enum.
+  /// Color format designation for the comic content.
+  ///
+  /// Indicates whether the comic is published in color or black & white.
+  /// Used for filtering and display preferences in reading applications.
+  ///
+  /// ## Values
+  /// - `.unknown`: Color format not specified
+  /// - `.no`: Full color comic
+  /// - `.yes`: Black and white comic
   public enum BlackAndWhite: String, CaseIterable, Equatable, Codable {
     case unknown = "Unknown"
     case no = "No"
@@ -276,13 +324,28 @@ public enum ComicInfo {
 
   /// Represents a single page in a comic book with metadata.
   public struct Page: Equatable, Hashable, Codable {
+    /// Page number or index (0-based)
     public let image: Int
+
+    /// Type classification of this page
     public let type: PageType
+
+    /// True if this is a double-page spread
     public let doublePage: Bool
+
+    /// File size in bytes (0 if unknown)
     public let imageSize: Int
+
+    /// Optional key or identifier for the page
     public let key: String
+
+    /// Bookmark text or annotation for the page
     public let bookmark: String
+
+    /// Image width in pixels (-1 if unknown)
     public let imageWidth: Int
+
+    /// Image height in pixels (-1 if unknown)
     public let imageHeight: Int
 
     public init(
@@ -352,11 +415,50 @@ public enum ComicInfo {
   }
 
   /// Load ComicInfo from an XML string.
+  ///
+  /// Parses ComicInfo XML content directly from a string, validating
+  /// all fields according to the ComicInfo v2.0 schema.
+  ///
+  /// ## Usage
+  /// ```swift
+  /// let xml = """
+  /// <ComicInfo>
+  ///   <Title>Amazing Spider-Man</Title>
+  ///   <Series>Amazing Spider-Man</Series>
+  ///   <Number>1</Number>
+  /// </ComicInfo>
+  /// """
+  /// let issue = try ComicInfo.load(fromXML: xml)
+  /// ```
+  ///
+  /// - Parameter xmlString: Valid ComicInfo XML content
+  /// - Returns: Parsed Issue with all metadata
+  /// - Throws: ComicInfoError.parseError for invalid XML or schema violations
   public static func load(fromXML xmlString: String) throws -> Issue {
     return try Issue.load(fromXML: xmlString)
   }
 
   /// Load ComicInfo from a file path or XML string (smart detection).
+  ///
+  /// Automatically detects whether the input is a file path or XML content
+  /// based on the string format, then loads appropriately.
+  ///
+  /// ## Detection Logic
+  /// - Strings starting with `<` are treated as XML content
+  /// - All other strings are treated as file paths
+  ///
+  /// ## Usage
+  /// ```swift
+  /// // Load from file path
+  /// let issue1 = try ComicInfo.load(from: "/path/to/ComicInfo.xml")
+  ///
+  /// // Load from XML string
+  /// let issue2 = try ComicInfo.load(from: "<ComicInfo><Title>Test</Title></ComicInfo>")
+  /// ```
+  ///
+  /// - Parameter input: File path or XML string
+  /// - Returns: Parsed Issue with all metadata
+  /// - Throws: ComicInfoError for file access or parsing errors
   public static func load(from input: String) throws -> Issue {
     guard !input.isEmpty else {
       throw ComicInfoError.parseError("Input cannot be nil or empty")
@@ -369,6 +471,19 @@ public enum ComicInfo {
   }
 
   /// Load ComicInfo from a URL.
+  ///
+  /// Synchronously loads and parses ComicInfo XML from a file URL.
+  /// The file content is read as UTF-8 encoded text.
+  ///
+  /// ## Usage
+  /// ```swift
+  /// let url = URL(fileURLWithPath: "/path/to/ComicInfo.xml")
+  /// let issue = try ComicInfo.load(from: url)
+  /// ```
+  ///
+  /// - Parameter url: File URL pointing to ComicInfo.xml
+  /// - Returns: Parsed Issue with all metadata
+  /// - Throws: ComicInfoError.fileError for file access issues, parseError for XML issues
   public static func load(from url: URL) throws -> Issue {
     do {
       let xmlContent = try String(contentsOf: url, encoding: .utf8)
@@ -382,6 +497,19 @@ public enum ComicInfo {
   }
 
   /// Load ComicInfo from a URL asynchronously.
+  ///
+  /// Asynchronously loads and parses ComicInfo XML from any URL using URLSession.
+  /// Supports both local file URLs and remote HTTP URLs.
+  ///
+  /// ## Usage
+  /// ```swift
+  /// let url = URL(string: "https://example.com/ComicInfo.xml")!
+  /// let issue = try await ComicInfo.load(from: url)
+  /// ```
+  ///
+  /// - Parameter url: Local file URL or remote HTTP/HTTPS URL
+  /// - Returns: Parsed Issue with all metadata
+  /// - Throws: ComicInfoError.fileError for network/file issues, parseError for XML issues
   @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
   public static func load(from url: URL) async throws -> Issue {
     do {
@@ -744,6 +872,212 @@ public enum ComicInfo {
         throw ComicInfoError.parseError("Failed to convert JSON data to string")
       }
       return string
+    }
+
+    /// Export to XML String in ComicInfo format.
+    ///
+    /// Generates a complete ComicInfo.xml document with proper schema attributes
+    /// and all non-nil properties. The output is compatible with ComicRack and
+    /// other applications that support the ComicInfo standard.
+    ///
+    /// ## Usage
+    /// ```swift
+    /// let issue = ComicInfo.Issue(title: "My Comic", series: "My Series")
+    /// let xmlString = try issue.toXMLString()
+    /// try xmlString.write(to: URL(fileURLWithPath: "ComicInfo.xml"),
+    ///                    atomically: true, encoding: .utf8)
+    /// ```
+    ///
+    /// ## Round-trip Support
+    /// The generated XML can be parsed back into an Issue:
+    /// ```swift
+    /// let xml = try issue.toXMLString()
+    /// let roundTrip = try ComicInfo.load(fromXML: xml)
+    /// ```
+    ///
+    /// - Returns: XML String representation of the Issue
+    /// - Throws: ComicInfoError.parseError if XML generation fails
+    public func toXMLString() throws -> String {
+      let document = XMLDocument(kind: .document)
+      document.version = "1.0"
+      document.characterEncoding = "utf-8"
+
+      let root = XMLElement(name: "ComicInfo")
+      document.setRootElement(root)
+
+      // Add schema attributes
+      root.addAttribute(
+        XMLNode.attribute(withName: "xmlns:xsi", stringValue: "http://www.w3.org/2001/XMLSchema-instance") as! XMLNode)
+      root.addAttribute(
+        XMLNode.attribute(withName: "xmlns:xsd", stringValue: "http://www.w3.org/2001/XMLSchema") as! XMLNode)
+
+      // Add all properties in alphabetical order (matching ComicInfo standard)
+      if let ageRating = self.ageRating {
+        root.addChild(XMLElement(name: "AgeRating", stringValue: ageRating.stringValue))
+      }
+      if let alternateCount = self.alternateCount {
+        root.addChild(XMLElement(name: "AlternateCount", stringValue: String(alternateCount)))
+      }
+      if let alternateNumber = self.alternateNumber {
+        root.addChild(XMLElement(name: "AlternateNumber", stringValue: alternateNumber))
+      }
+      if let alternateSeries = self.alternateSeries {
+        root.addChild(XMLElement(name: "AlternateSeries", stringValue: alternateSeries))
+      }
+      if let blackAndWhite = self.blackAndWhite {
+        root.addChild(XMLElement(name: "BlackAndWhite", stringValue: blackAndWhite.stringValue))
+      }
+      if let charactersRawData = self.charactersRawData {
+        root.addChild(XMLElement(name: "Characters", stringValue: charactersRawData))
+      }
+      if let colorist = self.colorist {
+        root.addChild(XMLElement(name: "Colorist", stringValue: colorist))
+      }
+      if let communityRating = self.communityRating {
+        root.addChild(XMLElement(name: "CommunityRating", stringValue: String(communityRating)))
+      }
+      if let count = self.count {
+        root.addChild(XMLElement(name: "Count", stringValue: String(count)))
+      }
+      if let coverArtist = self.coverArtist {
+        root.addChild(XMLElement(name: "CoverArtist", stringValue: coverArtist))
+      }
+      if let day = self.day {
+        root.addChild(XMLElement(name: "Day", stringValue: String(day)))
+      }
+      if let editor = self.editor {
+        root.addChild(XMLElement(name: "Editor", stringValue: editor))
+      }
+      if let format = self.format {
+        root.addChild(XMLElement(name: "Format", stringValue: format))
+      }
+      if let genreRawData = self.genreRawData {
+        root.addChild(XMLElement(name: "Genre", stringValue: genreRawData))
+      }
+      if let imprint = self.imprint {
+        root.addChild(XMLElement(name: "Imprint", stringValue: imprint))
+      }
+      if let inker = self.inker {
+        root.addChild(XMLElement(name: "Inker", stringValue: inker))
+      }
+      if let languageISO = self.languageISO {
+        root.addChild(XMLElement(name: "LanguageISO", stringValue: languageISO))
+      }
+      if let letterer = self.letterer {
+        root.addChild(XMLElement(name: "Letterer", stringValue: letterer))
+      }
+      if let locationsRawData = self.locationsRawData {
+        root.addChild(XMLElement(name: "Locations", stringValue: locationsRawData))
+      }
+      if let mainCharacterOrTeam = self.mainCharacterOrTeam {
+        root.addChild(XMLElement(name: "MainCharacterOrTeam", stringValue: mainCharacterOrTeam))
+      }
+      if let manga = self.manga {
+        root.addChild(XMLElement(name: "Manga", stringValue: manga.stringValue))
+      }
+      if let month = self.month {
+        root.addChild(XMLElement(name: "Month", stringValue: String(month)))
+      }
+      if let notes = self.notes {
+        root.addChild(XMLElement(name: "Notes", stringValue: notes))
+      }
+      if let number = self.number {
+        root.addChild(XMLElement(name: "Number", stringValue: number))
+      }
+      if let pageCount = self.pageCount {
+        root.addChild(XMLElement(name: "PageCount", stringValue: String(pageCount)))
+      }
+      if let penciller = self.penciller {
+        root.addChild(XMLElement(name: "Penciller", stringValue: penciller))
+      }
+      if let publisher = self.publisher {
+        root.addChild(XMLElement(name: "Publisher", stringValue: publisher))
+      }
+      if let review = self.review {
+        root.addChild(XMLElement(name: "Review", stringValue: review))
+      }
+      if let scanInformation = self.scanInformation {
+        root.addChild(XMLElement(name: "ScanInformation", stringValue: scanInformation))
+      }
+      if let series = self.series {
+        root.addChild(XMLElement(name: "Series", stringValue: series))
+      }
+      if let seriesGroup = self.seriesGroup {
+        root.addChild(XMLElement(name: "SeriesGroup", stringValue: seriesGroup))
+      }
+      if let storyArc = self.storyArc {
+        root.addChild(XMLElement(name: "StoryArc", stringValue: storyArc))
+      }
+      if let storyArcNumber = self.storyArcNumber {
+        root.addChild(XMLElement(name: "StoryArcNumber", stringValue: storyArcNumber))
+      }
+      if let summary = self.summary {
+        root.addChild(XMLElement(name: "Summary", stringValue: summary))
+      }
+      if let teamsRawData = self.teamsRawData {
+        root.addChild(XMLElement(name: "Teams", stringValue: teamsRawData))
+      }
+      if let title = self.title {
+        root.addChild(XMLElement(name: "Title", stringValue: title))
+      }
+      if let translator = self.translator {
+        root.addChild(XMLElement(name: "Translator", stringValue: translator))
+      }
+      if let volume = self.volume {
+        root.addChild(XMLElement(name: "Volume", stringValue: String(volume)))
+      }
+      if let webRawData = self.webRawData {
+        root.addChild(XMLElement(name: "Web", stringValue: webRawData))
+      }
+      if let writer = self.writer {
+        root.addChild(XMLElement(name: "Writer", stringValue: writer))
+      }
+      if let year = self.year {
+        root.addChild(XMLElement(name: "Year", stringValue: String(year)))
+      }
+
+      // Add Pages element if there are any pages
+      if !pages.isEmpty {
+        let pagesElement = XMLElement(name: "Pages")
+        for page in pages {
+          let pageElement = XMLElement(name: "Page")
+
+          pageElement.addAttribute(XMLNode.attribute(withName: "Image", stringValue: String(page.image)) as! XMLNode)
+          pageElement.addAttribute(XMLNode.attribute(withName: "Type", stringValue: page.type.stringValue) as! XMLNode)
+
+          if page.doublePage {
+            pageElement.addAttribute(XMLNode.attribute(withName: "DoublePage", stringValue: "true") as! XMLNode)
+          }
+          if page.imageSize != 0 {
+            pageElement.addAttribute(
+              XMLNode.attribute(withName: "ImageSize", stringValue: String(page.imageSize)) as! XMLNode)
+          }
+          if !page.key.isEmpty {
+            pageElement.addAttribute(XMLNode.attribute(withName: "Key", stringValue: page.key) as! XMLNode)
+          }
+          if !page.bookmark.isEmpty {
+            pageElement.addAttribute(XMLNode.attribute(withName: "Bookmark", stringValue: page.bookmark) as! XMLNode)
+          }
+          if page.imageWidth != -1 {
+            pageElement.addAttribute(
+              XMLNode.attribute(withName: "ImageWidth", stringValue: String(page.imageWidth)) as! XMLNode)
+          }
+          if page.imageHeight != -1 {
+            pageElement.addAttribute(
+              XMLNode.attribute(withName: "ImageHeight", stringValue: String(page.imageHeight)) as! XMLNode)
+          }
+
+          pagesElement.addChild(pageElement)
+        }
+        root.addChild(pagesElement)
+      }
+
+      let xmlData = document.xmlData(options: [.nodePrettyPrint])
+      guard let xmlString = String(data: xmlData, encoding: .utf8) else {
+        throw ComicInfoError.parseError("Failed to convert XML data to string")
+      }
+
+      return xmlString
     }
 
     /// Split comma-separated string into array of trimmed strings.
