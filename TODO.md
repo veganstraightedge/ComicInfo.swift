@@ -182,8 +182,8 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [ ] Add troubleshooting section
 
 ### 7.2 Code Quality
-- [ ] Run swift-format on all files
-- [ ] Add SwiftLint configuration and fix issues
+- [x] Run swift-format on all files
+- [x] Add SwiftLint configuration and fix issues
 - [ ] Review and refactor for Swift best practices
 - [ ] Ensure Swift 6.2 feature usage
 
