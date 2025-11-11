@@ -59,8 +59,8 @@ case $PLATFORM in
     echo "==> Launching macOS app..."
 
     # Find the built app in the build directory
-    BUILD_DIR=$(xcodebuild -project Outbox.xcodeproj -scheme Outbox -showBuildSettings -configuration $CONFIGURATION | grep "BUILT_PRODUCTS_DIR" | head -n 1 | sed 's/.*= //')
-    APP_PATH="$BUILD_DIR/Outbox.app"
+    BUILD_DIR=$(xcodebuild -project Longbox.xcodeproj -scheme Longbox -showBuildSettings -configuration $CONFIGURATION | grep "BUILT_PRODUCTS_DIR" | head -n 1 | sed 's/.*= //')
+    APP_PATH="$BUILD_DIR/Longbox.app"
 
     if [ -d "$APP_PATH" ]; then
       echo "==> Opening $APP_PATH"
@@ -77,8 +77,8 @@ case $PLATFORM in
     echo "==> Launching iOS Simulator..."
 
     # Launch the app in iOS Simulator
-    xcodebuild -project       Outbox.xcodeproj \
-               -scheme        Outbox \
+    xcodebuild -project       Longbox.xcodeproj \
+               -scheme        Longbox \
                -destination   "platform=iOS Simulator,name=iPhone 26,arch=arm64" \
                -configuration $CONFIGURATION \
                -quiet \

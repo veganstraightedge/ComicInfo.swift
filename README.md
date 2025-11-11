@@ -500,11 +500,8 @@ All errors conform to `ComicInfoError` enum:
 
 ## Platform Support
 
-- **macOS** 10.15+ (Catalina)
-- **iOS** 13.0+
-- **watchOS** 6.0+
-- **tvOS** 13.0+
-- **Linux** (Swift 6.2+)
+- **macOS** 26+ (Tahoe)
+- **iOS** 26.0+
 
 ## Contributing
 
