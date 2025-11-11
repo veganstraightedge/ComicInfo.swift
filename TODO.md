@@ -31,7 +31,7 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [x] Test: Enum property parsing and validation
 - [x] Test: Multi-value field string and array access
 - [x] Test: Boolean helper methods
-- [ ] Test: Unicode and special character handling
+- [x] Test: Unicode and special character handling
 
 ### Page Tests (from page_spec.rb)
 - [x] Test: Page creation and property access
@@ -47,13 +47,13 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [x] Test: Nested error handling
 
 ### Edge Cases Tests (from fixtures/edge_cases/)
-- [ ] Test: Malformed XML handling
+- [x] Test: Malformed XML handling
 - [ ] Test: Missing required elements
-- [ ] Test: Invalid enum values
-- [ ] Test: Out of range numeric values
-- [ ] Test: Empty and whitespace-only values
+- [x] Test: Invalid enum values
+- [x] Test: Out of range numeric values
+- [x] Test: Empty and whitespace-only values
 - [ ] Test: Very large page arrays
-- [ ] Test: Unicode in all string fields
+- [x] Test: Unicode in all string fields
 
 ## Phase 3: Core Types and Errors
 
@@ -204,7 +204,7 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 
 ## Current Priority
 
-**Next Task**: Add Version.swift file with version constant and async URL loading.
+**Next Task**: Complete remaining edge case tests and API polish features.
 
 ## Notes
 
