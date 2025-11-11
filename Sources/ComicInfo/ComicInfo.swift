@@ -602,47 +602,89 @@ public enum ComicInfo {
   /// let genreArray = issue.genres           // ["Action", "Adventure", "Superhero"]
   /// ```
   public struct Issue: Codable {
+    /// Age rating classification for content appropriateness.
     public let ageRating: AgeRating?
+    /// Total issues in alternate series.
     public let alternateCount: Int?
+    /// Issue number in alternate series.
     public let alternateNumber: String?
+    /// Alternate series name for crossovers.
     public let alternateSeries: String?
+    /// Color format designation (color vs black & white).
     public let blackAndWhite: BlackAndWhite?
+    /// Comma-separated character names appearing in this issue.
     public let charactersRawData: String?
+    /// Colorist name(s) who applied color to the artwork.
     public let colorist: String?
+    /// Community rating score from 0.0 to 5.0.
     public let communityRating: Double?
+    /// Total number of issues in the series.
     public let count: Int?
+    /// Cover artist name(s) who created the cover artwork.
     public let coverArtist: String?
+    /// Publication day of the month (1-31).
     public let day: Int?
+    /// Editor name(s) who supervised the issue creation.
     public let editor: String?
+    /// Publication format (e.g., "Digital", "Print").
     public let format: String?
+    /// Comma-separated genre classifications.
     public let genreRawData: String?
+    /// Publisher imprint or subsidiary label.
     public let imprint: String?
+    /// Inker name(s) who outlined the pencil artwork.
     public let inker: String?
+    /// Language code in ISO format (e.g., "en-US", "ja-JP").
     public let languageISO: String?
+    /// Letterer name(s) who added text and speech bubbles.
     public let letterer: String?
+    /// Comma-separated location names where the story takes place.
     public let locationsRawData: String?
+    /// Primary character or team featured in this issue.
     public let mainCharacterOrTeam: String?
+    /// Manga reading direction and format designation.
     public let manga: Manga?
+    /// Publication month (1-12).
     public let month: Int?
+    /// Additional notes about the issue or scan.
     public let notes: String?
+    /// Issue number within the series.
     public let number: String?
+    /// Total number of pages in the issue.
     public let pageCount: Int?
+    /// Penciller name(s) who drew the initial artwork.
     public let penciller: String?
+    /// Publisher name who released the issue.
     public let publisher: String?
+    /// Review text or critique of the issue.
     public let review: String?
+    /// Information about the digital scan process.
     public let scanInformation: String?
+    /// Series name that this issue belongs to.
     public let series: String?
+    /// Series group or universe classification.
     public let seriesGroup: String?
+    /// Story arc name(s) that this issue is part of.
     public let storyArc: String?
+    /// Story arc number(s) indicating position within arcs.
     public let storyArcNumber: String?
+    /// Plot summary or description of the issue content.
     public let summary: String?
+    /// Comma-separated team names appearing in this issue.
     public let teamsRawData: String?
+    /// Issue title or name.
     public let title: String?
+    /// Translator name(s) for localized versions.
     public let translator: String?
+    /// Volume number for series with multiple volumes.
     public let volume: Int?
+    /// Space-separated web URLs related to this issue.
     public let webRawData: String?
+    /// Writer name(s) who created the story.
     public let writer: String?
+    /// Publication year.
     public let year: Int?
+    /// Array of page information with metadata for each page.
     public let pages: [Page]
 
     private enum CodingKeys: String, CodingKey {
