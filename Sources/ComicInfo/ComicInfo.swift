@@ -55,6 +55,7 @@ public enum ComicInfoError: Error, Equatable {
 }
 
 extension ComicInfoError: LocalizedError {
+  /// Localized error message describing what went wrong.
   public var errorDescription: String? {
     switch self {
     case .parseError(let message):
@@ -348,6 +349,23 @@ public enum ComicInfo {
     /// Image height in pixels (-1 if unknown)
     public let imageHeight: Int
 
+    /// Initialize a new Page with the specified attributes.
+    ///
+    /// ## Usage
+    /// ```swift
+    /// let coverPage = ComicInfo.Page(image: 0, type: .frontCover)
+    /// let storyPage = ComicInfo.Page(image: 1, type: .story, doublePage: true)
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - image: Page number/index (0-based)
+    ///   - type: Page type classification (defaults to .story)
+    ///   - doublePage: True if this is a double-page spread (defaults to false)
+    ///   - imageSize: File size in bytes (defaults to 0)
+    ///   - key: Key/identifier string (defaults to empty)
+    ///   - bookmark: Bookmark text (defaults to empty)
+    ///   - imageWidth: Image width in pixels (defaults to -1 for unknown)
+    ///   - imageHeight: Image height in pixels (defaults to -1 for unknown)
     public init(
       image: Int,
       type: PageType = .story,
@@ -499,7 +517,7 @@ public enum ComicInfo {
   /// Load ComicInfo from a URL asynchronously.
   ///
   /// Asynchronously loads and parses ComicInfo XML from any URL using URLSession.
-  /// Supports both local file URLs and remote HTTP URLs.
+  /// Supports both local file URLs and remote HTTP/HTTPS URLs.
   ///
   /// ## Usage
   /// ```swift
@@ -638,6 +656,79 @@ public enum ComicInfo {
       case title, translator, volume, webRawData, writer, year, pages
     }
 
+    /// Initialize a new Issue with the specified comic metadata.
+    ///
+    /// Creates a comic issue with all ComicInfo v2.0 schema fields. All parameters
+    /// are optional and default to nil or empty arrays as appropriate.
+    ///
+    /// ## Usage
+    /// ```swift
+    /// // Minimal comic
+    /// let comic = ComicInfo.Issue(
+    ///   title: "Amazing Spider-Man",
+    ///   series: "Amazing Spider-Man",
+    ///   number: "1",
+    ///   year: 2018
+    /// )
+    ///
+    /// // Detailed comic with pages
+    /// let detailedComic = ComicInfo.Issue(
+    ///   title: "My Comic",
+    ///   series: "My Series",
+    ///   writer: "John Doe",
+    ///   penciller: "Jane Smith",
+    ///   publisher: "Example Comics",
+    ///   year: 2023,
+    ///   pages: [
+    ///     ComicInfo.Page(image: 0, type: .frontCover),
+    ///     ComicInfo.Page(image: 1, type: .story)
+    ///   ]
+    /// )
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - ageRating: Content age rating classification
+    ///   - alternateCount: Total issues in alternate series
+    ///   - alternateNumber: Issue number in alternate series
+    ///   - alternateSeries: Alternate series name
+    ///   - blackAndWhite: Color format designation
+    ///   - charactersRawData: Comma-separated character names
+    ///   - colorist: Colorist name(s)
+    ///   - communityRating: Community rating (0.0-5.0)
+    ///   - count: Total issues in series
+    ///   - coverArtist: Cover artist name(s)
+    ///   - day: Publication day (1-31)
+    ///   - editor: Editor name(s)
+    ///   - format: Publication format
+    ///   - genreRawData: Comma-separated genre names
+    ///   - imprint: Publisher imprint
+    ///   - inker: Inker name(s)
+    ///   - languageISO: Language code (e.g., "en-US")
+    ///   - letterer: Letterer name(s)
+    ///   - locationsRawData: Comma-separated location names
+    ///   - mainCharacterOrTeam: Primary character or team
+    ///   - manga: Manga reading direction
+    ///   - month: Publication month (1-12)
+    ///   - notes: Additional notes
+    ///   - number: Issue number
+    ///   - pageCount: Total page count
+    ///   - penciller: Penciller name(s)
+    ///   - publisher: Publisher name
+    ///   - review: Review text
+    ///   - scanInformation: Scan details
+    ///   - series: Series name
+    ///   - seriesGroup: Series group classification
+    ///   - storyArc: Story arc name(s)
+    ///   - storyArcNumber: Story arc number(s)
+    ///   - summary: Story summary
+    ///   - teamsRawData: Comma-separated team names
+    ///   - title: Issue title
+    ///   - translator: Translator name(s)
+    ///   - volume: Volume number
+    ///   - webRawData: Space-separated web URLs
+    ///   - writer: Writer name(s)
+    ///   - year: Publication year
+    ///   - pages: Array of page information
     public init(
       ageRating: AgeRating? = nil,
       alternateCount: Int? = nil,
@@ -816,6 +907,7 @@ public enum ComicInfo {
 
     /// Raw data access methods for compatibility with Ruby API.
     public var storyArcsRawData: String? { return storyArc }
+    /// Raw story arc numbers as comma-separated string for compatibility.
     public var storyArcNumbersRawData: String? { return storyArcNumber }
 
     /// True if this issue is a manga (Yes or YesAndRightToLeft).
