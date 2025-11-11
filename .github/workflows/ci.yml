@@ -77,8 +77,8 @@ jobs:
         run: |
           echo "Validating package structure and public symbols..."
 
-          # Generate symbol graph
-          swift package dump-symbol-graph --minimum-access-level public --pretty-print
+          # Generate symbol graph for library target only
+          swift package dump-symbol-graph --minimum-access-level public --pretty-print ComicInfo
 
           # Find the generated symbols file
           SYMBOLS_FILE=$(find .build -name "ComicInfo.symbols.json" | head -1)
