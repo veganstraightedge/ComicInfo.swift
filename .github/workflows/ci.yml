@@ -58,11 +58,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Validate package
-        run: swift package validate
+      - name: Describe package structure
+        run: swift package describe --type json
 
       - name: Test package resolution
         run: swift package resolve
+
+      - name: Show resolved dependencies
+        run: swift package show-dependencies
 
       - name: Test debug build
         run: swift build --configuration debug
