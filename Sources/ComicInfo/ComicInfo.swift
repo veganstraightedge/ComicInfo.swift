@@ -365,6 +365,23 @@ public enum ComicInfo {
     }
   }
 
+  /// Load ComicInfo from a URL asynchronously.
+  @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
+  public static func load(from url: URL) async throws -> Issue {
+    do {
+      let (data, _) = try await URLSession.shared.data(from: url)
+      guard let xmlContent = String(data: data, encoding: .utf8) else {
+        throw ComicInfoError.parseError("Could not decode data from URL '\(url)' as UTF-8")
+      }
+      return try load(fromXML: xmlContent)
+    } catch let error as ComicInfoError {
+      // Re-throw ComicInfo errors
+      throw error
+    } catch {
+      throw ComicInfoError.fileError("Failed to load from URL '\(url)': \(error.localizedDescription)")
+    }
+  }
+
   /// Check if input looks like XML (starts with <).
   private static func looksLikeXML(_ input: String) -> Bool {
     return input.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<")

@@ -17,34 +17,34 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [ ] TDD: Write failing tests that are marked as skipped, then we will write implemetation to code to make each test pass, one at a time
 
 ### Core Loading Tests (from comic_info_spec.rb)
-- [ ] Test: Load minimal XML fixture
-- [ ] Test: Load complete XML fixture with all fields
-- [ ] Test: File not found error
-- [ ] Test: Invalid XML error
-- [ ] Test: Load from XML string
-- [ ] Test: Empty/nil file handling
+- [x] Test: Load minimal XML fixture
+- [x] Test: Load complete XML fixture with all fields
+- [x] Test: File not found error
+- [x] Test: Invalid XML error
+- [x] Test: Load from XML string
+- [x] Test: Empty/nil file handling
 
 ### Issue Property Tests (from issue_spec.rb)
-- [ ] Test: All string property access
-- [ ] Test: All integer property access
-- [ ] Test: Decimal property validation and range
-- [ ] Test: Enum property parsing and validation
-- [ ] Test: Multi-value field string and array access
-- [ ] Test: Boolean helper methods
+- [x] Test: All string property access
+- [x] Test: All integer property access
+- [x] Test: Decimal property validation and range
+- [x] Test: Enum property parsing and validation
+- [x] Test: Multi-value field string and array access
+- [x] Test: Boolean helper methods
 - [ ] Test: Unicode and special character handling
 
 ### Page Tests (from page_spec.rb)
-- [ ] Test: Page creation and property access
-- [ ] Test: Page type enum validation
-- [ ] Test: Page boolean helpers (isCover, isStory, etc.)
-- [ ] Test: Double page detection
-- [ ] Test: Bookmark and dimension parsing
+- [x] Test: Page creation and property access
+- [x] Test: Page type enum validation
+- [x] Test: Page boolean helpers (isCover, isStory, etc.)
+- [x] Test: Double page detection
+- [x] Test: Bookmark and dimension parsing
 
 ### Error Handling Tests (from errors_spec.rb)
-- [ ] Test: Each error type creation
-- [ ] Test: Error message formatting
-- [ ] Test: Error context preservation
-- [ ] Test: Nested error handling
+- [x] Test: Each error type creation
+- [x] Test: Error message formatting
+- [x] Test: Error context preservation
+- [x] Test: Nested error handling
 
 ### Edge Cases Tests (from fixtures/edge_cases/)
 - [ ] Test: Malformed XML handling
@@ -58,27 +58,28 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 ## Phase 3: Core Types and Errors
 
 ### Error Types
-- [ ] Define `ComicInfoError` enum with associated values
-  - [ ] `fileNotFound(String)`
-  - [ ] `parseError(String)`
-  - [ ] `invalidEnum(field: String, value: String, validValues: [String])`
-  - [ ] `valueOutOfRange(field: String, value: Any, range: String)`
-  - [ ] `typeCoercionError(String)`
-- [ ] Add error descriptions and localized descriptions
-- [ ] Test: Error creation and message formatting
+- [x] Define `ComicInfoError` enum with associated values
+  - [x] `fileError(String)` 
+  - [x] `parseError(String)`
+  - [x] `invalidEnum(field: String, value: String, validValues: [String])`
+  - [x] `rangeError(field: String, value: String, min: String, max: String)`
+  - [x] `typeCoercionError(String)`
+  - [x] `schemaError(String)`
+- [x] Add error descriptions and localized descriptions
+- [x] Test: Error creation and message formatting
 
 ### Enums
-- [ ] Define `AgeRating` enum with all Ruby values
-  - [ ] Add `CaseIterable` conformance
-  - [ ] Add string conversion methods
-  - [ ] Test: All enum cases and string conversions
-- [ ] Define `Manga` enum (.unknown, .no, .yes, .yesAndRightToLeft)
-  - [ ] Test: Enum cases and boolean helpers
-- [ ] Define `BlackAndWhite` enum (.unknown, .no, .yes)
-  - [ ] Test: Enum cases and boolean helpers
-- [ ] Define `PageType` enum (all page types from Ruby)
-  - [ ] Add convenience boolean properties
-  - [ ] Test: All page types and boolean checks
+- [x] Define `AgeRating` enum with all Ruby values
+  - [x] Add `CaseIterable` conformance
+  - [x] Add string conversion methods
+  - [x] Test: All enum cases and string conversions
+- [x] Define `Manga` enum (.unknown, .no, .yes, .yesAndRightToLeft)
+  - [x] Test: Enum cases and boolean helpers
+- [x] Define `BlackAndWhite` enum (.unknown, .no, .yes)
+  - [x] Test: Enum cases and boolean helpers
+- [x] Define `PageType` enum (all page types from Ruby)
+  - [x] Add convenience boolean properties
+  - [x] Test: All page types and boolean checks
 
 ### Version
 - [ ] Create Version.swift with version constant
@@ -87,68 +88,69 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 ## Phase 4: Basic XML Parsing and Issue Structure
 
 ### Issue Structure
-- [ ] Create `ComicInfo.Issue` class/struct
-- [ ] Add all basic string properties (title, series, number, etc.)
-- [ ] Add all integer properties (count, volume, year, etc.)
-- [ ] Add decimal properties (communityRating)
-- [ ] Add enum properties (ageRating, manga, blackAndWhite)
-- [ ] Test: Issue initialization with empty values
+- [x] Create `ComicInfo.Issue` class/struct
+- [x] Add all basic string properties (title, series, number, etc.)
+- [x] Add all integer properties (count, volume, year, etc.)
+- [x] Add decimal properties (communityRating)
+- [x] Add enum properties (ageRating, manga, blackAndWhite)
+- [x] Test: Issue initialization with empty values
 
 ### Basic XML Loading
-- [ ] Create main `ComicInfo` class with static methods
-- [ ] Implement `load(from: String)` - file path loading
-- [ ] Implement `load(from: URL)` - URL loading
-- [ ] Implement `load(fromXML: String)` - XML string loading
+- [x] Create main `ComicInfo` class with static methods
+- [x] Implement `load(from: String)` - file path loading
+- [x] Implement `load(from: URL)` - URL loading
+- [x] Implement `load(fromXML: String)` - XML string loading
 - [ ] Implement `loadAsync(from: URL)` - async loading
-- [ ] Test: Load minimal XML fixture
-- [ ] Test: File not found error handling
-- [ ] Test: Invalid XML error handling
+- [x] Test: Load minimal XML fixture
+- [x] Test: File not found error handling
+- [x] Test: Invalid XML error handling
 
 ### XML Parser Implementation
-- [ ] Create XMLParser delegate for ComicInfo parsing
-- [ ] Parse root ComicInfo element
-- [ ] Parse all basic string elements
-- [ ] Parse integer elements with type coercion
-- [ ] Parse decimal elements with validation
-- [ ] Parse enum elements with validation
-- [ ] Test: Complete XML fixture parsing
-- [ ] Test: Type coercion edge cases
-- [ ] Test: Enum validation and error cases
+- [x] Create XMLParser delegate for ComicInfo parsing
+- [x] Parse root ComicInfo element
+- [x] Parse all basic string elements
+- [x] Parse integer elements with type coercion
+- [x] Parse decimal elements with validation
+- [x] Parse enum elements with validation
+- [x] Test: Complete XML fixture parsing
+- [x] Test: Type coercion edge cases
+- [x] Test: Enum validation and error cases
 
 ## Phase 5: Advanced Features
 
 ### Multi-value Fields
-- [ ] Add support for comma-separated string fields
-- [ ] Create computed properties for array access:
-  - [ ] `charactersArray` from `characters` string
-  - [ ] `teamsArray` from `teams` string
-  - [ ] `locationsArray` from `locations` string
-  - [ ] `genresArray` from `genre` string
-  - [ ] `webUrlsArray` from `web` string (as URLs)
-- [ ] Test: Multi-value string parsing and array conversion
-- [ ] Test: URL parsing for web field
+- [x] Add support for comma-separated string fields
+- [x] Create computed properties for array access:
+  - [x] `characters` from `charactersRawData` string
+  - [x] `teams` from `teamsRawData` string
+  - [x] `locations` from `locationsRawData` string
+  - [x] `genres` from `genreRawData` string
+  - [x] `webUrls` from `webRawData` string (as URLs)
+- [x] Test: Multi-value string parsing and array conversion
+- [x] Test: URL parsing for web field
 
 ### Page Support
-- [ ] Create `ComicInfo.Page` class/struct
-- [ ] Add all page properties (image, type, doublePage, etc.)
-- [ ] Add page type enum parsing
-- [ ] Add boolean convenience methods
-- [ ] Parse Pages XML element and create page array
-- [ ] Test: Page creation and property access
-- [ ] Test: Page type validation
-- [ ] Test: Page boolean helpers
+- [x] Create `ComicInfo.Page` class/struct
+- [x] Add all page properties (image, type, doublePage, etc.)
+- [x] Add page type enum parsing
+- [x] Add boolean convenience methods
+- [x] Parse Pages XML element and create page array
+- [x] Test: Page creation and property access
+- [x] Test: Page type validation
+- [x] Test: Page boolean helpers
 
 ### Issue Convenience Methods
-- [ ] Add boolean properties:
-  - [ ] `isManga` (computed from manga enum)
-  - [ ] `isRightToLeft` (computed from manga)
-  - [ ] `isBlackAndWhite` (computed from blackAndWhite enum)
-  - [ ] `hasPages` (computed from pages array)
-- [ ] Add page filtering methods:
-  - [ ] `coverPages` (filter pages by cover types)
-  - [ ] `storyPages` (filter pages by story type)
-- [ ] Test: All boolean properties
-- [ ] Test: Page filtering methods
+- [x] Add boolean properties:
+  - [x] `isManga` (computed from manga enum)
+  - [x] `isRightToLeft` (computed from manga)
+  - [x] `isBlackAndWhite` (computed from blackAndWhite enum)
+  - [x] `hasPages` (computed from pages array)
+- [x] Add page filtering methods:
+  - [x] `coverPages` (filter pages by cover types)
+  - [x] `storyPages` (filter pages by story type)
+- [x] Add `publicationDate` computed property
+- [x] Test: All boolean properties
+- [x] Test: Page filtering methods
 
 ## Phase 6: API Polish and Export
 
@@ -202,7 +204,7 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 
 ## Current Priority
 
-**Next Task**: Copy fixture files from Ruby gem to set up testing infrastructure.
+**Next Task**: Add Version.swift file with version constant and async URL loading.
 
 ## Notes
 

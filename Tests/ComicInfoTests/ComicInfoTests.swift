@@ -231,6 +231,31 @@ struct ComicInfoTests {
       }
     }
   }
+
+  @Test func testVersionConstant() throws {
+    // Test that Version.current is accessible and has expected format
+    #expect(!Version.current.isEmpty)
+    #expect(Version.current.contains("."))
+    #expect(Version.current == "2.0.0")
+  }
+
+  @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
+  @Test func testLoadFromURLAsync() async throws {
+    // Test async loading from a file URL
+    let testBundle = Bundle.module
+    guard
+      let fixtureURL = testBundle.url(
+        forResource: "ComicInfo",
+        withExtension: "xml",
+        subdirectory: "Fixtures/valid_minimal"
+      )
+    else {
+      throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Fixture not found"])
+    }
+
+    let issue = try await ComicInfo.load(from: fixtureURL)
+    #expect(issue.title == "Minimal Comic")
+  }
 }
 
 // MARK: - Test Helpers
