@@ -275,4 +275,67 @@ struct IssueTests {
     // No date should return nil
     #expect(noDateIssue.publicationDate == nil)
   }
+
+  @Test func testUnicodeStringHandling() throws {
+    // Test that Unicode characters in all string fields are handled correctly
+    let issue = try loadFixture("unicode_test")
+
+    // Test Japanese, emoji, and special characters
+    #expect(issue.title == "スパイダーマン 🕷️ Amazing Spider-Man")
+    #expect(issue.series == "マーベル・コミック")
+    #expect(issue.number == "１")
+    #expect(issue.writer == "丹・スロット, Κριστός Γκέιτζ")
+    #expect(issue.publisher == "マーベル・エンターテインメント")
+
+    // Test multi-value fields with Unicode
+    let characters = issue.characters
+    #expect(characters.contains("スパイダーマン"))
+    #expect(characters.contains("ピーター・パーカー"))
+    #expect(characters.contains("Тётя Мэй"))
+    #expect(characters.contains("جون جيمسون"))
+
+    let locations = issue.locations
+    #expect(locations.contains("ニューヨーク市"))
+    #expect(locations.contains("マンハッタン"))
+    #expect(locations.contains("Κουίνς"))
+    #expect(locations.contains("المدينة العربية"))
+
+    // Test special characters and diacriticals
+    #expect(issue.notes?.contains("♥️") == true)
+    #expect(issue.notes?.contains("åæøÅÆØ") == true)
+    #expect(issue.notes?.contains("ñáéíóúü") == true)
+    #expect(issue.notes?.contains("ßäöü") == true)
+    #expect(issue.notes?.contains("čćžšđ") == true)
+  }
+
+  @Test func testEmptyAndWhitespaceValues() throws {
+    // Test handling of empty strings, whitespace-only values, and trimming
+    let issue = try loadFixture("empty_values")
+
+    #expect(issue.title == "Empty Values Test")
+    #expect(issue.series == nil)  // Empty string should be nil
+    #expect(issue.number == nil)  // Whitespace-only should be nil
+    #expect(issue.summary == nil)  // Tab-only should be nil
+    #expect(issue.notes == nil)  // Empty should be nil
+    #expect(issue.writer == "John Doe")  // Should be trimmed
+    #expect(issue.publisher == nil)  // Empty should be nil
+
+    // Multi-value fields should filter out empty entries and trim
+    let genres = issue.genres
+    #expect(genres == ["Action", "Adventure"])  // Empty entries filtered out
+
+    let characters = issue.characters
+    #expect(characters == ["Spider-Man", "Peter Parker"])  // Empty/whitespace entries filtered
+
+    // Numeric fields - empty should be nil
+    #expect(issue.month == nil)
+    #expect(issue.day == nil)
+    #expect(issue.count == nil)
+    #expect(issue.volume == nil)
+
+    // Web URLs should trim whitespace
+    let webUrls = issue.webUrls
+    #expect(webUrls.count == 1)
+    #expect(webUrls[0].absoluteString == "https://example.com")
+  }
 }

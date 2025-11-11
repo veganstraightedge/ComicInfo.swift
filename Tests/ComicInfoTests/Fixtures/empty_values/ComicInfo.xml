@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ComicInfo>
+  <Title>Empty Values Test</Title>
+  <Series></Series>
+  <Number>   </Number>
+  <Summary>	</Summary>
+  <Notes></Notes>
+  <Writer>   John Doe   </Writer>
+  <Publisher></Publisher>
+  <Genre>   Action,   ,  Adventure  </Genre>
+  <Characters>Spider-Man, , Peter Parker,   </Characters>
+  <Year>2020</Year>
+  <Month></Month>
+  <Day>   </Day>
+  <Count></Count>
+  <Volume>   </Volume>
+  <Web>   https://example.com   </Web>
+</ComicInfo>

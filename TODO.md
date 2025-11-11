@@ -82,8 +82,8 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
   - [x] Test: All page types and boolean checks
 
 ### Version
-- [ ] Create Version.swift with version constant
-- [ ] Test: Version number accessibility
+- [x] Create Version.swift with version constant
+- [x] Test: Version number accessibility
 
 ## Phase 4: Basic XML Parsing and Issue Structure
 
@@ -100,7 +100,7 @@ This document tracks all tasks needed to complete the port from the Ruby gem to 
 - [x] Implement `load(from: String)` - file path loading
 - [x] Implement `load(from: URL)` - URL loading
 - [x] Implement `load(fromXML: String)` - XML string loading
-- [ ] Implement `loadAsync(from: URL)` - async loading
+- [x] Implement `loadAsync(from: URL)` - async loading
 - [x] Test: Load minimal XML fixture
 - [x] Test: File not found error handling
 - [x] Test: Invalid XML error handling

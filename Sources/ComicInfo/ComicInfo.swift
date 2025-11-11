@@ -5,6 +5,14 @@
 
 import Foundation
 
+/// String extension for handling empty values
+extension String {
+  /// Returns nil if the string is empty, otherwise returns self
+  fileprivate var nilIfEmpty: String? {
+    return self.isEmpty ? nil : self
+  }
+}
+
 /// Errors that can occur during ComicInfo parsing and processing.
 public enum ComicInfoError: Error, Equatable {
   case parseError(String)
@@ -56,7 +64,11 @@ extension ComicInfo {
   }
 
   fileprivate static func validateMonth(_ value: String) throws -> Int {
-    guard let month = Int(value) else {
+    let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else {
+      return 0  // Default value for empty strings
+    }
+    guard let month = Int(trimmed) else {
       throw ComicInfoError.typeCoercionError(field: "Month", value: value, expectedType: "Int")
     }
     if !(1...12).contains(month) {
@@ -66,7 +78,11 @@ extension ComicInfo {
   }
 
   fileprivate static func validateDay(_ value: String) throws -> Int {
-    guard let day = Int(value) else {
+    let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else {
+      return 0  // Default value for empty strings
+    }
+    guard let day = Int(trimmed) else {
       throw ComicInfoError.typeCoercionError(field: "Day", value: value, expectedType: "Int")
     }
     if !(1...31).contains(day) {
@@ -626,7 +642,7 @@ public enum ComicInfo {
       guard let text = text, !text.isEmpty else {
         return []
       }
-      return text.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+      return text.split(separator: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
     }
 
     /// Load Issue from an XML string.
@@ -658,54 +674,105 @@ public enum ComicInfo {
         try AgeRating.validated(from: $0)
       }
       let alternateCount = root.elements(forName: "AlternateCount").first?.stringValue.flatMap { Int($0) }
-      let alternateNumber = root.elements(forName: "AlternateNumber").first?.stringValue
-      let alternateSeries = root.elements(forName: "AlternateSeries").first?.stringValue
+      let alternateNumber = root.elements(forName: "AlternateNumber").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let alternateSeries = root.elements(forName: "AlternateSeries").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
       let blackAndWhite = try root.elements(forName: "BlackAndWhite").first?.stringValue.map {
         try BlackAndWhite.validated(from: $0)
       }
-      let charactersRawData = root.elements(forName: "Characters").first?.stringValue
-      let colorist = root.elements(forName: "Colorist").first?.stringValue
+      let charactersRawData = root.elements(forName: "Characters").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let colorist = root.elements(forName: "Colorist").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
       let communityRating = try root.elements(forName: "CommunityRating").first?.stringValue.map {
         try ComicInfo.validateCommunityRating($0)
       }
-      let count = root.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
-      let coverArtist = root.elements(forName: "CoverArtist").first?.stringValue
-      let day = try root.elements(forName: "Day").first?.stringValue.map {
-        try ComicInfo.validateDay($0)
+      let count = root.elements(forName: "Count").first?.stringValue.map {
+        $0.trimmingCharacters(in: .whitespacesAndNewlines)
+      }.flatMap { trimmed in
+        trimmed.isEmpty ? nil : Int(trimmed)
       }
-      let editor = root.elements(forName: "Editor").first?.stringValue
-      let format = root.elements(forName: "Format").first?.stringValue
-      let genreRawData = root.elements(forName: "Genre").first?.stringValue
-      let imprint = root.elements(forName: "Imprint").first?.stringValue
-      let inker = root.elements(forName: "Inker").first?.stringValue
-      let languageISO = root.elements(forName: "LanguageISO").first?.stringValue
-      let letterer = root.elements(forName: "Letterer").first?.stringValue
-      let locationsRawData = root.elements(forName: "Locations").first?.stringValue
-      let mainCharacterOrTeam = root.elements(forName: "MainCharacterOrTeam").first?.stringValue
+      let coverArtist = root.elements(forName: "CoverArtist").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let day = try root.elements(forName: "Day").first?.stringValue.map {
+        let result = try ComicInfo.validateDay($0)
+        return result == 0 ? nil : result
+      }.flatMap { $0 }
+      let editor = root.elements(forName: "Editor").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let format = root.elements(forName: "Format").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let genreRawData = root.elements(forName: "Genre").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let imprint = root.elements(forName: "Imprint").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let inker = root.elements(forName: "Inker").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let languageISO = root.elements(forName: "LanguageISO").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let letterer = root.elements(forName: "Letterer").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let locationsRawData = root.elements(forName: "Locations").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let mainCharacterOrTeam = root.elements(forName: "MainCharacterOrTeam").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
       let manga = try root.elements(forName: "Manga").first?.stringValue.map {
         try Manga.validated(from: $0)
       }
       let month = try root.elements(forName: "Month").first?.stringValue.map {
-        try ComicInfo.validateMonth($0)
-      }
-      let notes = root.elements(forName: "Notes").first?.stringValue
-      let number = root.elements(forName: "Number").first?.stringValue
+        let result = try ComicInfo.validateMonth($0)
+        return result == 0 ? nil : result
+      }.flatMap { $0 }
+      let notes = root.elements(forName: "Notes").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let number = root.elements(forName: "Number").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
       let pageCount = root.elements(forName: "PageCount").first?.stringValue.flatMap { Int($0) }
-      let penciller = root.elements(forName: "Penciller").first?.stringValue
-      let publisher = root.elements(forName: "Publisher").first?.stringValue
-      let review = root.elements(forName: "Review").first?.stringValue
-      let scanInformation = root.elements(forName: "ScanInformation").first?.stringValue
-      let series = root.elements(forName: "Series").first?.stringValue
-      let seriesGroup = root.elements(forName: "SeriesGroup").first?.stringValue
-      let storyArc = root.elements(forName: "StoryArc").first?.stringValue
-      let storyArcNumber = root.elements(forName: "StoryArcNumber").first?.stringValue
-      let summary = root.elements(forName: "Summary").first?.stringValue
-      let teamsRawData = root.elements(forName: "Teams").first?.stringValue
-      let title = root.elements(forName: "Title").first?.stringValue
-      let translator = root.elements(forName: "Translator").first?.stringValue
-      let volume = root.elements(forName: "Volume").first?.stringValue.flatMap { Int($0) }
-      let webRawData = root.elements(forName: "Web").first?.stringValue
-      let writer = root.elements(forName: "Writer").first?.stringValue
+      let penciller = root.elements(forName: "Penciller").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let publisher = root.elements(forName: "Publisher").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let review = root.elements(forName: "Review").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let scanInformation = root.elements(forName: "ScanInformation").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let series = root.elements(forName: "Series").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let seriesGroup = root.elements(forName: "SeriesGroup").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let storyArc = root.elements(forName: "StoryArc").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let storyArcNumber = root.elements(forName: "StoryArcNumber").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let summary = root.elements(forName: "Summary").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let teamsRawData = root.elements(forName: "Teams").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let title = root.elements(forName: "Title").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let translator = root.elements(forName: "Translator").first?.stringValue?.trimmingCharacters(
+        in: .whitespacesAndNewlines
+      ).nilIfEmpty
+      let volume = root.elements(forName: "Volume").first?.stringValue.map {
+        $0.trimmingCharacters(in: .whitespacesAndNewlines)
+      }.flatMap { trimmed in
+        trimmed.isEmpty ? nil : Int(trimmed)
+      }
+      let webRawData = root.elements(forName: "Web").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
+      let writer = root.elements(forName: "Writer").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+        .nilIfEmpty
       let year = try root.elements(forName: "Year").first?.stringValue.map {
         try ComicInfo.validateYear($0)
       }
