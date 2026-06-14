@@ -222,7 +222,7 @@ class CLI {
   }
 
   static func versionCommand() {
-    print("comicinfo \(Version.current)")
+    print("comicinfo \(ComicInfo.Version.current)")
     print("ComicInfo Swift Package")
   }
 
