@@ -12,7 +12,7 @@ This document describes the development process of the ComicInfo.swift package.
 ## Project Overview
 
 - **Source**: Ruby gem `comicinfo-ruby` (complete) https://github.com/veganstraightedge/comicinfo
-- **Target**: Swift package `ComicInfo-swift` (in development)
+- **Target**: Swift package `ComicInfo.swift` (in development)
 - **Approach**: Test-Driven Development (TDD) based on Ruby RSpec tests
 
 ## Development Guidelines
