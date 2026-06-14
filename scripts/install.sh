@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# ComicInfo Swift CLI Installation Script
+# ComicInfo.swift CLI Installation Script
 # This script downloads and installs the comicinfo CLI tool
 
 REPO_URL="https://github.com/veganstraightedge/ComicInfo.swift"
@@ -82,11 +82,11 @@ check_permissions() {
 
 # Download and build the CLI tool
 install_comicinfo() {
-    print_status "Downloading ComicInfo Swift..."
+    print_status "Downloading ComicInfo.swift..."
     cd "$TEMP_DIR"
 
-    git clone --depth 1 "$REPO_URL" comicinfo-swift
-    cd comicinfo-swift
+    git clone --depth 1 "$REPO_URL" ComicInfo.swift
+    cd ComicInfo.swift
 
     print_status "Building CLI tool in release mode..."
     swift build --configuration release --product comicinfo
@@ -133,7 +133,7 @@ trap cleanup EXIT
 
 # Main installation process
 main() {
-    echo "ComicInfo Swift CLI Installer"
+    echo "ComicInfo.swift CLI Installer"
     echo "=============================="
     echo
 
@@ -165,7 +165,7 @@ main() {
 # Show help
 show_help() {
     cat << EOF
-ComicInfo Swift CLI Installer
+ComicInfo.swift CLI Installer
 
 USAGE:
     $0 [OPTIONS]

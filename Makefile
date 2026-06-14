@@ -1,4 +1,4 @@
-# ComicInfo Swift Makefile
+# ComicInfo.swift Makefile
 
 .PHONY: all build install clean test format help release
 
@@ -128,7 +128,7 @@ package: release
 
 # Show help
 help:
-	@echo "ComicInfo Swift Makefile"
+	@echo "ComicInfo.swift Makefile"
 	@echo ""
 	@echo "Available targets:"
 	@echo "  build           Build in debug mode"
