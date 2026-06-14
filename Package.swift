@@ -16,6 +16,10 @@ let package = Package(
     .library(
       name: "ComicInfo",
       targets: ["ComicInfo"]
+    ),
+    .executable(
+      name: "comicinfo",
+      targets: ["ComicInfoCLI"]
     )
   ],
   targets: [
@@ -23,6 +27,10 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "ComicInfo"
+    ),
+    .executableTarget(
+      name: "ComicInfoCLI",
+      dependencies: ["ComicInfo"]
     ),
     .testTarget(
       name: "ComicInfoTests",
