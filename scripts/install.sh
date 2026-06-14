@@ -5,7 +5,7 @@ set -euo pipefail
 # ComicInfo Swift CLI Installation Script
 # This script downloads and installs the comicinfo CLI tool
 
-REPO_URL="https://github.com/your-org/ComicInfo-swift"
+REPO_URL="https://github.com/veganstraightedge/ComicInfo-swift"
 INSTALL_DIR="/usr/local/bin"
 BINARY_NAME="comicinfo"
 TEMP_DIR=$(mktemp -d)
