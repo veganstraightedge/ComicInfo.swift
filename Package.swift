@@ -22,11 +22,17 @@ let package = Package(
       targets: ["ComicInfoCLI"]
     )
   ],
+  dependencies: [
+    .package(url: "https://github.com/jpsim/Yams.git", from: "6.2.2")
+  ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
-      name: "ComicInfo"
+      name: "ComicInfo",
+      dependencies: [
+        .product(name: "Yams", package: "Yams")
+      ]
     ),
     .executableTarget(
       name: "ComicInfoCLI",
@@ -34,7 +40,10 @@ let package = Package(
     ),
     .testTarget(
       name: "ComicInfoTests",
-      dependencies: ["ComicInfo"],
+      dependencies: [
+        "ComicInfo",
+        .product(name: "Yams", package: "Yams")
+      ],
       resources: [.copy("Fixtures")]
     ),
   ]
