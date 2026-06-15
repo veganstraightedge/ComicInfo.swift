@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import Yams
 
 @testable import ComicInfo
 
@@ -438,6 +439,26 @@ struct IssueTests {
     // Test round trip: JSON -> Issue
     let decoder = JSONDecoder()
     let decodedIssue = try decoder.decode(ComicInfo.Issue.self, from: jsonData)
+
+    #expect(decodedIssue.title == issue.title)
+    #expect(decodedIssue.series == issue.series)
+    #expect(decodedIssue.number == issue.number)
+    #expect(decodedIssue.year == issue.year)
+    #expect(decodedIssue.pages.count == issue.pages.count)
+  }
+
+  @Test func testYAMLExport() throws {
+    // Test YAML export functionality
+    let issue = try loadFixture("valid_complete")
+
+    // Test YAML string export
+    let yamlString = try issue.toYAMLString()
+    #expect(!yamlString.isEmpty)
+    #expect(yamlString.contains("The Amazing Spider-Man"))
+    #expect(yamlString.contains("Spider-Man"))
+
+    // Test round trip: YAML -> Issue
+    let decodedIssue = try YAMLDecoder().decode(ComicInfo.Issue.self, from: yamlString)
 
     #expect(decodedIssue.title == issue.title)
     #expect(decodedIssue.series == issue.series)

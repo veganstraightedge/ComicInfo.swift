@@ -9,6 +9,7 @@
 //
 
 import Foundation
+import Yams
 
 /// String extension for handling empty values in ComicInfo parsing
 extension String {
@@ -1012,6 +1013,14 @@ public enum ComicInfo {
         throw ComicInfoError.parseError("Failed to convert JSON data to string")
       }
       return string
+    }
+
+    /// Export to YAML String.
+    /// - Returns: YAML String representation of the Issue
+    /// - Throws: EncodingError if the Issue cannot be encoded
+    public func toYAMLString() throws -> String {
+      let encoder = YAMLEncoder()
+      return try encoder.encode(self)
     }
 
     /// Export to XML String in ComicInfo format.
