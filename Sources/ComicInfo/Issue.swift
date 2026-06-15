@@ -760,7 +760,8 @@ extension ComicInfo {
 
       let document: XMLDocument
       do {
-        document = try XMLDocument(data: data, options: [])
+        // Never resolve external entities: prevents XXE local-file disclosure / SSRF.
+        document = try XMLDocument(data: data, options: [.nodeLoadExternalEntitiesNever])
       } catch {
         throw ComicInfoError.parseError("Invalid XML syntax: \(error.localizedDescription)")
       }
