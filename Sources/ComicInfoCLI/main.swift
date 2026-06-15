@@ -128,6 +128,17 @@ struct Comicinfo: ParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "comicinfo",
     abstract: "Read, validate, and convert ComicInfo.xml metadata.",
+    discussion: """
+      Inputs may be a file path, a URL (http(s):// or file://), or an XML string.
+
+      EXAMPLES:
+        comicinfo read ComicInfo.xml
+        comicinfo read https://example.com/ComicInfo.xml
+        comicinfo validate ComicInfo.xml
+        comicinfo convert ComicInfo.xml comic.yaml      # format from extension
+        comicinfo convert ComicInfo.xml --json          # JSON to stdout
+        comicinfo convert comic.yaml ComicInfo.xml      # YAML -> XML (was 'write')
+      """,
     version: ComicInfo.Version.current,
     subcommands: [Read.self, Validate.self, Convert.self, Version.self]
   )
@@ -162,7 +173,17 @@ struct Validate: ParsableCommand {
 
 struct Convert: ParsableCommand {
   static let configuration = CommandConfiguration(
-    abstract: "Convert a ComicInfo source between XML, JSON, and YAML.")
+    abstract: "Convert a ComicInfo source between XML, JSON, and YAML.",
+    discussion: """
+      The output format is taken from the output file's extension (.xml/.json/.yaml/.yml),
+      or set explicitly with --format / --xml / --json / --yaml / --yml (which overrides the
+      extension). Omit the output file to write to standard output.
+
+      EXAMPLES:
+        comicinfo convert ComicInfo.xml comic.json      # format from extension
+        comicinfo convert ComicInfo.xml --yaml          # to stdout
+        comicinfo convert comic.yaml ComicInfo.xml      # YAML -> XML
+      """)
 
   @Argument(help: "Input: a file path (xml/json/yaml), a URL (http(s)://, file://), or an XML string.")
   var input: String
