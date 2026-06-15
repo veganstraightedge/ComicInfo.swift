@@ -36,7 +36,10 @@ let package = Package(
     ),
     .executableTarget(
       name: "ComicInfoCLI",
-      dependencies: ["ComicInfo"]
+      dependencies: [
+        "ComicInfo",
+        .product(name: "Yams", package: "Yams")
+      ]
     ),
     .testTarget(
       name: "ComicInfoTests",

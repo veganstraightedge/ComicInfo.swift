@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **YAML export**: `Issue.toYAMLString()` for Ruby `to_yaml` parity, via the Yams library (first package dependency).
 - **Multi-value page `Type`**: `Page.includesType(_:)`, matching Ruby's `include_type?`.
+- **CLI v1.1**: the `comicinfo` tool gains YAML output (`convert … yaml`), JSON-or-YAML input for `write`, URL inputs (`http(s)://`, `file://`) for `read`/`validate`/`convert`, and stdout output (`-`) for `convert`/`write`.
 
 ### Changed
 - Internal: split the single-file `Sources/ComicInfo/ComicInfo.swift` into per-type files (`Errors`, `Enums`, `Page`, `Issue`, `Version`) mirroring the Ruby gem layout. No API or behavior change.
