@@ -85,20 +85,42 @@ struct PageTests {
   }
 
   @Test func testPageTypesArray() throws {
-    // Note: This test represents Ruby's ability to parse space-separated types
-    // In Swift, we'll handle this differently - single type per page for now
-    let page = ComicInfo.Page(image: 1, type: .story)
-    #expect(page.type == .story)
+    // A page can carry multiple space-separated types (XSD ComicPageType is xs:list).
+    let page = ComicInfo.Page(image: 1, types: [.frontCover, .story])
+    #expect(page.types == [.frontCover, .story])
+    #expect(page.type == .frontCover)  // singular convenience = first type
+    #expect(page.isCover)
+    #expect(page.isStory)
+
+    // Singular convenience init wraps a single type.
+    let single = ComicInfo.Page(image: 2, type: .story)
+    #expect(single.types == [.story])
+
+    // Default is a single Story type.
+    #expect(ComicInfo.Page(image: 3).types == [.story])
   }
 
   @Test func testPageIncludesType() throws {
-    // Test checking if page has specific type
-    let storyPage = ComicInfo.Page(image: 1, type: .story)
-    let coverPage = ComicInfo.Page(image: 2, type: .frontCover)
+    let page = ComicInfo.Page(image: 1, types: [.frontCover, .story])
+    #expect(page.includesType(.story))
+    #expect(page.includesType(.frontCover))
+    #expect(!page.includesType(.advertisement))
+  }
 
-    #expect(storyPage.type == .story)
-    #expect(coverPage.type == .frontCover)
-    #expect(storyPage.type != .frontCover)
+  @Test func testMultiValueTypeParsesAndRoundTrips() throws {
+    let xml = """
+      <ComicInfo>
+        <Pages>
+          <Page Image="0" Type="FrontCover Story" />
+        </Pages>
+      </ComicInfo>
+      """
+    let issue = try ComicInfo.load(fromXML: xml)
+    #expect(issue.pages.first?.types == [.frontCover, .story])
+
+    // Survives a serialize -> parse round trip.
+    let reloaded = try ComicInfo.load(fromXML: issue.toXMLString())
+    #expect(reloaded.pages.first?.types == [.frontCover, .story])
   }
 
   @Test func testPageDimensions() throws {

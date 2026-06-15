@@ -157,7 +157,8 @@ class CLI {
     if issue.hasPages {
       print("\n=== Pages (\(issue.pages.count)) ===")
       for page in issue.pages {
-        var pageInfo = "Page \(page.image): \(page.type.stringValue)"
+        let typesValue = page.types.map(\.stringValue).joined(separator: " ")
+        var pageInfo = "Page \(page.image): \(typesValue)"
         if page.isDoublePage { pageInfo += " (double)" }
         if page.isBookmarked { pageInfo += " (bookmarked)" }
         print(pageInfo)

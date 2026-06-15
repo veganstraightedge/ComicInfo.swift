@@ -9,8 +9,11 @@ extension ComicInfo {
     /// Page number or index (0-based)
     public let image: Int
 
-    /// Type classification of this page
-    public let type: PageType
+    /// Type classifications of this page.
+    ///
+    /// The XSD `ComicPageType` is an `xs:list`, so the `Type` attribute may be a
+    /// space-separated list of values; order is preserved. Defaults to `[.story]`.
+    public let types: [PageType]
 
     /// True if this is a double-page spread
     public let doublePage: Bool
@@ -30,17 +33,17 @@ extension ComicInfo {
     /// Image height in pixels (-1 if unknown)
     public let imageHeight: Int
 
-    /// Initialize a new Page with the specified attributes.
+    /// Initialize a new Page with one or more type classifications.
     ///
     /// ## Usage
     /// ```swift
-    /// let coverPage = ComicInfo.Page(image: 0, type: .frontCover)
-    /// let storyPage = ComicInfo.Page(image: 1, type: .story, doublePage: true)
+    /// let coverPage = ComicInfo.Page(image: 0, types: [.frontCover])
+    /// let bothPage = ComicInfo.Page(image: 1, types: [.frontCover, .story])
     /// ```
     ///
     /// - Parameters:
     ///   - image: Page number/index (0-based)
-    ///   - type: Page type classification (defaults to .story)
+    ///   - types: Page type classifications (defaults to [.story])
     ///   - doublePage: True if this is a double-page spread (defaults to false)
     ///   - imageSize: File size in bytes (defaults to 0)
     ///   - key: Key/identifier string (defaults to empty)
@@ -49,7 +52,7 @@ extension ComicInfo {
     ///   - imageHeight: Image height in pixels (defaults to -1 for unknown)
     public init(
       image: Int,
-      type: PageType = .story,
+      types: [PageType] = [.story],
       doublePage: Bool = false,
       imageSize: Int = 0,
       key: String = "",
@@ -58,7 +61,7 @@ extension ComicInfo {
       imageHeight: Int = -1
     ) {
       self.image = image
-      self.type = type
+      self.types = types
       self.doublePage = doublePage
       self.imageSize = imageSize
       self.key = key
@@ -67,19 +70,56 @@ extension ComicInfo {
       self.imageHeight = imageHeight
     }
 
-    /// True if this page is a cover page.
+    /// Convenience initializer for a single-type page.
+    ///
+    /// ```swift
+    /// let storyPage = ComicInfo.Page(image: 1, type: .story, doublePage: true)
+    /// ```
+    public init(
+      image: Int,
+      type: PageType,
+      doublePage: Bool = false,
+      imageSize: Int = 0,
+      key: String = "",
+      bookmark: String = "",
+      imageWidth: Int = -1,
+      imageHeight: Int = -1
+    ) {
+      self.init(
+        image: image,
+        types: [type],
+        doublePage: doublePage,
+        imageSize: imageSize,
+        key: key,
+        bookmark: bookmark,
+        imageWidth: imageWidth,
+        imageHeight: imageHeight
+      )
+    }
+
+    /// The page's primary type (the first of `types`), for the common single-type case.
+    public var type: PageType {
+      return types.first ?? .story
+    }
+
+    /// True if this page carries the given type.
+    public func includesType(_ type: PageType) -> Bool {
+      return types.contains(type)
+    }
+
+    /// True if this page is a cover page (any of its types is a cover type).
     public var isCover: Bool {
-      return type.isCover
+      return types.contains(where: \.isCover)
     }
 
     /// True if this page is a story page.
     public var isStory: Bool {
-      return type.isStory
+      return types.contains(where: \.isStory)
     }
 
     /// True if this page is deleted.
     public var isDeleted: Bool {
-      return type.isDeleted
+      return types.contains(where: \.isDeleted)
     }
 
     /// True if this is a double-page spread.
