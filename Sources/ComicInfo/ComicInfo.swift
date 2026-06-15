@@ -73,12 +73,6 @@ extension ComicInfo {
 /// Main entry point for loading ComicInfo data.
 public enum ComicInfo {
 
-  /// Version information for the ComicInfo.swift.
-  public enum Version {
-    /// The current version of the ComicInfo.swift.
-    public static let current = "1.0.2"
-  }
-
   /// Manga enum representing manga reading direction.
   public enum Manga: String, CaseIterable, Equatable, Codable {
     case unknown = "Unknown"
