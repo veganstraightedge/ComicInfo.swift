@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Internal: split the single-file `Sources/ComicInfo/ComicInfo.swift` into per-type files (`Errors`, `Enums`, `Page`, `Issue`, `Version`) mirroring the Ruby gem layout. No API or behavior change.
 - **Page `Type` is now multi-value** (the XSD `ComicPageType` is an `xs:list`): `Page.types: [PageType]` replaces the single `Page.type`, which is now a convenience getter (first type). A space-separated `Type="FrontCover Story"` parses to and serializes from multiple types. The Codable (JSON/YAML) key changes `type` → `types` (an array).
 
+### Security
+- **XXE hardening**: XML parsing no longer resolves external entities (`.nodeLoadExternalEntitiesNever`), preventing local-file disclosure and SSRF via a crafted ComicInfo.xml.
+
 ---
 
 ## [1.0.2] - 2026-06-14
