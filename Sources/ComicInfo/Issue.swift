@@ -673,7 +673,8 @@ extension ComicInfo {
           let pageElement = XMLElement(name: "Page")
 
           pageElement.addAttribute(XMLNode.attribute(withName: "Image", stringValue: String(page.image)) as! XMLNode)
-          pageElement.addAttribute(XMLNode.attribute(withName: "Type", stringValue: page.type.stringValue) as! XMLNode)
+          let typesValue = page.types.map(\.stringValue).joined(separator: " ")
+          pageElement.addAttribute(XMLNode.attribute(withName: "Type", stringValue: typesValue) as! XMLNode)
 
           if page.doublePage {
             pageElement.addAttribute(XMLNode.attribute(withName: "DoublePage", stringValue: "true") as! XMLNode)
@@ -916,9 +917,12 @@ extension ComicInfo {
           throw ComicInfoError.typeCoercionError(field: "Page.Image", value: imageAttr, expectedType: "Int")
         }
 
-        // Optional attributes with defaults
+        // Type is a space-separated list of values (XSD ComicPageType is xs:list).
         let typeValue = pageElement.attribute(forName: "Type")?.stringValue ?? "Story"
-        let type = try PageType.validated(from: typeValue)
+        let typeTokens = typeValue.split(whereSeparator: \.isWhitespace).map(String.init)
+        let types = try (typeTokens.isEmpty ? ["Story"] : typeTokens).map {
+          try PageType.validated(from: $0)
+        }
 
         let doublePageValue = pageElement.attribute(forName: "DoublePage")?.stringValue ?? "false"
         let doublePage = parseBoolean(doublePageValue, field: "DoublePage")
@@ -937,7 +941,7 @@ extension ComicInfo {
 
         let page = Page(
           image: image,
-          type: type,
+          types: types,
           doublePage: doublePage,
           imageSize: imageSize,
           key: key,
