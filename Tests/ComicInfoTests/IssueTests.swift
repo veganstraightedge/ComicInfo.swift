@@ -507,6 +507,31 @@ struct IssueTests {
     #expect(reimportedIssue.pages.count == issue.pages.count)
   }
 
+  @Test func testSaveToFileURL() throws {
+    let issue = try loadFixture("valid_minimal")
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    let url = directory.appendingPathComponent("nested/ComicInfo.xml")  // also exercises mkdir
+    defer { try? FileManager.default.removeItem(at: directory) }
+
+    try issue.save(to: url)
+
+    #expect(FileManager.default.fileExists(atPath: url.path))
+    let reloaded = try ComicInfo.load(from: url)
+    #expect(reloaded.title == issue.title)
+    #expect(reloaded.series == issue.series)
+  }
+
+  @Test func testSaveToPathString() throws {
+    let issue = try loadFixture("valid_minimal")
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    let path = directory.appendingPathComponent("ComicInfo.xml").path
+    defer { try? FileManager.default.removeItem(at: directory) }
+
+    try issue.save(to: path)
+
+    #expect(FileManager.default.fileExists(atPath: path))
+  }
+
   @Test func testXMLExportMinimal() throws {
     // Test XML export with minimal issue
     let issue = ComicInfo.Issue(

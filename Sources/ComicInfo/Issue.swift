@@ -711,6 +711,35 @@ extension ComicInfo {
       return xmlString
     }
 
+    /// Write the ComicInfo XML to a file URL, creating intermediate directories as needed.
+    ///
+    /// ```swift
+    /// try issue.save(to: URL(fileURLWithPath: "/path/to/ComicInfo.xml"))
+    /// ```
+    ///
+    /// - Parameter url: Destination file URL.
+    /// - Throws: `ComicInfoError.fileError` if the directory cannot be created or the write fails.
+    public func save(to url: URL) throws {
+      let xml = try toXMLString()
+      do {
+        let directory = url.deletingLastPathComponent()
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try xml.write(to: url, atomically: true, encoding: .utf8)
+      } catch let error as ComicInfoError {
+        throw error
+      } catch {
+        throw ComicInfoError.fileError("Failed to write to '\(url.path)': \(error.localizedDescription)")
+      }
+    }
+
+    /// Write the ComicInfo XML to a file path, creating intermediate directories as needed.
+    ///
+    /// - Parameter path: Destination file path.
+    /// - Throws: `ComicInfoError.fileError` if the directory cannot be created or the write fails.
+    public func save(to path: String) throws {
+      try save(to: URL(fileURLWithPath: path))
+    }
+
     /// Split comma-separated string into array of trimmed strings.
     private func splitCommaSeparated(_ text: String?) -> [String] {
       guard let text = text, !text.isEmpty else {
