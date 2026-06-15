@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **YAML export**: `Issue.toYAMLString()` for Ruby `to_yaml` parity, via the Yams library (first package dependency).
 - **Multi-value page `Type`**: `Page.includesType(_:)`, matching Ruby's `include_type?`.
+- **`Issue.save(to:)`**: write the ComicInfo XML to a file path or URL (creates intermediate directories), matching Ruby's `Issue#save`.
 
 ### Changed
 - Internal: split the single-file `Sources/ComicInfo/ComicInfo.swift` into per-type files (`Errors`, `Enums`, `Page`, `Issue`, `Version`) mirroring the Ruby gem layout. No API or behavior change.
