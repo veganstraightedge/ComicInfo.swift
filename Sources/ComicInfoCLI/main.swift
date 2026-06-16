@@ -145,7 +145,7 @@ struct Comicinfo: ParsableCommand {
     subcommands: [Read.self, Validate.self, Convert.self, Version.self]
   )
 
-  @Flag(name: .customShort("v"), help: "Show the version")
+  @Flag(name: .customShort("v"), help: "Show the version.")
   var showVersion = false
 
   func run() throws {
@@ -160,7 +160,7 @@ struct Comicinfo: ParsableCommand {
 struct Read: ParsableCommand {
   static let configuration = CommandConfiguration(abstract: "Display comic information")
 
-  @Argument(help: "Input: path/to/file, URL (http https file), or XML string")
+  @Argument(help: "\nInput: path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -171,7 +171,7 @@ struct Read: ParsableCommand {
 struct Validate: ParsableCommand {
   static let configuration = CommandConfiguration(abstract: "Validate a ComicInfo source")
 
-  @Argument(help: "Input: path/to/file, URL (http https file), or XML string")
+  @Argument(help: "\nInput: path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -202,7 +202,7 @@ struct Convert: ParsableCommand {
         comicinfo convert comic.yaml ComicInfo.xml   # from YAML to XML
       """)
 
-  @Argument(help: "Input: path/to/file, URL (http https file), or XML string")
+  @Argument(help: "\nInput: path/to/file, URL (http https file), or XML string")
   var input: String
 
   @Argument(help: "Output: STDOUT (default) or file path")
