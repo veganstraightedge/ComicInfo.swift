@@ -467,6 +467,27 @@ struct IssueTests {
     #expect(decodedIssue.pages.count == issue.pages.count)
   }
 
+  @Test func testCommunityRatingSerializesAsString() throws {
+    let issue = try loadFixture("valid_complete")
+    #expect(issue.communityRating == 4.25)
+
+    // JSON: the rating is a quoted string, not a bare number.
+    let json = try issue.toJSONString()
+    #expect(json.contains("\"communityRating\" : \"4.25\""))
+
+    // YAML: also a quoted string (Yams single-quotes it), with no Double scientific-notation
+    // artifact (e.g. 4.25e+0).
+    let yaml = try issue.toYAMLString()
+    #expect(yaml.contains("communityRating: '4.25'"))
+    #expect(!yaml.contains("e+0"))
+
+    // Both formats round-trip back to the in-memory Double.
+    let fromJSON = try JSONDecoder().decode(ComicInfo.Issue.self, from: Data(json.utf8))
+    #expect(fromJSON.communityRating == 4.25)
+    let fromYAML = try YAMLDecoder().decode(ComicInfo.Issue.self, from: yaml)
+    #expect(fromYAML.communityRating == 4.25)
+  }
+
   @Test func testCodableConformance() throws {
     // Test that Issue and Page conform to Codable properly
     let originalIssue = try loadFixture("valid_minimal")
