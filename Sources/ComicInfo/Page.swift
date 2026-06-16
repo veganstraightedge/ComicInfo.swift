@@ -6,7 +6,7 @@
 extension ComicInfo {
   /// Represents a single page in a comic book with metadata.
   public struct Page: Equatable, Hashable, Codable {
-    /// Page number or index (0-based)
+    /// Page number or index (0-based).
     public let image: Int
 
     /// Type classifications of this page.
@@ -15,22 +15,22 @@ extension ComicInfo {
     /// space-separated list of values; order is preserved. Defaults to `[.story]`.
     public let types: [PageType]
 
-    /// True if this is a double-page spread
+    /// True if this is a double-page spread.
     public let doublePage: Bool
 
-    /// File size in bytes (0 if unknown)
+    /// File size in bytes (0 if unknown).
     public let imageSize: Int
 
-    /// Optional key or identifier for the page
+    /// Optional key or identifier for the page.
     public let key: String
 
-    /// Bookmark text or annotation for the page
+    /// Bookmark text or annotation for the page.
     public let bookmark: String
 
-    /// Image width in pixels (-1 if unknown)
+    /// Image width in pixels (-1 if unknown).
     public let imageWidth: Int
 
-    /// Image height in pixels (-1 if unknown)
+    /// Image height in pixels (-1 if unknown).
     public let imageHeight: Int
 
     /// Initialize a new Page with one or more type classifications.

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Raised the minimum Swift toolchain to 6.3** (was 6.2); `swift-tools-version` and the documented requirement bumped to match.
+- **Lint warnings now gate builds**: `script/lint` and CI run `swift format lint --strict` (any finding fails). Cleared the outstanding doc-comment warnings to go green.
 - Repo housekeeping (no library/CLI behavior change): removed `scripts/install.sh` (no `curl | sh` installs) and the stale `scripts/` directory; rewrote `script/*` (`build` / `test` / `lint` / `format` / `run`) as thin Swift Package Manager wrappers, replacing the old Longbox/`xcodebuild` leftovers; trimmed the Makefile to build-from-source install helpers (dev now goes through `script/*`); extracted the README `## Usage` examples and `## API Reference` into `doc/*.md` files, each linked from a table of contents.
 
 ## [1.1.0] - 2026-06-15
