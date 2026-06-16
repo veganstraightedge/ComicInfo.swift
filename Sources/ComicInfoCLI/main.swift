@@ -115,9 +115,9 @@ struct Comicinfo: ParsableCommand {
         comicinfo read     ComicInfo.xml
         comicinfo read     https://example.com/ComicInfo.xml
         comicinfo validate ComicInfo.xml
-        comicinfo convert  ComicInfo.xml --json       # JSON to stdout
-        comicinfo convert  ComicInfo.xml comic.yml    # format from extension
-        comicinfo convert  comic.yaml ComicInfo.xml   # YAML -> XML
+        comicinfo convert  ComicInfo.xml --yml        # to STDOUT as YAML
+        comicinfo convert  ComicInfo.xml comic.json   # JSON from extension
+        comicinfo convert  comic.yaml ComicInfo.xml   # from YAML to XML
       """,
     subcommands: [Version.self, Read.self, Validate.self, Convert.self]
   )
@@ -137,7 +137,7 @@ struct Comicinfo: ParsableCommand {
 struct Read: ParsableCommand {
   static let configuration = CommandConfiguration(abstract: "Display comicbook information")
 
-  @Argument(help: "path/to/file, URL (http https file), or XML string")
+  @Argument(help: "A path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -148,7 +148,7 @@ struct Read: ParsableCommand {
 struct Validate: ParsableCommand {
   static let configuration = CommandConfiguration(abstract: "Validate a ComicInfo source")
 
-  @Argument(help: "path/to/file, URL (http https file), or XML string")
+  @Argument(help: "A path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -166,21 +166,22 @@ struct Convert: ParsableCommand {
     abstract: "Convert ComicInfo format: XML JSON YAML",
     usage: "comicinfo convert <input> [<output>] [--format <fmt> | --xml | --json | --yaml | --yml]",
     discussion: """
-      Output: STDOUT (default) or file
+        Output can be: STDOUT (default) or file
 
-      File output format is
-        inferred from extension: .xml .json .yaml .yml
-        or from flag:            --format
-        or from format aliases:  --xml --json --yaml --yml
-        (flags override inferred extension)
+        File output format is
+          inferred from extension: .xml .json .yaml .yml
+          or from format flag:     --format
+          or from format aliases:  --xml --json --yaml --yml
+          (flags override inferred extension)
 
       EXAMPLES:
-        comicinfo convert ComicInfo.xml comic.json   # JSON format from extension
-        comicinfo convert ComicInfo.xml --yaml       # to stdout as YAML
-        comicinfo convert comic.yaml ComicInfo.xml   # from YAML to XML
+        comicinfo convert ComicInfo.xml comic.json     # JSON from extension
+        comicinfo convert ComicInfo.xml --yaml         # to STDOUT as YAML
+        comicinfo convert ComicInfo.xml --format=yml   # to STDOUT as YAML
+        comicinfo convert comic.yaml ComicInfo.xml     # from YAML to XML
       """)
 
-  @Argument(help: "path/to/file, URL (http https file), or XML string")
+  @Argument(help: "A path/to/file, URL (http https file), or XML string")
   var input: String
 
   @Argument(help: "STDOUT (default) or file path")
