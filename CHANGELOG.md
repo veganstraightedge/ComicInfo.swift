@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-06-15
+
 ### Added
 - **YAML export**: `Issue.toYAMLString()` for Ruby `to_yaml` parity, via the Yams library (first package dependency).
 - **Multi-value page `Type`**: `Page.includesType(_:)`, matching Ruby's `include_type?`.
