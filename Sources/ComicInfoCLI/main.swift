@@ -144,6 +144,17 @@ struct Comicinfo: ParsableCommand {
     version: ComicInfo.Version.current,
     subcommands: [Read.self, Validate.self, Convert.self, Version.self]
   )
+
+  @Flag(name: .customShort("v"), help: "Show the version")
+  var showVersion = false
+
+  func run() throws {
+    if showVersion {
+      print(Self.configuration.version)
+      return
+    }
+    throw CleanExit.helpRequest(self)
+  }
 }
 
 struct Read: ParsableCommand {
