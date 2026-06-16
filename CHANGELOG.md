@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-06-16
+
 ### Changed
 - **`communityRating` now serializes as a string in JSON and YAML** (e.g. `"4.25"`), not a bare number. It remains a `Double?` in memory (validated 0–5) and round-trips symmetrically. This removes the YAML `4.25e+0` scientific-notation artifact (a Yams `Double` rendering quirk) and keeps the JSON and YAML representations uniform. Implemented via explicit `Issue.init(from:)` / `encode(to:)`.
 - **Raised the minimum Swift toolchain to 6.3** (was 6.2); `swift-tools-version` and the documented requirement bumped to match.
