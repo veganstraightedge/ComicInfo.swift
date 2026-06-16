@@ -187,6 +187,108 @@ extension ComicInfo {
       case title, translator, volume, webRawData, writer, year, pages
     }
 
+    /// Decodes an issue, reading `communityRating` as a string and validating it back into a `Double`.
+    public init(from decoder: Decoder) throws {
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+
+      ageRating = try container.decodeIfPresent(AgeRating.self, forKey: .ageRating)
+      alternateCount = try container.decodeIfPresent(Int.self, forKey: .alternateCount)
+      alternateNumber = try container.decodeIfPresent(String.self, forKey: .alternateNumber)
+      alternateSeries = try container.decodeIfPresent(String.self, forKey: .alternateSeries)
+      blackAndWhite = try container.decodeIfPresent(BlackAndWhite.self, forKey: .blackAndWhite)
+      charactersRawData = try container.decodeIfPresent(String.self, forKey: .charactersRawData)
+      colorist = try container.decodeIfPresent(String.self, forKey: .colorist)
+
+      if let ratingString = try container.decodeIfPresent(String.self, forKey: .communityRating) {
+        communityRating = try ComicInfo.validateCommunityRating(ratingString)
+      } else {
+        communityRating = nil
+      }
+
+      count = try container.decodeIfPresent(Int.self, forKey: .count)
+      coverArtist = try container.decodeIfPresent(String.self, forKey: .coverArtist)
+      day = try container.decodeIfPresent(Int.self, forKey: .day)
+      editor = try container.decodeIfPresent(String.self, forKey: .editor)
+      format = try container.decodeIfPresent(String.self, forKey: .format)
+      genreRawData = try container.decodeIfPresent(String.self, forKey: .genreRawData)
+      imprint = try container.decodeIfPresent(String.self, forKey: .imprint)
+      inker = try container.decodeIfPresent(String.self, forKey: .inker)
+      languageISO = try container.decodeIfPresent(String.self, forKey: .languageISO)
+      letterer = try container.decodeIfPresent(String.self, forKey: .letterer)
+      locationsRawData = try container.decodeIfPresent(String.self, forKey: .locationsRawData)
+      mainCharacterOrTeam = try container.decodeIfPresent(String.self, forKey: .mainCharacterOrTeam)
+      manga = try container.decodeIfPresent(Manga.self, forKey: .manga)
+      month = try container.decodeIfPresent(Int.self, forKey: .month)
+      notes = try container.decodeIfPresent(String.self, forKey: .notes)
+      number = try container.decodeIfPresent(String.self, forKey: .number)
+      pageCount = try container.decodeIfPresent(Int.self, forKey: .pageCount)
+      penciller = try container.decodeIfPresent(String.self, forKey: .penciller)
+      publisher = try container.decodeIfPresent(String.self, forKey: .publisher)
+      review = try container.decodeIfPresent(String.self, forKey: .review)
+      scanInformation = try container.decodeIfPresent(String.self, forKey: .scanInformation)
+      series = try container.decodeIfPresent(String.self, forKey: .series)
+      seriesGroup = try container.decodeIfPresent(String.self, forKey: .seriesGroup)
+      storyArc = try container.decodeIfPresent(String.self, forKey: .storyArc)
+      storyArcNumber = try container.decodeIfPresent(String.self, forKey: .storyArcNumber)
+      summary = try container.decodeIfPresent(String.self, forKey: .summary)
+      teamsRawData = try container.decodeIfPresent(String.self, forKey: .teamsRawData)
+      title = try container.decodeIfPresent(String.self, forKey: .title)
+      translator = try container.decodeIfPresent(String.self, forKey: .translator)
+      volume = try container.decodeIfPresent(Int.self, forKey: .volume)
+      webRawData = try container.decodeIfPresent(String.self, forKey: .webRawData)
+      writer = try container.decodeIfPresent(String.self, forKey: .writer)
+      year = try container.decodeIfPresent(Int.self, forKey: .year)
+      pages = try container.decode([Page].self, forKey: .pages)
+    }
+
+    /// Encodes the issue, writing `communityRating` as a string so JSON and YAML avoid `Double` formatting artifacts.
+    public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+
+      try container.encodeIfPresent(ageRating, forKey: .ageRating)
+      try container.encodeIfPresent(alternateCount, forKey: .alternateCount)
+      try container.encodeIfPresent(alternateNumber, forKey: .alternateNumber)
+      try container.encodeIfPresent(alternateSeries, forKey: .alternateSeries)
+      try container.encodeIfPresent(blackAndWhite, forKey: .blackAndWhite)
+      try container.encodeIfPresent(charactersRawData, forKey: .charactersRawData)
+      try container.encodeIfPresent(colorist, forKey: .colorist)
+      try container.encodeIfPresent(communityRating.map { String($0) }, forKey: .communityRating)
+      try container.encodeIfPresent(count, forKey: .count)
+      try container.encodeIfPresent(coverArtist, forKey: .coverArtist)
+      try container.encodeIfPresent(day, forKey: .day)
+      try container.encodeIfPresent(editor, forKey: .editor)
+      try container.encodeIfPresent(format, forKey: .format)
+      try container.encodeIfPresent(genreRawData, forKey: .genreRawData)
+      try container.encodeIfPresent(imprint, forKey: .imprint)
+      try container.encodeIfPresent(inker, forKey: .inker)
+      try container.encodeIfPresent(languageISO, forKey: .languageISO)
+      try container.encodeIfPresent(letterer, forKey: .letterer)
+      try container.encodeIfPresent(locationsRawData, forKey: .locationsRawData)
+      try container.encodeIfPresent(mainCharacterOrTeam, forKey: .mainCharacterOrTeam)
+      try container.encodeIfPresent(manga, forKey: .manga)
+      try container.encodeIfPresent(month, forKey: .month)
+      try container.encodeIfPresent(notes, forKey: .notes)
+      try container.encodeIfPresent(number, forKey: .number)
+      try container.encodeIfPresent(pageCount, forKey: .pageCount)
+      try container.encodeIfPresent(penciller, forKey: .penciller)
+      try container.encodeIfPresent(publisher, forKey: .publisher)
+      try container.encodeIfPresent(review, forKey: .review)
+      try container.encodeIfPresent(scanInformation, forKey: .scanInformation)
+      try container.encodeIfPresent(series, forKey: .series)
+      try container.encodeIfPresent(seriesGroup, forKey: .seriesGroup)
+      try container.encodeIfPresent(storyArc, forKey: .storyArc)
+      try container.encodeIfPresent(storyArcNumber, forKey: .storyArcNumber)
+      try container.encodeIfPresent(summary, forKey: .summary)
+      try container.encodeIfPresent(teamsRawData, forKey: .teamsRawData)
+      try container.encodeIfPresent(title, forKey: .title)
+      try container.encodeIfPresent(translator, forKey: .translator)
+      try container.encodeIfPresent(volume, forKey: .volume)
+      try container.encodeIfPresent(webRawData, forKey: .webRawData)
+      try container.encodeIfPresent(writer, forKey: .writer)
+      try container.encodeIfPresent(year, forKey: .year)
+      try container.encode(pages, forKey: .pages)
+    }
+
     /// Initialize a new Issue with the specified comic metadata.
     ///
     /// Creates a comic issue with all ComicInfo v2.0 schema fields. All parameters
