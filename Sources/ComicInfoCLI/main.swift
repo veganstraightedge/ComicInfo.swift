@@ -27,29 +27,6 @@ enum DataFormat: String, CaseIterable, ExpressibleByArgument {
   }
 }
 
-/// Output-format shorthand flags: `--xml` / `--json` / `--yaml` / `--yml`.
-enum FormatFlag: EnumerableFlag {
-  case xml
-  case json
-  case yaml
-
-  static func name(for value: FormatFlag) -> NameSpecification {
-    switch value {
-    case .xml: return [.customLong("xml")]
-    case .json: return [.customLong("json")]
-    case .yaml: return [.customLong("yaml"), .customLong("yml")]
-    }
-  }
-
-  var dataFormat: DataFormat {
-    switch self {
-    case .xml: return .xml
-    case .json: return .json
-    case .yaml: return .yaml
-    }
-  }
-}
-
 // MARK: - Errors
 
 enum CLIError: Error, LocalizedError {
@@ -128,6 +105,7 @@ struct Comicinfo: ParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "comicinfo",
     abstract: "\n  Read, validate, and convert ComicInfo.xml metadata",
+    usage: "comicinfo <subcommand>",
     discussion: """
         Input can be: path/to/file
                       URL: http https file
@@ -141,16 +119,15 @@ struct Comicinfo: ParsableCommand {
         comicinfo convert  ComicInfo.xml comic.yml    # format from extension
         comicinfo convert  comic.yaml ComicInfo.xml   # YAML -> XML
       """,
-    version: ComicInfo.Version.current,
-    subcommands: [Read.self, Validate.self, Convert.self, Version.self]
+    subcommands: [Version.self, Read.self, Validate.self, Convert.self]
   )
 
-  @Flag(name: .customShort("v"), help: "Show the version.")
+  @Flag(name: [.customShort("v"), .customLong("version")], help: "Show the version")
   var showVersion = false
 
   func run() throws {
     if showVersion {
-      print(Self.configuration.version)
+      print(ComicInfo.Version.current)
       return
     }
     throw CleanExit.helpRequest(self)
@@ -158,9 +135,9 @@ struct Comicinfo: ParsableCommand {
 }
 
 struct Read: ParsableCommand {
-  static let configuration = CommandConfiguration(abstract: "Display comic information")
+  static let configuration = CommandConfiguration(abstract: "Display comicbook information")
 
-  @Argument(help: "\nInput: path/to/file, URL (http https file), or XML string")
+  @Argument(help: "path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -171,7 +148,7 @@ struct Read: ParsableCommand {
 struct Validate: ParsableCommand {
   static let configuration = CommandConfiguration(abstract: "Validate a ComicInfo source")
 
-  @Argument(help: "\nInput: path/to/file, URL (http https file), or XML string")
+  @Argument(help: "path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -187,8 +164,9 @@ struct Validate: ParsableCommand {
 struct Convert: ParsableCommand {
   static let configuration = CommandConfiguration(
     abstract: "Convert ComicInfo format: XML JSON YAML",
+    usage: "comicinfo convert <input> [<output>] [--format <fmt> | --xml | --json | --yaml | --yml]",
     discussion: """
-      Default output: prints to STDOUT
+      Output: STDOUT (default) or file
 
       File output format is
         inferred from extension: .xml .json .yaml .yml
@@ -202,17 +180,23 @@ struct Convert: ParsableCommand {
         comicinfo convert comic.yaml ComicInfo.xml   # from YAML to XML
       """)
 
-  @Argument(help: "\nInput: path/to/file, URL (http https file), or XML string")
+  @Argument(help: "path/to/file, URL (http https file), or XML string")
   var input: String
 
-  @Argument(help: "Output: STDOUT (default) or file path")
+  @Argument(help: "STDOUT (default) or file path")
   var output: String?
 
-  @Option(name: .long, help: "Output format: xml json yaml")
+  @Option(name: .long, help: "Output format")
   var format: DataFormat?
 
-  @Flag(help: "Output format alias: --xml --json --yaml --yml")
-  var formatFlag: FormatFlag?
+  @Flag(name: .customLong("xml"), help: "Output as XML")
+  var xml = false
+
+  @Flag(name: .customLong("json"), help: "Output as JSON")
+  var json = false
+
+  @Flag(name: [.customLong("yaml"), .customLong("yml")], help: "Output as YAML")
+  var yaml = false
 
   func run() throws {
     let outputFormat = try resolveOutputFormat()
@@ -227,10 +211,16 @@ struct Convert: ParsableCommand {
 
   /// Resolve the output format from `--format`, a shorthand flag, or the output file extension.
   func resolveOutputFormat() throws -> DataFormat {
-    if let format, let flag = formatFlag?.dataFormat, format != flag {
-      throw ValidationError("Conflicting output formats: --format \(format.rawValue) and --\(flag.rawValue)")
+    let aliasFormats: [DataFormat] = [xml ? .xml : nil, json ? .json : nil, yaml ? .yaml : nil].compactMap { $0 }
+    guard aliasFormats.count <= 1 else {
+      throw ValidationError("Use only one output format alias: --xml --json --yaml --yml")
     }
-    if let explicit = format ?? formatFlag?.dataFormat {
+    let aliasFormat = aliasFormats.first
+
+    if let format, let aliasFormat, format != aliasFormat {
+      throw ValidationError("Conflicting output formats: --format \(format.rawValue) and --\(aliasFormat.rawValue)")
+    }
+    if let explicit = format ?? aliasFormat {
       return explicit
     }
     if let output, let inferred = DataFormat(fileExtension: URL(fileURLWithPath: output).pathExtension) {
