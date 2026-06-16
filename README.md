@@ -1,6 +1,10 @@
 # ComicInfo.swift
 
-A Swift package for reading and writing ComicInfo.xml files, following ComicInfo schema specifications from the [Anansi Project](https://github.com/anansi-project/comicinfo).
+A Swift package for reading and writing ComicInfo.xml files,
+following ComicInfo schema specifications from the
+[Anansi Project](https://github.com/anansi-project/comicinfo).
+
+A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also available.
 
 ![Swift](https://img.shields.io/badge/swift-6.2%2B-orange.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS-lightgrey.svg)
@@ -37,6 +41,7 @@ dependencies: [
 ```
 
 Or add it through Xcode:
+
 1. File → Add Package Dependencies
 2. Enter the repository URL
 3. Choose your version requirements
@@ -281,6 +286,7 @@ Represents a comic book issue with all metadata.
 #### Properties
 
 **Basic Info:**
+
 - `title: String?` - Issue title
 - `series: String?` - Series name
 - `number: String?` - Issue number
@@ -291,6 +297,7 @@ Represents a comic book issue with all metadata.
 - `day: Int?` - Publication day (1-31)
 
 **Creator Fields:**
+
 - `writer: String?` - Writer(s)
 - `penciller: String?` - Penciller(s)
 - `inker: String?` - Inker(s)
@@ -301,12 +308,14 @@ Represents a comic book issue with all metadata.
 - `translator: String?` - Translator(s)
 
 **Publication Info:**
+
 - `publisher: String?` - Publisher name
 - `imprint: String?` - Imprint name
 - `format: String?` - Publication format
 - `languageISO: String?` - Language code
 
 **Content Fields:**
+
 - `summary: String?` - Story summary
 - `notes: String?` - Additional notes
 - `review: String?` - Review text
@@ -316,6 +325,7 @@ Represents a comic book issue with all metadata.
 - `manga: Manga?` - Manga/reading direction
 
 **Multi-value Fields (String):**
+
 - `charactersRawData: String?` - Characters (comma-separated)
 - `teamsRawData: String?` - Teams (comma-separated)
 - `locationsRawData: String?` - Locations (comma-separated)
@@ -323,6 +333,7 @@ Represents a comic book issue with all metadata.
 - `webRawData: String?` - Web URLs (space-separated)
 
 **Multi-value Fields (Arrays):**
+
 - `characters: [String]` - Parsed character names
 - `teams: [String]` - Parsed team names
 - `locations: [String]` - Parsed location names
@@ -330,12 +341,14 @@ Represents a comic book issue with all metadata.
 - `webUrls: [URL]` - Parsed web URLs
 
 **Story Arc Fields:**
+
 - `storyArc: String?` - Story arc name
 - `storyArcNumber: String?` - Position in arc
 - `storyArcs: [String]` - Multiple story arcs
 - `storyArcNumbers: [String]` - Arc positions
 
 **Page Info:**
+
 - `pages: [Page]` - Page array
 - `pageCount: Int?` - Total page count
 
@@ -350,6 +363,7 @@ Represents a comic book issue with all metadata.
 - `publicationDate: Date?` - Computed publication date
 
 #### Methods
+
 - `toJSONString() throws -> String` - Export to JSON string
 - `toJSONData() throws -> Data` - Export to JSON data
 - `toXMLString() throws -> String` - Export to XML string
