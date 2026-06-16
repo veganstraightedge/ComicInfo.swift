@@ -17,7 +17,7 @@ This document describes the development process of the ComicInfo.swift package.
 
 ## Development Guidelines
 
-- **Swift Version**: 6.2+
+- **Swift Version**: 6.3+
 - **Testing Framework**: Swift Testing (not XCTest)
 - **Code Formatting**: `swift format`, use 2 spaces for level indentation
 - **Development Process**: TDD
@@ -224,7 +224,7 @@ public enum ComicInfo {  // Can't instantiate
 ## Resources
 
 - [Swift Testing Documentation](https://developer.apple.com/documentation/testing)
-- [Swift 6.2 Language Guide](https://docs.swift.org/swift-book/)
+- [Swift 6.3 Language Guide](https://docs.swift.org/swift-book/)
 - [Foundation XMLParser](https://developer.apple.com/documentation/foundation/xmlparser)
 - [ComicInfo Schema Specification](https://github.com/anansi-project/comicinfo)
 - [Ruby Source Code](https://github.com/veganstraightedge/comicinfo)

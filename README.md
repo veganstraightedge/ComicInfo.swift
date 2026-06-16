@@ -6,7 +6,7 @@ following ComicInfo schema specifications from the
 
 A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also available.
 
-![Swift](https://img.shields.io/badge/swift-6.2%2B-orange.svg)
+![Swift](https://img.shields.io/badge/swift-6.3%2B-orange.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS-lightgrey.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -20,11 +20,11 @@ A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also
 - ✅ **Comprehensive Validation**: Schema-compliant enum validation and type coercion
 - 🚨 **Detailed Error Handling**: Swift error types with helpful error messages
 - 📊 **Export Support**: JSON and property list serialization support
-- ⚡ **Swift 6 Ready**: Built with Swift 6.2+ and modern concurrency support
+- ⚡ **Swift 6 Ready**: Built with Swift 6.3+ and modern concurrency support
 
 ## Requirements
 
-- Swift 6.2+
+- Swift 6.3+
 - Foundation
 - XMLParser (included in Foundation)
 

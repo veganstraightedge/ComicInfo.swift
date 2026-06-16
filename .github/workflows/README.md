@@ -38,7 +38,7 @@ Runs comprehensive tests across multiple platforms and validates code quality.
 
 #### Requirements
 
-- **Xcode**: Latest (includes Swift 6.2+)
+- **Xcode**: Latest (includes Swift 6.3+)
 - **Platforms**: macOS 26, iOS 26, watchOS 26, tvOS 26
 - **Dependencies**: Foundation, XMLParser
 
