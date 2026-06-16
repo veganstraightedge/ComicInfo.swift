@@ -8,8 +8,9 @@ import Yams
 
 /// String extension for handling empty values in ComicInfo parsing
 extension String {
-  /// Returns nil if the string is empty, otherwise returns self
-  /// Used internally to convert empty XML text content to nil values
+  /// Returns nil if the string is empty, otherwise returns self.
+  ///
+  /// Used internally to convert empty XML text content to nil values.
   fileprivate var nilIfEmpty: String? {
     return self.isEmpty ? nil : self
   }

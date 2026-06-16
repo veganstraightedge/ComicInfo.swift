@@ -3,7 +3,7 @@ import Testing
 
 @testable import ComicInfo
 
-/// Tests for ComicInfo.Page functionality
+/// Tests for ComicInfo.Page functionality.
 struct PageTests {
 
   @Test func testPageInitializationWithRequiredImage() throws {
