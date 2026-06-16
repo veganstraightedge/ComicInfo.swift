@@ -48,223 +48,12 @@ Or add it through Xcode:
 
 ## Usage
 
-### Loading ComicInfo.xml Files
-
-```swift
-import ComicInfo
-
-// Load from file path
-let comic = try ComicInfo.load(from: "/path/to/ComicInfo.xml")
-
-// Load from URL
-let url = URL(fileURLWithPath: "/path/to/ComicInfo.xml")
-let comic = try ComicInfo.load(from: url)
-
-// Load asynchronously (Swift 6.2+)
-let comic = try await ComicInfo.load(from: url)
-
-// Load from XML string
-let xmlString = """
-<ComicInfo>
-  <Title>Amazing Spider-Man</Title>
-  <Series>Amazing Spider-Man</Series>
-  <Number>1</Number>
-  <Year>2023</Year>
-</ComicInfo>
-"""
-let comic = try ComicInfo.load(fromXML: xmlString)
-```
-
-### Accessing Issue Data
-
-```swift
-let issue = try ComicInfo.load(from: "ComicInfo.xml")
-
-// Basic properties
-print("Title: \(comic.title ?? "Unknown")")
-print("Series: \(comic.series ?? "Unknown")")
-print("Issue #: \(comic.number ?? "Unknown")")
-print("Year: \(comic.year ?? 0)")
-
-// Creator information
-print("Writer: \(comic.writer ?? "Unknown")")
-print("Artist: \(comic.penciller ?? "Unknown")")
-print("Publisher: \(comic.publisher ?? "Unknown")")
-
-// Multi-value fields (comma-separated in XML)
-let genres = comic.genres          // ["Action", "Adventure", "Superhero"]
-let characters = comic.characters  // ["Spider-Man", "Peter Parker"]
-let locations = comic.locations    // ["New York", "Manhattan"]
-
-// Boolean helpers
-if comics.isManga {
-  print("This is a manga")
-  if comics.isRightToLeft {
-    print("Read right-to-left")
-  }
-}
-
-if comics.isBlackAndWhite {
-  print("Black and white comic")
-}
-
-// Publication date
-if let pubDate = comic.publicationDate {
-  print("Published: \(pubDate)")
-}
-```
-
-### Working with Pages
-
-```swift
-let issue = try ComicInfo.load(from: "ComicInfo.xml")
-
-// Check if issue has page information
-if comic.hasPages {
-  print("Total pages: \(comic.pages.count)")
-
-  // Filter pages by type
-  let coverPages = comic.coverPages
-  let storyPages = comic.storyPages
-
-  print("Cover pages: \(coverPages.count)")
-  print("Story pages: \(storyPages.count)")
-
-  // Access individual pages
-  for page in comic.pages {
-    print("Page \(page.image): \(page.type)")
-
-    if page.isCover {
-      print("  This is a cover page")
-    }
-
-    if page.isDoublePage {
-      print("  Double-page spread")
-    }
-
-    if let (width, height) = page.dimensions,
-      page.dimensionsAvailable {
-      print("  Size: \(width)x\(height)")
-      if let ratio = page.aspectRatio {
-        print("  Aspect ratio: \(ratio)")
-      }
-    }
-  }
-}
-```
-
-### Export Functionality
-
-#### JSON Export
-
-```swift
-let comic = try ComicInfo.load(from: "ComicInfo.xml")
-
-// Export to JSON string
-let jsonString = try comic.toJSONString()
-print(jsonString)
-
-// Export to JSON data
-let jsonData = try comic.toJSONData()
-try jsonData.write(to: URL(fileURLWithPath: "output.json"))
-
-// Round-trip: JSON -> Issue
-let decoder = JSONDecoder()
-let reimported = try decoder.decode(ComicInfo.comic.self, from: jsonData)
-```
-
-#### XML Export
-
-```swift
-let comic = ComicInfo.Issue(
-  title: "My Comic",
-  series: "My Series",
-  number: "1",
-  year: 2023,
-  writer: "John Doe"
-)
-
-// Export to XML string
-let xmlString = try comic.toXMLString()
-print(xmlString)
-
-// Save to file
-try xmlString.write(
-  to: URL(fileURLWithPath: "ComicInfo.xml"),
-  atomically: true,
-  encoding: .utf8
-)
-
-// Round-trip: XML -> Issue -> XML
-let reimported = try ComicInfo.load(fromXML: xmlString)
-let xmlString2 = try reimported.toXMLString()
-```
-
-### Error Handling
-
-```swift
-do {
-  let comic = try ComicInfo.load(from: "ComicInfo.xml")
-  print("Loaded: \(comic.title ?? "Unknown")")
-} catch ComicInfoError.fileError(let message) {
-  print("File error: \(message)")
-} catch ComicInfoError.parseError(let message) {
-  print("Parse error: \(message)")
-} catch ComicInfoError.invalidEnum(let field, let value, let validValues) {
-  print("Invalid \(field): '\(value)'. Valid values: \(validValues)")
-} catch ComicInfoError.rangeError(let field, let value, let min, let max) {
-  print("\(field) value '\(value)' out of range (\(min)..\(max))")
-} catch {
-  print("Other error: \(error)")
-}
-```
-
-### Creating Issues Programmatically
-
-```swift
-import ComicInfo
-
-// Create a new comic issue
-let comic = ComicInfo.Issue(
-  ageRating: .teen,
-  colorist: "Steve Oliff",
-  charactersRawData: "Spider-Man, Peter Parker, Mary Jane Watson",
-  communityRating: 4.5,
-  count: 100,
-  coverArtist: "Todd McFarlane",
-  day: 15,
-  genreRawData: "Superhero, Action, Adventure",
-  inker: "Todd McFarlane",
-  languageISO: "en",
-  letterer: "Rick Parker",
-  locationsRawData: "New York City, Manhattan",
-  manga: .no,
-  month: 8,
-  notes: "First appearance of Venom",
-  number: "300",
-  pageCount: 22,
-  penciller: "Todd McFarlane",
-  publisher: "Marvel Comics",
-  series: "The Amazing Spider-Man",
-  summary: "Spider-Man faces his greatest challenge yet...",
-  title: "The Amazing Spider-Man",
-  volume: 1,
-  writer: "David Michelinie",
-  year: 1988,
-  pages: [
-    ComicInfo.Page(image: 0, type: .frontCover),
-    ComicInfo.Page(image: 1, type: .story),
-    ComicInfo.Page(image: 2, type: .story),
-    // ... more pages
-    ComicInfo.Page(image: 21, type: .backCover)
-  ]
-)
-
-// Export to XML
-let xml = try comic.toXMLString()
-try xml.write(to: URL(fileURLWithPath: "ComicInfo.xml"),
-              atomically: true, encoding: .utf8)
-```
+- [Loading ComicInfo.xml Files](doc/loading.md)
+- [Accessing Issue Data](doc/accessing-issue-data.md)
+- [Working with Pages](doc/working-with-pages.md)
+- [Export Functionality (JSON & XML)](doc/export.md)
+- [Error Handling](doc/error-handling.md)
+- [Creating Issues Programmatically](doc/creating-issues.md)
 
 ## API Reference
 
@@ -473,8 +262,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Follow TDD practices - write tests first
-4. Ensure all tests pass (`swift test`)
-5. Run `swift-format` on your code
+4. Ensure all tests pass (`script/test`)
+5. Run `script/format` on your code
 6. Commit your changes (`git commit -m 'Add amazing feature'`)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
@@ -484,32 +273,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Running Tests
 
 ```sh
-swift test
-```
-
-### Running Tests on iOS Simulator
-
-```sh
-# Generate Xcode project first
-swift package generate-xcodeproj
-
-# Run on iOS Simulator
-xcodebuild test \
-  -project ComicInfo.xcodeproj \
-  -scheme ComicInfo-Package \
-  -destination "platform=iOS Simulator,name=iPhone 26,OS=26.0"
+script/test
 ```
 
 ### Code Formatting
 
-This project uses `swift-format` for code formatting:
+This project uses `swift format` for code formatting:
 
 ```sh
 # Check formatting
-swift-format lint --recursive Sources Tests
+script/lint
 
 # Auto-format code
-swift-format format --recursive Sources Tests --in-place
+script/format
 ```
 
 ### Package Validation
@@ -527,10 +303,10 @@ swift package resolve
 swift package show-dependencies
 
 # Build in debug mode
-swift build --configuration debug
+script/build
 
 # Build in release mode
-swift build --configuration release
+script/build --configuration release
 ```
 
 ### Continuous Integration
@@ -538,7 +314,6 @@ swift build --configuration release
 The project uses GitHub Actions for CI with the following checks:
 
 - **macOS Tests**: Run full test suite on macOS 26
-- **iOS Tests**: Run tests on iOS 26 simulators (iPhone and iPad)
 - **Code Formatting**: Verify code follows formatting standards
 - **Package Validation**: Ensure package can be resolved and built
 
