@@ -64,7 +64,7 @@ enum CLIError: Error, LocalizedError {
 
 // MARK: - Loading / serializing
 
-/// Load an Issue from a file path, a URL (http(s)://, file://), or an XML string,
+/// Load an Issue from a file path, a URL (https:// http:// file://), or an XML string,
 /// detecting XML / JSON / YAML input by extension (or `<` prefix for an XML string).
 func loadIssue(from input: String) throws -> ComicInfo.Issue {
   // URL
@@ -127,17 +127,19 @@ func writeOutput(_ content: String, to path: String?) throws {
 struct Comicinfo: ParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "comicinfo",
-    abstract: "Read, validate, and convert ComicInfo.xml metadata.",
+    abstract: "\n  Read, validate, and convert ComicInfo.xml metadata",
     discussion: """
-      Inputs may be a file path, a URL (http(s):// or file://), or an XML string.
+        Input can be: path/to/file
+                      URL: http https file
+                      XML string
 
       EXAMPLES:
-        comicinfo read ComicInfo.xml
-        comicinfo read https://example.com/ComicInfo.xml
+        comicinfo read     ComicInfo.xml
+        comicinfo read     https://example.com/ComicInfo.xml
         comicinfo validate ComicInfo.xml
-        comicinfo convert ComicInfo.xml comic.yaml      # format from extension
-        comicinfo convert ComicInfo.xml --json          # JSON to stdout
-        comicinfo convert comic.yaml ComicInfo.xml      # YAML -> XML (was 'write')
+        comicinfo convert  ComicInfo.xml --json       # JSON to stdout
+        comicinfo convert  ComicInfo.xml comic.yml    # format from extension
+        comicinfo convert  comic.yaml ComicInfo.xml   # YAML -> XML
       """,
     version: ComicInfo.Version.current,
     subcommands: [Read.self, Validate.self, Convert.self, Version.self]
@@ -145,9 +147,9 @@ struct Comicinfo: ParsableCommand {
 }
 
 struct Read: ParsableCommand {
-  static let configuration = CommandConfiguration(abstract: "Display comic information.")
+  static let configuration = CommandConfiguration(abstract: "Display comic information")
 
-  @Argument(help: "Input: a file path (xml/json/yaml), a URL (http(s)://, file://), or an XML string.")
+  @Argument(help: "Input: path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -156,9 +158,9 @@ struct Read: ParsableCommand {
 }
 
 struct Validate: ParsableCommand {
-  static let configuration = CommandConfiguration(abstract: "Validate a ComicInfo source.")
+  static let configuration = CommandConfiguration(abstract: "Validate a ComicInfo source")
 
-  @Argument(help: "Input: a file path (xml/json/yaml), a URL (http(s)://, file://), or an XML string.")
+  @Argument(help: "Input: path/to/file, URL (http https file), or XML string")
   var input: String
 
   func run() throws {
@@ -173,28 +175,32 @@ struct Validate: ParsableCommand {
 
 struct Convert: ParsableCommand {
   static let configuration = CommandConfiguration(
-    abstract: "Convert a ComicInfo source between XML, JSON, and YAML.",
+    abstract: "Convert ComicInfo format: XML JSON YAML",
     discussion: """
-      The output format is taken from the output file's extension (.xml/.json/.yaml/.yml),
-      or set explicitly with --format / --xml / --json / --yaml / --yml (which overrides the
-      extension). Omit the output file to write to standard output.
+      Default output: prints to STDOUT
+
+      File output format is
+        inferred from extension: .xml .json .yaml .yml
+        or from flag:            --format
+        or from format aliases:  --xml --json --yaml --yml
+        (flags override inferred extension)
 
       EXAMPLES:
-        comicinfo convert ComicInfo.xml comic.json      # format from extension
-        comicinfo convert ComicInfo.xml --yaml          # to stdout
-        comicinfo convert comic.yaml ComicInfo.xml      # YAML -> XML
+        comicinfo convert ComicInfo.xml comic.json   # JSON format from extension
+        comicinfo convert ComicInfo.xml --yaml       # to stdout as YAML
+        comicinfo convert comic.yaml ComicInfo.xml   # from YAML to XML
       """)
 
-  @Argument(help: "Input: a file path (xml/json/yaml), a URL (http(s)://, file://), or an XML string.")
+  @Argument(help: "Input: path/to/file, URL (http https file), or XML string")
   var input: String
 
-  @Argument(help: "Output file path. Omit to write to standard output.")
+  @Argument(help: "Output: STDOUT (default) or file path")
   var output: String?
 
-  @Option(name: .long, help: "Output format: xml, json, or yaml.")
+  @Option(name: .long, help: "Output format: xml json yaml")
   var format: DataFormat?
 
-  @Flag(help: "Output format shorthand: --xml / --json / --yaml / --yml.")
+  @Flag(help: "Output format alias: --xml --json --yaml --yml")
   var formatFlag: FormatFlag?
 
   func run() throws {
@@ -211,7 +217,7 @@ struct Convert: ParsableCommand {
   /// Resolve the output format from `--format`, a shorthand flag, or the output file extension.
   func resolveOutputFormat() throws -> DataFormat {
     if let format, let flag = formatFlag?.dataFormat, format != flag {
-      throw ValidationError("Conflicting output formats: --format \(format.rawValue) and --\(flag.rawValue).")
+      throw ValidationError("Conflicting output formats: --format \(format.rawValue) and --\(flag.rawValue)")
     }
     if let explicit = format ?? formatFlag?.dataFormat {
       return explicit
@@ -220,17 +226,26 @@ struct Convert: ParsableCommand {
       return inferred
     }
     throw ValidationError(
-      "No output format. Provide an output file with a known extension (.xml/.json/.yaml/.yml), "
-        + "or pass --format / --xml / --json / --yaml / --yml.")
+      """
+        No output format.
+        Specify either file or format:
+          file with known extension: .xml .json .yaml .yml
+          flag: --format --xml --json --yaml --yml
+
+        Examples:
+          file:       ComicInfo.xml
+          flag:       --format=yml
+          flag alias: --json
+      """
+    )
   }
 }
 
 struct Version: ParsableCommand {
-  static let configuration = CommandConfiguration(abstract: "Show version information.")
+  static let configuration = CommandConfiguration(abstract: "Show version information")
 
   func run() {
-    print("comicinfo \(ComicInfo.Version.current)")
-    print("ComicInfo.swift Package")
+    print(ComicInfo.Version.current)
   }
 }
 
