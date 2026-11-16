@@ -109,7 +109,7 @@ public enum ComicInfo {
   /// - Parameter url: Local file URL or remote HTTP/HTTPS URL
   /// - Returns: Parsed Issue with all metadata
   /// - Throws: ComicInfoError.fileError for network/file issues, parseError for XML issues
-  @available(macOS 26, iOS 26, watchOS 26, tvOS 26, *)
+  @available(macOS 27, iOS 27, watchOS 27, tvOS 27, *)
   public static func load(from url: URL) async throws -> Issue {
     do {
       let (data, _) = try await URLSession.shared.data(from: url)

@@ -239,7 +239,7 @@ struct ComicInfoTests {
     #expect(ComicInfo.Version.current == "1.2.0")
   }
 
-  @available(macOS 26, iOS 26, watchOS 26, tvOS 26, *)
+  @available(macOS 27, iOS 27, watchOS 27, tvOS 27, *)
   @Test func testLoadFromURLAsync() async throws {
     // Test async loading from a file URL
     let testBundle = Bundle.module

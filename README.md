@@ -6,7 +6,7 @@ following ComicInfo schema specifications from the
 
 A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also available.
 
-![Swift](https://img.shields.io/badge/swift-6.3%2B-orange.svg)
+![Swift](https://img.shields.io/badge/swift-6.4%2B-orange.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20iOS-lightgrey.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -20,11 +20,11 @@ A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also
 - ✅ **Comprehensive Validation**: Schema-compliant enum validation and type coercion
 - 🚨 **Detailed Error Handling**: Swift error types with helpful error messages
 - 📊 **Export Support**: JSON and property list serialization support
-- ⚡ **Swift 6 Ready**: Built with Swift 6.3+ and modern concurrency support
+- ⚡ **Swift 6 Ready**: Built with Swift 6.4+ and modern concurrency support
 
 ## Requirements
 
-- Swift 6.3+
+- Swift 6.4+
 - Foundation
 - XMLParser (included in Foundation)
 
@@ -67,8 +67,8 @@ Or add it through Xcode:
 
 ## Platform Support
 
-- **macOS** 26+ (Tahoe)
-- **iOS** 26.0+
+- **macOS** 27+
+- **iOS** 27.0+
 
 ## License
 
@@ -135,7 +135,7 @@ script/build --configuration release
 
 The project uses GitHub Actions for CI with the following checks:
 
-- **macOS Tests**: Run full test suite on macOS 26
+- **macOS Tests**: Run full test suite on macOS 27
 - **Code Formatting**: Verify code follows formatting standards
 - **Package Validation**: Ensure package can be resolved and built
 
