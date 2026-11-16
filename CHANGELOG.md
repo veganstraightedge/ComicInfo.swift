@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`ComicInfo.NumericField`**: the numeric fields and their rules (Year 1000–9999, Month 1–12, Day 1–31, Community Rating 0–5, whole numbers for the counts) as public API. `validate(_:)` checks text, `int(from:)` / `double(from:)` return the number. Use it to check a value before building an `Issue`, for example text typed into a form.
+- **`Issue.validate()`**: throws `ComicInfoError.rangeError` when Year, Month, Day or Community Rating holds a value that loading would reject.
 
 ### Changed
 
+- **`toXMLString()` and `save(to:)` now refuse an `Issue` that could not be loaded back.** They call `validate()` first, so an issue built with, say, `year: 86` throws instead of writing a ComicInfo.xml that fails to load. JSON and YAML export are unchanged.
 - Loading uses `NumericField` for Year, Month, Day and Community Rating. A blank `<Year>` or `<CommunityRating>` element, or a Year with surrounding whitespace, now loads (as nil / the number) instead of throwing, matching Month and Day.
 
 ## [1.3.0] - 2026-11-16

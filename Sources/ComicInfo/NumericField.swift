@@ -82,6 +82,18 @@ extension ComicInfo {
       return number
     }
 
+    /// Checks a whole number already held by an issue; nil is valid.
+    func validate(_ number: Int?) throws {
+      guard let number else { return }
+      try checkRange(Double(number), text: String(number))
+    }
+
+    /// Checks a number already held by an issue; nil is valid.
+    func validate(_ number: Double?) throws {
+      guard let number else { return }
+      try checkRange(number, text: String(number))
+    }
+
     /// The smallest and largest accepted values, with the text used to report them.
     private var limits: (range: ClosedRange<Double>, min: String, max: String)? {
       switch self {

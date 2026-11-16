@@ -537,6 +537,20 @@ extension ComicInfo {
       return Calendar.current.date(from: components)
     }
 
+    /// Checks that every numeric value is one that loading would accept.
+    ///
+    /// An `Issue` built with the initializer can hold values that a ComicInfo.xml may not, such as
+    /// `year: 86`. `toXMLString()` and `save(to:)` call this, so they never write a file that
+    /// cannot be loaded back.
+    ///
+    /// - Throws: `ComicInfoError.rangeError` for the first value outside its field's range.
+    public func validate() throws {
+      try NumericField.communityRating.validate(communityRating)
+      try NumericField.day.validate(day)
+      try NumericField.month.validate(month)
+      try NumericField.year.validate(year)
+    }
+
     /// Export to JSON Data.
     /// - Returns: JSON Data representation of the Issue
     /// - Throws: EncodingError if the Issue cannot be encoded
@@ -588,8 +602,11 @@ extension ComicInfo {
     /// ```
     ///
     /// - Returns: XML String representation of the Issue
-    /// - Throws: ComicInfoError.parseError if XML generation fails
+    /// - Throws: ComicInfoError.parseError if XML generation fails, or
+    ///   ComicInfoError.rangeError if a value could not be loaded back (see `validate()`)
     public func toXMLString() throws -> String {
+      try validate()
+
       let document = AEXMLDocument()
 
       // Add schema attributes
