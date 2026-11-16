@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Issue.filename(template:)`**: a file name for the issue from a template such as `{series} #{number} ({year})` ("Saga #1 (2012)"). Missing values are left out along with the decoration around them, and `/` and `:` in values become `-`. `Issue.filenameTokens` lists the token names.
 - **`Issue.rearrangingPages(_:)`**: a copy of the issue with its `<Page>` entries and `PageCount` brought up to date after page images were reordered, deleted, or added. Entries follow their image to its new index, deleted pages lose theirs, and new pages get a default entry when the issue has page entries.
 
 ## [1.4.0] - 2026-11-16
