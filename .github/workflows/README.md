@@ -39,7 +39,7 @@ Runs comprehensive tests across multiple platforms and validates code quality.
 #### Requirements
 
 - **Xcode**: Latest (includes Swift 6.4+)
-- **Platforms**: macOS 27, iOS 27, watchOS 27, tvOS 27
+- **Platforms**: macOS 27, iOS 27
 - **Dependencies**: Foundation, XMLParser
 
 ## Platform Compatibility
@@ -48,8 +48,6 @@ The CI configuration is designed to work with GitHub Actions' available runners 
 
 - **macOS**: Tests run directly on macOS 27 runners
 - **iOS**: Tests run on iOS 27.0 simulators (iPhone and iPad)
-- **watchOS**: Tests run on watchOS 27.0 simulators
-- **tvOS**: Tests run on tvOS 27.0 simulators
 
 ## Debugging CI Issues
 
