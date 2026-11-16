@@ -14,16 +14,18 @@ Runs the tests on macOS and checks formatting and package structure.
    - Platform: `xcode-27` runner (macOS 27)
    - Uses Swift Package Manager directly (`swift build`, `swift test --parallel`)
 
-2. **lint** - Code formatting validation
+2. **build-ios** - Build the library for iOS
+   - `xcodebuild -scheme ComicInfo -destination "generic/platform=iOS" build`
+   - Build only; the tests run on macOS
+
+3. **lint** - Code formatting validation
    - `swift format lint --strict --recursive Sources Tests` (any finding fails)
 
-3. **package-validation** - Package integrity checks
+4. **package-validation** - Package integrity checks
    - Describes the package structure
    - Tests dependency resolution
    - Verifies debug and release builds
    - Checks that the core types and `load` are exported
-
-There is no iOS job. The package declares iOS but does not build for it yet, so nothing in CI covers iOS.
 
 #### Triggers
 
@@ -33,8 +35,8 @@ There is no iOS job. The package declares iOS but does not build for it yet, so 
 #### Requirements
 
 - **Xcode**: 27+ (includes Swift 6.4+)
-- **Platforms**: macOS 27
-- **Dependencies**: Foundation (`XMLDocument`), Yams, swift-argument-parser
+- **Platforms**: macOS 27, iOS 27
+- **Dependencies**: Foundation, AEXML, Yams, swift-argument-parser
 
 ## Debugging CI Issues
 
@@ -56,6 +58,6 @@ script/lint
 
 Potential improvements for the CI pipeline:
 
-- Add an iOS build, once the package builds for iOS
+- Run the tests on an iOS simulator
 - Add security scanning
 - Add multi-Swift-version testing matrix
