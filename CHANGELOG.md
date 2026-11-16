@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-11-16
+
 ### Added
 
 - **`Issue.filename(template:)`**: a file name for the issue from a template such as `{series} #{number} ({year})` ("Saga #1 (2012)"). Missing values are left out along with the decoration around them, and `/` and `:` in values become `-`. `Issue.filenameTokens` lists the token names.
