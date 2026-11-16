@@ -11,13 +11,13 @@ Runs comprehensive tests across multiple platforms and validates code quality.
 #### Jobs
 
 1. **test-macos** - Run tests on macOS
-   - Platform: `macos-26` runner
+   - Platform: `xcode-27` runner (macOS 27)
    - Uses Swift Package Manager directly
 
 2. **test-ios** - Run tests on iOS Simulator
-   - Platform: `macos-26` runner
+   - Platform: `xcode-27` runner (macOS 27)
    - Matrix strategy: iPhone 26 and iPad Pro 11-inch (M4)
-   - iOS version: 26.0
+   - iOS version: 27.0
    - Uses Xcode project generation for simulator testing
 
 3. **lint** - Code formatting validation
@@ -38,18 +38,18 @@ Runs comprehensive tests across multiple platforms and validates code quality.
 
 #### Requirements
 
-- **Xcode**: Latest (includes Swift 6.3+)
-- **Platforms**: macOS 26, iOS 26, watchOS 26, tvOS 26
+- **Xcode**: Latest (includes Swift 6.4+)
+- **Platforms**: macOS 27, iOS 27, watchOS 27, tvOS 27
 - **Dependencies**: Foundation, XMLParser
 
 ## Platform Compatibility
 
 The CI configuration is designed to work with GitHub Actions' available runners and simulators:
 
-- **macOS**: Tests run directly on macOS 26 runners
-- **iOS**: Tests run on iOS 26.0 simulators (iPhone and iPad)
-- **watchOS**: Tests run on watchOS 26.0 simulators
-- **tvOS**: Tests run on tvOS 26.0 simulators
+- **macOS**: Tests run directly on macOS 27 runners
+- **iOS**: Tests run on iOS 27.0 simulators (iPhone and iPad)
+- **watchOS**: Tests run on watchOS 27.0 simulators
+- **tvOS**: Tests run on tvOS 27.0 simulators
 
 ## Debugging CI Issues
 

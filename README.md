@@ -135,7 +135,7 @@ script/build --configuration release
 
 The project uses GitHub Actions for CI with the following checks:
 
-- **macOS Tests**: Run full test suite on macOS 26
+- **macOS Tests**: Run full test suite on macOS 27
 - **Code Formatting**: Verify code follows formatting standards
 - **Package Validation**: Ensure package can be resolved and built
 
