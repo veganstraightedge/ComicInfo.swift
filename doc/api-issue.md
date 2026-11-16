@@ -11,9 +11,16 @@ Represents a comic book issue with all metadata.
 - `number: String?` - Issue number
 - `volume: Int?` - Volume number
 - `count: Int?` - Total issues in series
-- `year: Int?` - Publication year
+- `year: Int?` - Publication year (1000-9999)
 - `month: Int?` - Publication month (1-12)
 - `day: Int?` - Publication day (1-31)
+
+**Alternate Series:**
+
+- `alternateSeries: String?` - Alternate series name
+- `alternateNumber: String?` - Issue number in the alternate series
+- `alternateCount: Int?` - Total issues in the alternate series
+- `seriesGroup: String?` - Group the series belongs to
 
 **Creator Fields:**
 
@@ -38,6 +45,8 @@ Represents a comic book issue with all metadata.
 - `summary: String?` - Story summary
 - `notes: String?` - Additional notes
 - `review: String?` - Review text
+- `scanInformation: String?` - Scan information
+- `mainCharacterOrTeam: String?` - Main character or team
 - `communityRating: Double?` - Rating (0.0-5.0)
 - `ageRating: AgeRating?` - Age rating enum
 - `blackAndWhite: BlackAndWhite?` - B&W status
@@ -61,10 +70,12 @@ Represents a comic book issue with all metadata.
 
 **Story Arc Fields:**
 
-- `storyArc: String?` - Story arc name
-- `storyArcNumber: String?` - Position in arc
-- `storyArcs: [String]` - Multiple story arcs
-- `storyArcNumbers: [String]` - Arc positions
+- `storyArc: String?` - Story arc name(s) (comma-separated)
+- `storyArcNumber: String?` - Position(s) in arc (comma-separated)
+- `storyArcs: [String]` - Parsed story arcs
+- `storyArcNumbers: [String]` - Parsed arc positions
+- `storyArcsRawData: String?` - Same as `storyArc`
+- `storyArcNumbersRawData: String?` - Same as `storyArcNumber`
 
 **Page Info:**
 
@@ -79,10 +90,17 @@ Represents a comic book issue with all metadata.
 - `hasPages: Bool` - True if pages array is not empty
 - `coverPages: [Page]` - Filter to cover pages only
 - `storyPages: [Page]` - Filter to story pages only
-- `publicationDate: Date?` - Computed publication date
+- `publicationDate: Date?` - Computed publication date (missing month or day defaults to 1)
 
 ## Methods
 
 - `toJSONString() throws -> String` - Export to JSON string
 - `toJSONData() throws -> Data` - Export to JSON data
+- `toYAMLString() throws -> String` - Export to YAML string
 - `toXMLString() throws -> String` - Export to XML string
+- `save(to: URL) throws` - Write ComicInfo XML to a file URL, creating directories as needed
+- `save(to: String) throws` - Write ComicInfo XML to a file path, creating directories as needed
+
+## Static Methods
+
+- `load(fromXML: String) throws -> Issue` - Load from XML string

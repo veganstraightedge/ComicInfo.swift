@@ -1,13 +1,16 @@
 # Creating Issues Programmatically
 
+Every argument is optional, but the ones you pass must be in the order shown
+here (alphabetical, with `pages` last).
+
 ```swift
 import ComicInfo
 
 // Create a new comic issue
-let comic = ComicInfo.Issue(
+let issue = ComicInfo.Issue(
   ageRating: .teen,
-  colorist: "Steve Oliff",
   charactersRawData: "Spider-Man, Peter Parker, Mary Jane Watson",
+  colorist: "Steve Oliff",
   communityRating: 4.5,
   count: 100,
   coverArtist: "Todd McFarlane",
@@ -39,8 +42,6 @@ let comic = ComicInfo.Issue(
   ]
 )
 
-// Export to XML
-let xml = try comic.toXMLString()
-try xml.write(to: URL(fileURLWithPath: "ComicInfo.xml"),
-              atomically: true, encoding: .utf8)
+// Write ComicInfo.xml
+try issue.save(to: "ComicInfo.xml")
 ```
