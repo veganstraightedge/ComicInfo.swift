@@ -26,7 +26,7 @@ A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also
 
 - Swift 6.4+
 - Foundation
-- `XMLDocument` (included in Foundation, macOS only; see [Platform Support](#platform-support))
+- [AEXML](https://github.com/tadija/AEXML) for XML reading and writing, and [Yams](https://github.com/jpsim/Yams) for YAML (both resolved by Swift Package Manager)
 
 ## Installation
 
@@ -68,7 +68,7 @@ Or add it through Xcode:
 ## Platform Support
 
 - **macOS** 27+
-- **iOS** 27.0+ is declared but does not build yet: reading and writing use `XMLDocument` / `XMLElement`, which Foundation only has on macOS.
+- **iOS** 27.0+
 
 ## License
 
@@ -136,6 +136,7 @@ script/build --configuration release
 The project uses GitHub Actions for CI with the following checks:
 
 - **macOS Tests**: Run full test suite on macOS 27
+- **iOS Build**: Build the library for iOS
 - **Code Formatting**: Verify code follows formatting standards
 - **Package Validation**: Ensure package can be resolved and built
 

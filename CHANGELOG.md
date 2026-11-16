@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **The package now builds for iOS.** It declared iOS but read and wrote XML with `XMLDocument` / `XMLElement`, which Foundation only has on macOS. CI now builds the library for iOS.
+
 ### Changed
+- **XML is read and written with [AEXML](https://github.com/tadija/AEXML)** (new dependency) instead of Foundation's `XMLDocument`. The public API is unchanged and the same documents load to the same values. The text of `toXMLString()` / `save(to:)` differs in formatting only: attributes are written in alphabetical order, `"` and `'` in text are escaped as `&quot;` / `&apos;`, newlines and tabs in text are written as `&#10;` / `&#9;`, empty elements self-close (`<Page ... />`), and the XML declaration carries `standalone="no"`.
 - **Raised the minimum Swift toolchain to 6.4** (was 6.3) **and the minimum platforms to macOS / iOS 27** (was 26); `swift-tools-version`, `platforms`, and the documented requirements bumped to match. Building needs Xcode 27+.
 - `platforms` now declares only macOS and iOS; the other Apple platforms are no longer declared or documented.
 - CI runs on GitHub's `xcode-27` runner (macOS 27, in preview); there is no `macos-27` label yet.

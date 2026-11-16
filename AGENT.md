@@ -160,8 +160,9 @@ ComicInfo.load(fromXML:) → Issue.load(fromXML:) → Issue(...)
 - Ruby truthiness → Swift explicit boolean checks
 
 ### XML Parsing
-- Ruby Nokogiri → Swift Foundation XMLDocument
-- Document-based parsing using XMLDocument
+- Ruby Nokogiri → [AEXML](https://github.com/tadija/AEXML) (`AEXMLDocument` / `AEXMLElement`), which works on macOS and iOS
+- Do not use Foundation's `XMLDocument` / `XMLElement`: they exist on macOS only
+- Document-based parsing using `AEXMLDocument`
 - Use `.flatMap { Int($0) }` for safe string-to-int conversion
 - Maintain Ruby's flexible loading API
 
@@ -208,12 +209,12 @@ ComicInfo.load(fromXML:) → Issue.load(fromXML:) → Issue(...)
 ### Safe Type Conversion
 ```swift
 // String to Int with nil on failure
-let count = root?.elements(forName: "Count").first?.stringValue.flatMap { Int($0) }
+let count = root.text(ofChild: "Count").flatMap { Int($0) }
 ```
 
 ### Optional Chaining for XML
 ```swift
-let title = root?.elements(forName: "Title").first?.stringValue
+let title = root.text(ofChild: "Title")
 ```
 
 ### Caseless Enum for Namespaces
@@ -227,6 +228,6 @@ public enum ComicInfo {  // Can't instantiate
 
 - [Swift Testing Documentation](https://developer.apple.com/documentation/testing)
 - [Swift 6.4 Language Guide](https://docs.swift.org/swift-book/)
-- [Foundation XMLDocument](https://developer.apple.com/documentation/foundation/xmldocument)
+- [AEXML](https://github.com/tadija/AEXML)
 - [ComicInfo Schema Specification](https://github.com/anansi-project/comicinfo)
 - [Ruby Source Code](https://github.com/veganstraightedge/comicinfo)
