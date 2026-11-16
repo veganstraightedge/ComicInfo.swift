@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ComicInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Title>Multiline Text</Title>
+  <Summary>First line of the summary.
+Second line, after a newline.
+
+Fourth line, after a blank one.	It also has a tab.</Summary>
+  <Notes><![CDATA[Notes in a CDATA section, with <angle brackets> & an ampersand.
+And a second line.]]></Notes>
+</ComicInfo>

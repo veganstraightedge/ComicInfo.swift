@@ -592,4 +592,18 @@ struct IssueTests {
     #expect(reimported.writer == issue.writer)
     #expect(reimported.charactersRawData == issue.charactersRawData)
   }
+
+  @Test func testMultilineTextAndCDATARoundTrip() throws {
+    let issue = try loadFixture("multiline_text")
+    let summary = try #require(issue.summary)
+    let notes = try #require(issue.notes)
+
+    #expect(summary.split(separator: "\n", omittingEmptySubsequences: false).count == 4)
+    #expect(summary.contains("blank one.\tIt also has a tab."))
+    #expect(notes == "Notes in a CDATA section, with <angle brackets> & an ampersand.\nAnd a second line.")
+
+    let reimported = try ComicInfo.load(fromXML: try issue.toXMLString())
+    #expect(reimported.summary == summary)
+    #expect(reimported.notes == notes)
+  }
 }
