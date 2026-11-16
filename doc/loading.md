@@ -10,7 +10,7 @@ let comic = try ComicInfo.load(from: "/path/to/ComicInfo.xml")
 let url = URL(fileURLWithPath: "/path/to/ComicInfo.xml")
 let comic = try ComicInfo.load(from: url)
 
-// Load asynchronously (Swift 6.4+)
+// Load asynchronously, from a local or remote URL
 let comic = try await ComicInfo.load(from: url)
 
 // Load from XML string

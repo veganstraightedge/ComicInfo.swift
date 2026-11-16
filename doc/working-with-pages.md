@@ -4,18 +4,18 @@
 let issue = try ComicInfo.load(from: "ComicInfo.xml")
 
 // Check if issue has page information
-if comic.hasPages {
-  print("Total pages: \(comic.pages.count)")
+if issue.hasPages {
+  print("Total pages: \(issue.pages.count)")
 
   // Filter pages by type
-  let coverPages = comic.coverPages
-  let storyPages = comic.storyPages
+  let coverPages = issue.coverPages
+  let storyPages = issue.storyPages
 
   print("Cover pages: \(coverPages.count)")
   print("Story pages: \(storyPages.count)")
 
   // Access individual pages
-  for page in comic.pages {
+  for page in issue.pages {
     print("Page \(page.image): \(page.type)")
 
     if page.isCover {
@@ -26,8 +26,9 @@ if comic.hasPages {
       print("  Double-page spread")
     }
 
-    if let (width, height) = page.dimensions,
-      page.dimensionsAvailable {
+    if let width = page.dimensions.width,
+      let height = page.dimensions.height
+    {
       print("  Size: \(width)x\(height)")
       if let ratio = page.aspectRatio {
         print("  Aspect ratio: \(ratio)")
@@ -35,4 +36,19 @@ if comic.hasPages {
     }
   }
 }
+```
+
+## Pages with more than one type
+
+The schema lets a page carry several types. `types` holds all of them in order,
+and `type` is the first one.
+
+```swift
+let page = ComicInfo.Page(image: 0, types: [.frontCover, .story])
+
+page.type                       // .frontCover
+page.types                      // [.frontCover, .story]
+page.includesType(.story)       // true
+page.isCover                    // true
+page.isStory                    // true
 ```

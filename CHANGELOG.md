@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Raised the minimum Swift toolchain to 6.4** (was 6.3) **and the minimum platforms to macOS / iOS 27** (was 26); `swift-tools-version`, `platforms`, and the documented requirements bumped to match. Building needs Xcode 27+.
 - `platforms` now declares only macOS and iOS; the other Apple platforms are no longer declared or documented.
 - CI runs on GitHub's `xcode-27` runner (macOS 27, in preview); there is no `macos-27` label yet.
+- Corrected the `doc/` guides and API reference: examples that did not compile (argument order, a mismatched variable name, tuple unpacking), and properties and methods that were missing (`types`, `includesType`, the alternate-series fields, `toYAMLString()`, `save(to:)`).
 
 ## [1.2.0] - 2026-06-16
 

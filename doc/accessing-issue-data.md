@@ -4,35 +4,35 @@
 let issue = try ComicInfo.load(from: "ComicInfo.xml")
 
 // Basic properties
-print("Title: \(comic.title ?? "Unknown")")
-print("Series: \(comic.series ?? "Unknown")")
-print("Issue #: \(comic.number ?? "Unknown")")
-print("Year: \(comic.year ?? 0)")
+print("Title: \(issue.title ?? "Unknown")")
+print("Series: \(issue.series ?? "Unknown")")
+print("Issue #: \(issue.number ?? "Unknown")")
+print("Year: \(issue.year ?? 0)")
 
 // Creator information
-print("Writer: \(comic.writer ?? "Unknown")")
-print("Artist: \(comic.penciller ?? "Unknown")")
-print("Publisher: \(comic.publisher ?? "Unknown")")
+print("Writer: \(issue.writer ?? "Unknown")")
+print("Artist: \(issue.penciller ?? "Unknown")")
+print("Publisher: \(issue.publisher ?? "Unknown")")
 
 // Multi-value fields (comma-separated in XML)
-let genres = comic.genres          // ["Action", "Adventure", "Superhero"]
-let characters = comic.characters  // ["Spider-Man", "Peter Parker"]
-let locations = comic.locations    // ["New York", "Manhattan"]
+let genres = issue.genres          // ["Action", "Adventure", "Superhero"]
+let characters = issue.characters  // ["Spider-Man", "Peter Parker"]
+let locations = issue.locations    // ["New York", "Manhattan"]
 
 // Boolean helpers
-if comics.isManga {
+if issue.isManga {
   print("This is a manga")
-  if comics.isRightToLeft {
+  if issue.isRightToLeft {
     print("Read right-to-left")
   }
 }
 
-if comics.isBlackAndWhite {
+if issue.isBlackAndWhite {
   print("Black and white comic")
 }
 
 // Publication date
-if let pubDate = comic.publicationDate {
-  print("Published: \(pubDate)")
+if let publicationDate = issue.publicationDate {
+  print("Published: \(publicationDate)")
 }
 ```
