@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-16
+
 ### Fixed
 - **The package now builds for iOS.** It declared iOS but read and wrote XML with `XMLDocument` / `XMLElement`, which Foundation only has on macOS. CI now builds the library for iOS.
 
