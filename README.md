@@ -19,14 +19,14 @@ A [`comicinfo`](https://github.com/veganstraightedge/comicinfo) Ruby gem is also
 - 📖 **Manga Support**: Right-to-left reading direction and manga-specific fields
 - ✅ **Comprehensive Validation**: Schema-compliant enum validation and type coercion
 - 🚨 **Detailed Error Handling**: Swift error types with helpful error messages
-- 📊 **Export Support**: JSON and property list serialization support
+- 📊 **Export Support**: JSON, YAML, and XML serialization
 - ⚡ **Swift 6 Ready**: Built with Swift 6.4+ and modern concurrency support
 
 ## Requirements
 
 - Swift 6.4+
 - Foundation
-- XMLParser (included in Foundation)
+- `XMLDocument` (included in Foundation, macOS only; see [Platform Support](#platform-support))
 
 ## Installation
 
@@ -68,11 +68,11 @@ Or add it through Xcode:
 ## Platform Support
 
 - **macOS** 27+
-- **iOS** 27.0+
+- **iOS** 27.0+ is declared but does not build yet: reading and writing use `XMLDocument` / `XMLElement`, which Foundation only has on macOS.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
 
 ## Acknowledgments
 

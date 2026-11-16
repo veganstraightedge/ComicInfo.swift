@@ -6,69 +6,56 @@ This directory contains the Continuous Integration (CI) configuration for the Co
 
 ### `ci.yml` - Main CI Pipeline
 
-Runs comprehensive tests across multiple platforms and validates code quality.
+Runs the tests on macOS and checks formatting and package structure.
 
 #### Jobs
 
-1. **test-macos** - Run tests on macOS
+1. **test-macos** - Build and run tests on macOS
    - Platform: `xcode-27` runner (macOS 27)
-   - Uses Swift Package Manager directly
+   - Uses Swift Package Manager directly (`swift build`, `swift test --parallel`)
 
-2. **test-ios** - Run tests on iOS Simulator
-   - Platform: `xcode-27` runner (macOS 27)
-   - Matrix strategy: iPhone 26 and iPad Pro 11-inch (M4)
-   - iOS version: 27.0
-   - Uses Xcode project generation for simulator testing
+2. **lint** - Code formatting validation
+   - `swift format lint --strict --recursive Sources Tests` (any finding fails)
 
-3. **lint** - Code formatting validation
-   - Checks code formatting with `swift format`
-   - Ensures consistent code style across the project
-
-4. **package-validation** - Package integrity checks
-   - Validates Swift package structure
+3. **package-validation** - Package integrity checks
+   - Describes the package structure
    - Tests dependency resolution
    - Verifies debug and release builds
-   - Tests package integration as a dependency
+   - Checks that the core types and `load` are exported
+
+There is no iOS job. The package declares iOS but does not build for it yet, so nothing in CI covers iOS.
 
 #### Triggers
 
-- Push to `main` branches
-- Pull requests to `main` branches
-- Manual workflow dispatch
+- Push to `main`
+- Pull requests
 
 #### Requirements
 
-- **Xcode**: Latest (includes Swift 6.4+)
-- **Platforms**: macOS 27, iOS 27
-- **Dependencies**: Foundation, XMLParser
-
-## Platform Compatibility
-
-The CI configuration is designed to work with GitHub Actions' available runners and simulators:
-
-- **macOS**: Tests run directly on macOS 27 runners
-- **iOS**: Tests run on iOS 27.0 simulators (iPhone and iPad)
+- **Xcode**: 27+ (includes Swift 6.4+)
+- **Platforms**: macOS 27
+- **Dependencies**: Foundation (`XMLDocument`), Yams, swift-argument-parser
 
 ## Debugging CI Issues
 
 ### Common Issues
 
-1. **Simulator not found**: Check available simulators in CI logs
-2. **Xcode version mismatch**: Ensure Xcode version supports target iOS/macOS versions
-3. **Swift version incompatibility**: Verify swift-tools-version in Package.swift
+1. **Xcode version mismatch**: Ensure the runner's Xcode supports the target macOS version
+2. **Swift version incompatibility**: Verify `swift-tools-version` in `Package.swift`
 
 ### Local Testing
 
-Test CI commands locally before pushing:
+Run the same checks locally before pushing:
 
 ```sh
-# Test macOS build
-swift test
+script/test
+script/lint
 ```
 
 ## Future Enhancements
 
 Potential improvements for the CI pipeline:
 
+- Add an iOS build, once the package builds for iOS
 - Add security scanning
 - Add multi-Swift-version testing matrix
