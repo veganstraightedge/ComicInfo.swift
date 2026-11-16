@@ -26,56 +26,6 @@ extension String {
 }
 
 extension ComicInfo {
-  fileprivate static func validateCommunityRating(_ value: String) throws -> Double {
-    guard let rating = Double(value) else {
-      throw ComicInfoError.typeCoercionError(field: "CommunityRating", value: value, expectedType: "Double")
-    }
-    if !(0.0...5.0).contains(rating) {
-      throw ComicInfoError.rangeError(field: "CommunityRating", value: value, min: "0.0", max: "5.0")
-    }
-    return rating
-  }
-
-  fileprivate static func validateYear(_ value: String) throws -> Int {
-    guard let year = Int(value) else {
-      throw ComicInfoError.typeCoercionError(field: "Year", value: value, expectedType: "Int")
-    }
-    if !(1000...9999).contains(year) {
-      throw ComicInfoError.rangeError(field: "Year", value: value, min: "1000", max: "9999")
-    }
-    return year
-  }
-
-  fileprivate static func validateMonth(_ value: String) throws -> Int {
-    let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !trimmed.isEmpty else {
-      return 0  // Default value for empty strings
-    }
-    guard let month = Int(trimmed) else {
-      throw ComicInfoError.typeCoercionError(field: "Month", value: value, expectedType: "Int")
-    }
-    if !(1...12).contains(month) {
-      throw ComicInfoError.rangeError(field: "Month", value: value, min: "1", max: "12")
-    }
-    return month
-  }
-
-  fileprivate static func validateDay(_ value: String) throws -> Int {
-    let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !trimmed.isEmpty else {
-      return 0  // Default value for empty strings
-    }
-    guard let day = Int(trimmed) else {
-      throw ComicInfoError.typeCoercionError(field: "Day", value: value, expectedType: "Int")
-    }
-    if !(1...31).contains(day) {
-      throw ComicInfoError.rangeError(field: "Day", value: value, min: "1", max: "31")
-    }
-    return day
-  }
-}
-
-extension ComicInfo {
   /// Represents a comic book issue with metadata from ComicInfo.xml.
   ///
   /// This structure contains all the metadata fields defined in the ComicInfo v2.0 schema,
@@ -209,7 +159,7 @@ extension ComicInfo {
       colorist = try container.decodeIfPresent(String.self, forKey: .colorist)
 
       if let ratingString = try container.decodeIfPresent(String.self, forKey: .communityRating) {
-        communityRating = try ComicInfo.validateCommunityRating(ratingString)
+        communityRating = try NumericField.communityRating.double(from: ratingString)
       } else {
         communityRating = nil
       }
@@ -587,6 +537,20 @@ extension ComicInfo {
       return Calendar.current.date(from: components)
     }
 
+    /// Checks that every numeric value is one that loading would accept.
+    ///
+    /// An `Issue` built with the initializer can hold values that a ComicInfo.xml may not, such as
+    /// `year: 86`. `toXMLString()` and `save(to:)` call this, so they never write a file that
+    /// cannot be loaded back.
+    ///
+    /// - Throws: `ComicInfoError.rangeError` for the first value outside its field's range.
+    public func validate() throws {
+      try NumericField.communityRating.validate(communityRating)
+      try NumericField.day.validate(day)
+      try NumericField.month.validate(month)
+      try NumericField.year.validate(year)
+    }
+
     /// Export to JSON Data.
     /// - Returns: JSON Data representation of the Issue
     /// - Throws: EncodingError if the Issue cannot be encoded
@@ -638,8 +602,11 @@ extension ComicInfo {
     /// ```
     ///
     /// - Returns: XML String representation of the Issue
-    /// - Throws: ComicInfoError.parseError if XML generation fails
+    /// - Throws: ComicInfoError.parseError if XML generation fails, or
+    ///   ComicInfoError.rangeError if a value could not be loaded back (see `validate()`)
     public func toXMLString() throws -> String {
+      try validate()
+
       let document = AEXMLDocument()
 
       // Add schema attributes
@@ -895,8 +862,8 @@ extension ComicInfo {
       ).nilIfEmpty
       let colorist = root.text(ofChild: "Colorist")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let communityRating = try root.text(ofChild: "CommunityRating").map {
-        try ComicInfo.validateCommunityRating($0)
+      let communityRating = try root.text(ofChild: "CommunityRating").flatMap {
+        try NumericField.communityRating.double(from: $0)
       }
       let count = root.text(ofChild: "Count").map {
         $0.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -906,10 +873,9 @@ extension ComicInfo {
       let coverArtist = root.text(ofChild: "CoverArtist")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let day = try root.text(ofChild: "Day").map {
-        let result = try ComicInfo.validateDay($0)
-        return result == 0 ? nil : result
-      }.flatMap { $0 }
+      let day = try root.text(ofChild: "Day").flatMap {
+        try NumericField.day.int(from: $0)
+      }
       let editor = root.text(ofChild: "Editor")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
       let format = root.text(ofChild: "Format")?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -934,10 +900,9 @@ extension ComicInfo {
       let manga = try root.text(ofChild: "Manga").map {
         try Manga.validated(from: $0)
       }
-      let month = try root.text(ofChild: "Month").map {
-        let result = try ComicInfo.validateMonth($0)
-        return result == 0 ? nil : result
-      }.flatMap { $0 }
+      let month = try root.text(ofChild: "Month").flatMap {
+        try NumericField.month.int(from: $0)
+      }
       let notes = root.text(ofChild: "Notes")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
       let number = root.text(ofChild: "Number")?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -980,8 +945,8 @@ extension ComicInfo {
         .nilIfEmpty
       let writer = root.text(ofChild: "Writer")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let year = try root.text(ofChild: "Year").map {
-        try ComicInfo.validateYear($0)
+      let year = try root.text(ofChild: "Year").flatMap {
+        try NumericField.year.int(from: $0)
       }
 
       // Parse Pages

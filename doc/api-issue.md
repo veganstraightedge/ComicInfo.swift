@@ -94,10 +94,11 @@ Represents a comic book issue with all metadata.
 
 ## Methods
 
+- `validate() throws` - Throws `rangeError` if a numeric value is one that loading would reject
 - `toJSONString() throws -> String` - Export to JSON string
 - `toJSONData() throws -> Data` - Export to JSON data
 - `toYAMLString() throws -> String` - Export to YAML string
-- `toXMLString() throws -> String` - Export to XML string
+- `toXMLString() throws -> String` - Export to XML string (calls `validate()` first)
 - `save(to: URL) throws` - Write ComicInfo XML to a file URL, creating directories as needed
 - `save(to: String) throws` - Write ComicInfo XML to a file path, creating directories as needed
 
