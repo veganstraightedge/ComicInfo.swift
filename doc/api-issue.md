@@ -94,6 +94,7 @@ Represents a comic book issue with all metadata.
 
 ## Methods
 
+- `rearrangingPages(_: [Int?]) -> Issue` - Copy with `pages` and `pageCount` updated after page images were reordered, deleted or added; each element is the image's previous index, or nil if new
 - `validate() throws` - Throws `rangeError` if a numeric value is one that loading would reject
 - `toJSONString() throws -> String` - Export to JSON string
 - `toJSONData() throws -> Data` - Export to JSON data
