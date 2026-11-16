@@ -3,8 +3,17 @@
 // ComicInfo
 //
 
+import AEXML
 import Foundation
 import Yams
+
+extension AEXMLElement {
+  /// Text of the first child element with this name: nil when there is no such child, and an empty
+  /// string when the child is present but empty.
+  fileprivate func text(ofChild name: String) -> String? {
+    children.first { $0.name == name }.map { $0.value ?? "" }
+  }
+}
 
 /// String extension for handling empty values in ComicInfo parsing
 extension String {
@@ -631,187 +640,172 @@ extension ComicInfo {
     /// - Returns: XML String representation of the Issue
     /// - Throws: ComicInfoError.parseError if XML generation fails
     public func toXMLString() throws -> String {
-      let document = XMLDocument(kind: .document)
-      document.version = "1.0"
-      document.characterEncoding = "utf-8"
-
-      let root = XMLElement(name: "ComicInfo")
-      document.setRootElement(root)
+      let document = AEXMLDocument()
 
       // Add schema attributes
-      root.addAttribute(
-        XMLNode.attribute(withName: "xmlns:xsi", stringValue: "http://www.w3.org/2001/XMLSchema-instance") as! XMLNode)
-      root.addAttribute(
-        XMLNode.attribute(withName: "xmlns:xsd", stringValue: "http://www.w3.org/2001/XMLSchema") as! XMLNode)
+      let schemaAttributes = [
+        "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+        "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+      ]
+      let root = document.addChild(name: "ComicInfo", attributes: schemaAttributes)
 
       // Add all properties in alphabetical order (matching ComicInfo standard)
       if let ageRating = self.ageRating {
-        root.addChild(XMLElement(name: "AgeRating", stringValue: ageRating.stringValue))
+        root.addChild(name: "AgeRating", value: ageRating.stringValue)
       }
       if let alternateCount = self.alternateCount {
-        root.addChild(XMLElement(name: "AlternateCount", stringValue: String(alternateCount)))
+        root.addChild(name: "AlternateCount", value: String(alternateCount))
       }
       if let alternateNumber = self.alternateNumber {
-        root.addChild(XMLElement(name: "AlternateNumber", stringValue: alternateNumber))
+        root.addChild(name: "AlternateNumber", value: alternateNumber)
       }
       if let alternateSeries = self.alternateSeries {
-        root.addChild(XMLElement(name: "AlternateSeries", stringValue: alternateSeries))
+        root.addChild(name: "AlternateSeries", value: alternateSeries)
       }
       if let blackAndWhite = self.blackAndWhite {
-        root.addChild(XMLElement(name: "BlackAndWhite", stringValue: blackAndWhite.stringValue))
+        root.addChild(name: "BlackAndWhite", value: blackAndWhite.stringValue)
       }
       if let charactersRawData = self.charactersRawData {
-        root.addChild(XMLElement(name: "Characters", stringValue: charactersRawData))
+        root.addChild(name: "Characters", value: charactersRawData)
       }
       if let colorist = self.colorist {
-        root.addChild(XMLElement(name: "Colorist", stringValue: colorist))
+        root.addChild(name: "Colorist", value: colorist)
       }
       if let communityRating = self.communityRating {
-        root.addChild(XMLElement(name: "CommunityRating", stringValue: String(communityRating)))
+        root.addChild(name: "CommunityRating", value: String(communityRating))
       }
       if let count = self.count {
-        root.addChild(XMLElement(name: "Count", stringValue: String(count)))
+        root.addChild(name: "Count", value: String(count))
       }
       if let coverArtist = self.coverArtist {
-        root.addChild(XMLElement(name: "CoverArtist", stringValue: coverArtist))
+        root.addChild(name: "CoverArtist", value: coverArtist)
       }
       if let day = self.day {
-        root.addChild(XMLElement(name: "Day", stringValue: String(day)))
+        root.addChild(name: "Day", value: String(day))
       }
       if let editor = self.editor {
-        root.addChild(XMLElement(name: "Editor", stringValue: editor))
+        root.addChild(name: "Editor", value: editor)
       }
       if let format = self.format {
-        root.addChild(XMLElement(name: "Format", stringValue: format))
+        root.addChild(name: "Format", value: format)
       }
       if let genreRawData = self.genreRawData {
-        root.addChild(XMLElement(name: "Genre", stringValue: genreRawData))
+        root.addChild(name: "Genre", value: genreRawData)
       }
       if let imprint = self.imprint {
-        root.addChild(XMLElement(name: "Imprint", stringValue: imprint))
+        root.addChild(name: "Imprint", value: imprint)
       }
       if let inker = self.inker {
-        root.addChild(XMLElement(name: "Inker", stringValue: inker))
+        root.addChild(name: "Inker", value: inker)
       }
       if let languageISO = self.languageISO {
-        root.addChild(XMLElement(name: "LanguageISO", stringValue: languageISO))
+        root.addChild(name: "LanguageISO", value: languageISO)
       }
       if let letterer = self.letterer {
-        root.addChild(XMLElement(name: "Letterer", stringValue: letterer))
+        root.addChild(name: "Letterer", value: letterer)
       }
       if let locationsRawData = self.locationsRawData {
-        root.addChild(XMLElement(name: "Locations", stringValue: locationsRawData))
+        root.addChild(name: "Locations", value: locationsRawData)
       }
       if let mainCharacterOrTeam = self.mainCharacterOrTeam {
-        root.addChild(XMLElement(name: "MainCharacterOrTeam", stringValue: mainCharacterOrTeam))
+        root.addChild(name: "MainCharacterOrTeam", value: mainCharacterOrTeam)
       }
       if let manga = self.manga {
-        root.addChild(XMLElement(name: "Manga", stringValue: manga.stringValue))
+        root.addChild(name: "Manga", value: manga.stringValue)
       }
       if let month = self.month {
-        root.addChild(XMLElement(name: "Month", stringValue: String(month)))
+        root.addChild(name: "Month", value: String(month))
       }
       if let notes = self.notes {
-        root.addChild(XMLElement(name: "Notes", stringValue: notes))
+        root.addChild(name: "Notes", value: notes)
       }
       if let number = self.number {
-        root.addChild(XMLElement(name: "Number", stringValue: number))
+        root.addChild(name: "Number", value: number)
       }
       if let pageCount = self.pageCount {
-        root.addChild(XMLElement(name: "PageCount", stringValue: String(pageCount)))
+        root.addChild(name: "PageCount", value: String(pageCount))
       }
       if let penciller = self.penciller {
-        root.addChild(XMLElement(name: "Penciller", stringValue: penciller))
+        root.addChild(name: "Penciller", value: penciller)
       }
       if let publisher = self.publisher {
-        root.addChild(XMLElement(name: "Publisher", stringValue: publisher))
+        root.addChild(name: "Publisher", value: publisher)
       }
       if let review = self.review {
-        root.addChild(XMLElement(name: "Review", stringValue: review))
+        root.addChild(name: "Review", value: review)
       }
       if let scanInformation = self.scanInformation {
-        root.addChild(XMLElement(name: "ScanInformation", stringValue: scanInformation))
+        root.addChild(name: "ScanInformation", value: scanInformation)
       }
       if let series = self.series {
-        root.addChild(XMLElement(name: "Series", stringValue: series))
+        root.addChild(name: "Series", value: series)
       }
       if let seriesGroup = self.seriesGroup {
-        root.addChild(XMLElement(name: "SeriesGroup", stringValue: seriesGroup))
+        root.addChild(name: "SeriesGroup", value: seriesGroup)
       }
       if let storyArc = self.storyArc {
-        root.addChild(XMLElement(name: "StoryArc", stringValue: storyArc))
+        root.addChild(name: "StoryArc", value: storyArc)
       }
       if let storyArcNumber = self.storyArcNumber {
-        root.addChild(XMLElement(name: "StoryArcNumber", stringValue: storyArcNumber))
+        root.addChild(name: "StoryArcNumber", value: storyArcNumber)
       }
       if let summary = self.summary {
-        root.addChild(XMLElement(name: "Summary", stringValue: summary))
+        root.addChild(name: "Summary", value: summary)
       }
       if let teamsRawData = self.teamsRawData {
-        root.addChild(XMLElement(name: "Teams", stringValue: teamsRawData))
+        root.addChild(name: "Teams", value: teamsRawData)
       }
       if let title = self.title {
-        root.addChild(XMLElement(name: "Title", stringValue: title))
+        root.addChild(name: "Title", value: title)
       }
       if let translator = self.translator {
-        root.addChild(XMLElement(name: "Translator", stringValue: translator))
+        root.addChild(name: "Translator", value: translator)
       }
       if let volume = self.volume {
-        root.addChild(XMLElement(name: "Volume", stringValue: String(volume)))
+        root.addChild(name: "Volume", value: String(volume))
       }
       if let webRawData = self.webRawData {
-        root.addChild(XMLElement(name: "Web", stringValue: webRawData))
+        root.addChild(name: "Web", value: webRawData)
       }
       if let writer = self.writer {
-        root.addChild(XMLElement(name: "Writer", stringValue: writer))
+        root.addChild(name: "Writer", value: writer)
       }
       if let year = self.year {
-        root.addChild(XMLElement(name: "Year", stringValue: String(year)))
+        root.addChild(name: "Year", value: String(year))
       }
 
       // Add Pages element if there are any pages
       if !pages.isEmpty {
-        let pagesElement = XMLElement(name: "Pages")
+        let pagesElement = root.addChild(name: "Pages")
         for page in pages {
-          let pageElement = XMLElement(name: "Page")
+          let pageElement = pagesElement.addChild(name: "Page")
 
-          pageElement.addAttribute(XMLNode.attribute(withName: "Image", stringValue: String(page.image)) as! XMLNode)
+          pageElement.attributes["Image"] = String(page.image)
           let typesValue = page.types.map(\.stringValue).joined(separator: " ")
-          pageElement.addAttribute(XMLNode.attribute(withName: "Type", stringValue: typesValue) as! XMLNode)
+          pageElement.attributes["Type"] = typesValue
 
           if page.doublePage {
-            pageElement.addAttribute(XMLNode.attribute(withName: "DoublePage", stringValue: "true") as! XMLNode)
+            pageElement.attributes["DoublePage"] = "true"
           }
           if page.imageSize != 0 {
-            pageElement.addAttribute(
-              XMLNode.attribute(withName: "ImageSize", stringValue: String(page.imageSize)) as! XMLNode)
+            pageElement.attributes["ImageSize"] = String(page.imageSize)
           }
           if !page.key.isEmpty {
-            pageElement.addAttribute(XMLNode.attribute(withName: "Key", stringValue: page.key) as! XMLNode)
+            pageElement.attributes["Key"] = page.key
           }
           if !page.bookmark.isEmpty {
-            pageElement.addAttribute(XMLNode.attribute(withName: "Bookmark", stringValue: page.bookmark) as! XMLNode)
+            pageElement.attributes["Bookmark"] = page.bookmark
           }
           if page.imageWidth != -1 {
-            pageElement.addAttribute(
-              XMLNode.attribute(withName: "ImageWidth", stringValue: String(page.imageWidth)) as! XMLNode)
+            pageElement.attributes["ImageWidth"] = String(page.imageWidth)
           }
           if page.imageHeight != -1 {
-            pageElement.addAttribute(
-              XMLNode.attribute(withName: "ImageHeight", stringValue: String(page.imageHeight)) as! XMLNode)
+            pageElement.attributes["ImageHeight"] = String(page.imageHeight)
           }
-
-          pagesElement.addChild(pageElement)
         }
-        root.addChild(pagesElement)
       }
 
-      let xmlData = document.xmlData(options: [.nodePrettyPrint])
-      guard let xmlString = String(data: xmlData, encoding: .utf8) else {
-        throw ComicInfoError.parseError("Failed to convert XML data to string")
-      }
-
-      return xmlString
+      return document.xmlSpaces
     }
 
     /// Write the ComicInfo XML to a file URL, creating intermediate directories as needed.
@@ -861,15 +855,21 @@ extension ComicInfo {
         throw ComicInfoError.parseError("Could not convert XML to data")
       }
 
-      let document: XMLDocument
+      // Never resolve external entities: prevents XXE local-file disclosure / SSRF.
+      // Keep whitespace as written; each field decides below whether to trim.
+      var options = AEXMLOptions()
+      options.parserSettings.shouldResolveExternalEntities = false
+      options.parserSettings.shouldTrimWhitespace = false
+
+      let document: AEXMLDocument
       do {
-        // Never resolve external entities: prevents XXE local-file disclosure / SSRF.
-        document = try XMLDocument(data: data, options: [.nodeLoadExternalEntitiesNever])
+        document = try AEXMLDocument(xml: data, options: options)
       } catch {
         throw ComicInfoError.parseError("Invalid XML syntax: \(error.localizedDescription)")
       }
 
-      guard let root = document.rootElement() else {
+      let root = document.root
+      guard root.error == nil else {
         throw ComicInfoError.parseError("No root element found")
       }
 
@@ -877,110 +877,110 @@ extension ComicInfo {
         throw ComicInfoError.parseError("No ComicInfo root element found")
       }
 
-      let ageRating = try root.elements(forName: "AgeRating").first?.stringValue.map {
+      let ageRating = try root.text(ofChild: "AgeRating").map {
         try AgeRating.validated(from: $0)
       }
-      let alternateCount = root.elements(forName: "AlternateCount").first?.stringValue.flatMap { Int($0) }
-      let alternateNumber = root.elements(forName: "AlternateNumber").first?.stringValue?.trimmingCharacters(
+      let alternateCount = root.text(ofChild: "AlternateCount").flatMap { Int($0) }
+      let alternateNumber = root.text(ofChild: "AlternateNumber")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let alternateSeries = root.elements(forName: "AlternateSeries").first?.stringValue?.trimmingCharacters(
+      let alternateSeries = root.text(ofChild: "AlternateSeries")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let blackAndWhite = try root.elements(forName: "BlackAndWhite").first?.stringValue.map {
+      let blackAndWhite = try root.text(ofChild: "BlackAndWhite").map {
         try BlackAndWhite.validated(from: $0)
       }
-      let charactersRawData = root.elements(forName: "Characters").first?.stringValue?.trimmingCharacters(
+      let charactersRawData = root.text(ofChild: "Characters")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let colorist = root.elements(forName: "Colorist").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let colorist = root.text(ofChild: "Colorist")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let communityRating = try root.elements(forName: "CommunityRating").first?.stringValue.map {
+      let communityRating = try root.text(ofChild: "CommunityRating").map {
         try ComicInfo.validateCommunityRating($0)
       }
-      let count = root.elements(forName: "Count").first?.stringValue.map {
+      let count = root.text(ofChild: "Count").map {
         $0.trimmingCharacters(in: .whitespacesAndNewlines)
       }.flatMap { trimmed in
         trimmed.isEmpty ? nil : Int(trimmed)
       }
-      let coverArtist = root.elements(forName: "CoverArtist").first?.stringValue?.trimmingCharacters(
+      let coverArtist = root.text(ofChild: "CoverArtist")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let day = try root.elements(forName: "Day").first?.stringValue.map {
+      let day = try root.text(ofChild: "Day").map {
         let result = try ComicInfo.validateDay($0)
         return result == 0 ? nil : result
       }.flatMap { $0 }
-      let editor = root.elements(forName: "Editor").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let editor = root.text(ofChild: "Editor")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let format = root.elements(forName: "Format").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let format = root.text(ofChild: "Format")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let genreRawData = root.elements(forName: "Genre").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let genreRawData = root.text(ofChild: "Genre")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let imprint = root.elements(forName: "Imprint").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let imprint = root.text(ofChild: "Imprint")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let inker = root.elements(forName: "Inker").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let inker = root.text(ofChild: "Inker")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let languageISO = root.elements(forName: "LanguageISO").first?.stringValue?.trimmingCharacters(
+      let languageISO = root.text(ofChild: "LanguageISO")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let letterer = root.elements(forName: "Letterer").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let letterer = root.text(ofChild: "Letterer")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let locationsRawData = root.elements(forName: "Locations").first?.stringValue?.trimmingCharacters(
+      let locationsRawData = root.text(ofChild: "Locations")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let mainCharacterOrTeam = root.elements(forName: "MainCharacterOrTeam").first?.stringValue?.trimmingCharacters(
+      let mainCharacterOrTeam = root.text(ofChild: "MainCharacterOrTeam")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let manga = try root.elements(forName: "Manga").first?.stringValue.map {
+      let manga = try root.text(ofChild: "Manga").map {
         try Manga.validated(from: $0)
       }
-      let month = try root.elements(forName: "Month").first?.stringValue.map {
+      let month = try root.text(ofChild: "Month").map {
         let result = try ComicInfo.validateMonth($0)
         return result == 0 ? nil : result
       }.flatMap { $0 }
-      let notes = root.elements(forName: "Notes").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let notes = root.text(ofChild: "Notes")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let number = root.elements(forName: "Number").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let number = root.text(ofChild: "Number")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let pageCount = root.elements(forName: "PageCount").first?.stringValue.flatMap { Int($0) }
-      let penciller = root.elements(forName: "Penciller").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let pageCount = root.text(ofChild: "PageCount").flatMap { Int($0) }
+      let penciller = root.text(ofChild: "Penciller")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let publisher = root.elements(forName: "Publisher").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let publisher = root.text(ofChild: "Publisher")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let review = root.elements(forName: "Review").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let review = root.text(ofChild: "Review")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let scanInformation = root.elements(forName: "ScanInformation").first?.stringValue?.trimmingCharacters(
+      let scanInformation = root.text(ofChild: "ScanInformation")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let series = root.elements(forName: "Series").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let series = root.text(ofChild: "Series")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let seriesGroup = root.elements(forName: "SeriesGroup").first?.stringValue?.trimmingCharacters(
+      let seriesGroup = root.text(ofChild: "SeriesGroup")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let storyArc = root.elements(forName: "StoryArc").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let storyArc = root.text(ofChild: "StoryArc")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let storyArcNumber = root.elements(forName: "StoryArcNumber").first?.stringValue?.trimmingCharacters(
+      let storyArcNumber = root.text(ofChild: "StoryArcNumber")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let summary = root.elements(forName: "Summary").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let summary = root.text(ofChild: "Summary")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let teamsRawData = root.elements(forName: "Teams").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let teamsRawData = root.text(ofChild: "Teams")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let title = root.elements(forName: "Title").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let title = root.text(ofChild: "Title")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let translator = root.elements(forName: "Translator").first?.stringValue?.trimmingCharacters(
+      let translator = root.text(ofChild: "Translator")?.trimmingCharacters(
         in: .whitespacesAndNewlines
       ).nilIfEmpty
-      let volume = root.elements(forName: "Volume").first?.stringValue.map {
+      let volume = root.text(ofChild: "Volume").map {
         $0.trimmingCharacters(in: .whitespacesAndNewlines)
       }.flatMap { trimmed in
         trimmed.isEmpty ? nil : Int(trimmed)
       }
-      let webRawData = root.elements(forName: "Web").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let webRawData = root.text(ofChild: "Web")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let writer = root.elements(forName: "Writer").first?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
+      let writer = root.text(ofChild: "Writer")?.trimmingCharacters(in: .whitespacesAndNewlines)
         .nilIfEmpty
-      let year = try root.elements(forName: "Year").first?.stringValue.map {
+      let year = try root.text(ofChild: "Year").map {
         try ComicInfo.validateYear($0)
       }
 
@@ -1033,17 +1033,17 @@ extension ComicInfo {
     }
 
     /// Parse Pages element from XML root and return array of Page objects.
-    private static func parsePagesElement(_ root: XMLElement) throws -> [Page] {
-      guard let pagesElement = root.elements(forName: "Pages").first else {
+    private static func parsePagesElement(_ root: AEXMLElement) throws -> [Page] {
+      guard let pagesElement = root.children.first(where: { $0.name == "Pages" }) else {
         return []
       }
 
-      let pageElements = pagesElement.elements(forName: "Page")
+      let pageElements = pagesElement.children.filter { $0.name == "Page" }
       var pages: [Page] = []
 
       for pageElement in pageElements {
         // Required attribute: Image
-        guard let imageAttr = pageElement.attribute(forName: "Image")?.stringValue else {
+        guard let imageAttr = pageElement.attributes["Image"] else {
           throw ComicInfoError.schemaError("Page element missing required Image attribute")
         }
         guard let image = Int(imageAttr) else {
@@ -1051,25 +1051,25 @@ extension ComicInfo {
         }
 
         // Type is a space-separated list of values (XSD ComicPageType is xs:list).
-        let typeValue = pageElement.attribute(forName: "Type")?.stringValue ?? "Story"
+        let typeValue = pageElement.attributes["Type"] ?? "Story"
         let typeTokens = typeValue.split(whereSeparator: \.isWhitespace).map(String.init)
         let types = try (typeTokens.isEmpty ? ["Story"] : typeTokens).map {
           try PageType.validated(from: $0)
         }
 
-        let doublePageValue = pageElement.attribute(forName: "DoublePage")?.stringValue ?? "false"
+        let doublePageValue = pageElement.attributes["DoublePage"] ?? "false"
         let doublePage = parseBoolean(doublePageValue, field: "DoublePage")
 
-        let imageSizeValue = pageElement.attribute(forName: "ImageSize")?.stringValue ?? "0"
+        let imageSizeValue = pageElement.attributes["ImageSize"] ?? "0"
         let imageSize = Int(imageSizeValue) ?? 0
 
-        let key = pageElement.attribute(forName: "Key")?.stringValue ?? ""
-        let bookmark = pageElement.attribute(forName: "Bookmark")?.stringValue ?? ""
+        let key = pageElement.attributes["Key"] ?? ""
+        let bookmark = pageElement.attributes["Bookmark"] ?? ""
 
-        let imageWidthValue = pageElement.attribute(forName: "ImageWidth")?.stringValue ?? "-1"
+        let imageWidthValue = pageElement.attributes["ImageWidth"] ?? "-1"
         let imageWidth = Int(imageWidthValue) ?? -1
 
-        let imageHeightValue = pageElement.attribute(forName: "ImageHeight")?.stringValue ?? "-1"
+        let imageHeightValue = pageElement.attributes["ImageHeight"] ?? "-1"
         let imageHeight = Int(imageHeightValue) ?? -1
 
         let page = Page(

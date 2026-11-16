@@ -1,6 +1,15 @@
 {
-  "originHash" : "7503cf9aa93c780fc889cac9783f2c7c3641e4a45a182ddacb5c473b72a4cef5",
+  "originHash" : "b533d2ce51d88a9d57948e0707f3840bfa4d7c095ebbc1818db2ad8bf15fde3b",
   "pins" : [
+    {
+      "identity" : "aexml",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tadija/AEXML.git",
+      "state" : {
+        "revision" : "d2083adcf4d1383c858f5d3d0f24256459d3f59a",
+        "version" : "4.7.4"
+      }
+    },
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
