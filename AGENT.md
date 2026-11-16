@@ -11,8 +11,8 @@ This document describes the development process of the ComicInfo.swift package.
 
 ## Project Overview
 
-- **Source**: Ruby gem `comicinfo-ruby` (complete) https://github.com/veganstraightedge/comicinfo
-- **Target**: Swift package `ComicInfo.swift` (in development)
+- **Source**: Ruby gem `comicinfo` https://github.com/veganstraightedge/comicinfo
+- **Target**: Swift package `ComicInfo.swift` (released; see `CHANGELOG.md`)
 - **Approach**: Test-Driven Development (TDD) based on Ruby RSpec tests
 
 ## Development Guidelines
@@ -20,9 +20,10 @@ This document describes the development process of the ComicInfo.swift package.
 - **Swift Version**: 6.4+
 - **Testing Framework**: Swift Testing (not XCTest)
 - **Code Formatting**: `swift format`, use 2 spaces for level indentation
+- **Scripts**: `script/{build,test,lint,format,run}`; `script/lint` is `swift format lint --strict` (warnings fail)
 - **Development Process**: TDD
   - Write failing tests first (based on Ruby RSpec tests)
-  - Use XML fixture files in `Tests/Fixtures/`, not inline XML strings
+  - Use XML fixture files in `Tests/ComicInfoTests/Fixtures/`, not inline XML strings
   - Make one test pass, commit
   - Repeat
 
@@ -30,24 +31,28 @@ This document describes the development process of the ComicInfo.swift package.
 
 ### Ruby Gem Structure
 ```
-lib/comicinfo/
-├── comicinfo.rb # Main entry point and loader
-├── enums.rb     # Enum definitions
-├── errors.rb    # Custom error classes
-├── issue.rb     # Main ComicInfo::Issue class
-├── page.rb      # ComicInfo::Page class
-└── version.rb   # Version constant
+lib/
+├── comicinfo.rb    # Main entry point and loader
+└── comicinfo/
+    ├── enums.rb    # Enum definitions
+    ├── errors.rb   # Custom error classes
+    ├── issue.rb    # Main ComicInfo::Issue class
+    ├── page.rb     # ComicInfo::Page class
+    └── version.rb  # Version constant
 ```
 
-### Swift Package Structure (Planned)
+### Swift Package Structure
 ```
-Sources/ComicInfo/
-├── ComicInfo.swift # Main entry point and loader
-├── Enums.swift     # Enum definitions
-├── Errors.swift    # Error types
-├── Issue.swift     # Main ComicInfo.Issue class
-├── Page.swift      # ComicInfo.Page class
-└── Version.swift   # Version constant
+Sources/
+├── ComicInfo/
+│   ├── ComicInfo.swift # Namespace, main entry point and loader
+│   ├── Enums.swift     # Enum definitions
+│   ├── Errors.swift    # Error types (top-level `ComicInfoError`)
+│   ├── Issue.swift     # ComicInfo.Issue struct
+│   ├── Page.swift      # ComicInfo.Page struct
+│   └── Version.swift   # Version constant
+└── ComicInfoCLI/
+    └── main.swift      # `comicinfo` command-line tool
 ```
 
 ## Ruby-specific Features → Swift Equivalents
@@ -66,13 +71,13 @@ Sources/ComicInfo/
 spec/comic_info_spec.rb        → Tests/ComicInfoTests/ComicInfoTests.swift
 spec/comic_info/issue_spec.rb  → Tests/ComicInfoTests/IssueTests.swift
 spec/comic_info/page_spec.rb   → Tests/ComicInfoTests/PageTests.swift
-spec/comic_info/enums_spec.rb  → Tests/ComicInfoTests/EnumsTests.swift
-spec/comic_info/errors_spec.rb → Tests/ComicInfoTests/ErrorsTests.swift
 ```
 
+Swift-only, with no gem spec file behind them: `EnumsTests.swift`, `ErrorsTests.swift`, `SecurityTests.swift`.
+
 ### Fixture Files
-- Copy XML fixtures from Ruby `spec/fixtures/` to Swift `Tests/Fixtures/`
-- Maintain same file structure for consistency
+- XML fixtures come from the gem's `spec/fixtures/`, and live in `Tests/ComicInfoTests/Fixtures/`
+- Each fixture is a folder holding a `ComicInfo.xml` (`valid_minimal/ComicInfo.xml`); the gem uses flat files (`valid_minimal.xml`)
 - Add Swift-specific fixtures as needed
 
 ### Test Conversion Examples
@@ -87,7 +92,7 @@ end
 ```swift
 // Swift Testing
 @Test func testLoadsMinimalComicInfoFile() async throws {
-  let comic = try loadFixture("valid_minimal.xml")
+  let comic = try loadFixture("valid_minimal")
   #expect(comic.title == "Minimal Comic")
 }
 ```
@@ -123,14 +128,11 @@ public enum ComicInfo {
 - Matches Ruby module structure exactly: `ComicInfo::Issue` → `ComicInfo.Issue`
 - Solves `Testing.Issue` name collision naturally
 - Issue is not a standalone type, it's part of ComicInfo `namespace`
-- Swift doesn't support reopening types to add nested types (no extensions with nested types)
-- Therefore: ALL nested types must be in the same file as parent
 
 **File Organization:**
-- `ComicInfo.swift` contains both `ComicInfo` enum AND nested `Issue` struct
-- One concept per file rule ONLY applies to top-level types
-- Nested types stay with their parent (Swift limitation)
-- Can use extensions in separate files for methods, but NOT for adding new nested types
+- `ComicInfo.swift` declares the `ComicInfo` enum and its `load` entry points
+- Each nested type lives in its own file, declared inside `extension ComicInfo { ... }` (`Issue.swift`, `Page.swift`, `Enums.swift`, `Version.swift`)
+- The one top-level type besides the namespace is `ComicInfoError` (`Errors.swift`)
 
 ### Method Delegation Pattern
 **Ruby:**
@@ -185,9 +187,9 @@ ComicInfo.load(fromXML:) → Issue.load(fromXML:) → Issue(...)
 - ❌ Write implementation before tests
 - ❌ Rename domain types to fix test collisions (`ComicIssue` instead of `Issue`)
 - ❌ Use inline XML strings in tests (use fixtures)
-- ❌ Commit without running `swift format`
+- ❌ Commit without running `script/format` and `script/lint`
 - ❌ Make multiple tests pass in one commit
-- ❌ Separate nested types into their own files (Swift won't allow it)
+- ❌ Declare nested types at the top level (put them in `extension ComicInfo { ... }`)
 - ❌ Add all properties at once (do incrementally with tests)
 - ❌ Skip the failing test step
 
@@ -195,7 +197,7 @@ ComicInfo.load(fromXML:) → Issue.load(fromXML:) → Issue(...)
 - ✅ Write ONE failing test first
 - ✅ Use fixture files for XML test data
 - ✅ Nest types to match Ruby module structure
-- ✅ Run `swift format` before every commit
+- ✅ Run `script/format` and `script/lint` before every commit
 - ✅ Keep commits small and focused
 - ✅ Match Ruby gem API exactly
 - ✅ Fix root causes, not symptoms
@@ -225,6 +227,6 @@ public enum ComicInfo {  // Can't instantiate
 
 - [Swift Testing Documentation](https://developer.apple.com/documentation/testing)
 - [Swift 6.4 Language Guide](https://docs.swift.org/swift-book/)
-- [Foundation XMLParser](https://developer.apple.com/documentation/foundation/xmlparser)
+- [Foundation XMLDocument](https://developer.apple.com/documentation/foundation/xmldocument)
 - [ComicInfo Schema Specification](https://github.com/anansi-project/comicinfo)
 - [Ruby Source Code](https://github.com/veganstraightedge/comicinfo)
