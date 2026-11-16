@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-16
+
 ### Added
 
 - **`ComicInfo.NumericField`**: the numeric fields and their rules (Year 1000–9999, Month 1–12, Day 1–31, Community Rating 0–5, whole numbers for the counts) as public API. `validate(_:)` checks text, `int(from:)` / `double(from:)` return the number. Use it to check a value before building an `Issue`, for example text typed into a form.
