@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-11-17
+
 ### Added
 
 - **Zero-padded issue numbers in `Issue.filename(template:)`**: `{number:3}` pads the issue number to three digits ("Saga #001"). Only the leading whole number is padded, so `1.5` becomes `001.5` and `12AU` becomes `012AU`.
