@@ -94,7 +94,7 @@ Represents a comic book issue with all metadata.
 
 ## Methods
 
-- `filename(template: String) -> String` - A file name (no extension) from a template such as `{series} #{number} ({year})`; tokens are listed in `Issue.filenameTokens`
+- `filename(template: String) -> String` - A file name (no extension) from a template such as `{series} #{number} ({year})`; tokens are listed in `Issue.filenameTokens`, and `{number:3}` zero-pads the issue number to three digits
 - `rearrangingPages(_: [Int?]) -> Issue` - Copy with `pages` and `pageCount` updated after page images were reordered, deleted or added; each element is the image's previous index, or nil if new
 - `validate() throws` - Throws `rangeError` if a numeric value is one that loading would reject
 - `toJSONString() throws -> String` - Export to JSON string
