@@ -43,6 +43,33 @@ struct IssueFilenameTests {
     #expect(issue.filename(template: "{series} {colour} scan") == "Saga {colour} scan")
   }
 
+  @Test func testNumberCanBeZeroPaddedToAWidth() {
+    let issue = ComicInfo.Issue(number: "1", series: "Saga", year: 2012)
+    #expect(issue.filename(template: "{series} #{number:3} ({year})") == "Saga #001 (2012)")
+    #expect(issue.filename(template: "{number:2}") == "01")
+    #expect(issue.filename(template: "{number:1}") == "1")
+    #expect(issue.filename(template: "{number} {number:4}") == "1 0001")
+  }
+
+  @Test func testPaddingOnlyTouchesTheLeadingWholeNumber() {
+    #expect(ComicInfo.Issue(number: "1.5").filename(template: "{number:3}") == "001.5")
+    #expect(ComicInfo.Issue(number: "12AU").filename(template: "{number:3}") == "012AU")
+    #expect(ComicInfo.Issue(number: "1000").filename(template: "{number:3}") == "1000")
+    #expect(ComicInfo.Issue(number: "Annual").filename(template: "{number:3}") == "Annual")
+    #expect(ComicInfo.Issue(number: "1/2").filename(template: "{number:3}") == "001-2")
+  }
+
+  @Test func testMissingNumberWithAWidthIsLeftOut() {
+    #expect(ComicInfo.Issue(series: "Saga").filename(template: "{series} #{number:3}") == "Saga")
+  }
+
+  @Test func testAWidthOnAnyOtherTokenIsLeftAlone() {
+    let issue = ComicInfo.Issue(number: "1", volume: 2)
+    #expect(issue.filename(template: "{volume:2}") == "{volume:2}")
+    #expect(issue.filename(template: "{number:x}") == "{number:x}")
+    #expect(issue.filename(template: "{number:}") == "{number:}")
+  }
+
   @Test func testTokensAreListed() {
     #expect(ComicInfo.Issue.filenameTokens == ["number", "publisher", "series", "title", "volume", "year"])
   }
