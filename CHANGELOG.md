@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-11-19
+
 ### Added
 
 - **`Issue.pageFilename(template:page:of:)`**: a file name for one page image, from a template such as `page_{page:3}` or `{series}_{number:3}_{page:4}`. It takes the tokens of `Issue.filename(template:)` plus `{page}`. The page number is always at least as wide as the page count, and a template without one gets it appended, so the names keep pages apart and in order.
