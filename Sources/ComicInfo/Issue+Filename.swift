@@ -30,16 +30,17 @@ extension ComicInfo.Issue {
   /// - Parameter template: Text containing `{name}` tokens from `filenameTokens`.
   /// - Returns: The file name, which is empty when the issue has none of the values asked for.
   public func filename(template: String) -> String {
-    var name = fillingPaddedNumbers(in: template)
+    var name = Self.filling("number", with: filenameValue(for: "number"), in: template)
     for token in Self.filenameTokens {
       name = name.replacingOccurrences(of: "{\(token)}", with: filenameValue(for: token))
     }
     return Self.tidied(name)
   }
 
-  /// Fills in each `{number:width}`, leaving one whose width is not 1 to 99 as written.
-  private func fillingPaddedNumbers(in template: String) -> String {
-    let opening = "{number:"
+  /// Fills in each `{token:width}` with `value` padded to that width, leaving one whose width is
+  /// not 1 to 99 as written.
+  static func filling(_ token: String, with value: String, in template: String) -> String {
+    let opening = "{\(token):"
     var name = template
     var searchStart = name.startIndex
 
@@ -55,15 +56,15 @@ extension ComicInfo.Issue {
         continue
       }
 
-      let value = Self.zeroPadded(filenameValue(for: "number"), to: width)
-      name.replaceSubrange(open.lowerBound..<close.upperBound, with: value)
-      searchStart = name.index(open.lowerBound, offsetBy: value.count)
+      let padded = zeroPadded(value, to: width)
+      name.replaceSubrange(open.lowerBound..<close.upperBound, with: padded)
+      searchStart = name.index(open.lowerBound, offsetBy: padded.count)
     }
     return name
   }
 
   /// Pads the whole number that `value` starts with to `width` digits: `1.5` to `001.5` for 3.
-  private static func zeroPadded(_ value: String, to width: Int) -> String {
+  static func zeroPadded(_ value: String, to width: Int) -> String {
     let whole = value.prefix { $0.isASCII && $0.isNumber }
     guard !whole.isEmpty, whole.count < width else { return value }
     return String(repeating: "0", count: width - whole.count) + value
