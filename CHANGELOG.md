@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Issue.pageType(at:)`** and **`Issue.settingPageType(_:at:)`**: read and set the type of a page image by its index. A page with no `<Page>` entry is a story page; setting another type on it adds an entry, and an existing entry keeps its other details.
+
 ## [1.6.0] - 2026-11-17
 
 ### Added

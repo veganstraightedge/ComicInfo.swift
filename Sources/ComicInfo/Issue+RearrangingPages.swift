@@ -44,7 +44,8 @@ extension ComicInfo.Issue {
     return rearranged
   }
 
-  private func withPages(_ pages: [ComicInfo.Page], pageCount: Int?) -> ComicInfo.Issue {
+  /// The same issue with different page entries and page count.
+  func withPages(_ pages: [ComicInfo.Page], pageCount: Int?) -> ComicInfo.Issue {
     ComicInfo.Issue(
       ageRating: ageRating,
       alternateCount: alternateCount,
