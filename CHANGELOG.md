@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Issue.settingCharacters(_:)`, `settingGenres(_:)`, `settingLocations(_:)`, `settingTeams(_:)`**: a copy of the issue with that list changed, the counterparts of `characters`, `genres`, `locations` and `teams`. Each value is trimmed, and empty values and repeats are dropped. A comma inside a value becomes a space, so it reads back as one entry. An empty list removes the field.
+- **`Issue.webLinks`**: every entry of `Web` as text, split on whitespace. Unlike `webUrls`, it keeps entries that aren't valid URLs, so an editor can show and keep them.
+- **`Issue.settingWebLinks(_:)`**: a copy of the issue with those web links, space-separated.
+
 ## [1.8.0] - 2026-11-19
 
 ### Added
