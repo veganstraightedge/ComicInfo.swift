@@ -448,13 +448,14 @@ extension ComicInfo {
     /// Array of web URLs split from whitespace-separated string.
     ///
     /// Splits the `webRawData` string on whitespace and converts to URL objects.
+    /// An entry without a scheme, such as `example.org`, is taken to be `https://example.org`.
     /// Invalid URLs are filtered out.
     /// - Returns: Array of valid URLs, or empty array if no valid URLs.
     public var webUrls: [URL] {
-      guard let web = webRawData, !web.isEmpty else {
-        return []
+      webLinks.compactMap { link in
+        guard let url = URL(string: link) else { return nil }
+        return url.scheme == nil ? URL(string: "https://" + link) : url
       }
-      return web.split(separator: " ").compactMap { URL(string: String($0)) }
     }
 
     /// True if this issue has pages.

@@ -63,6 +63,19 @@ struct IssueListsTests {
     #expect(ComicInfo.Issue(webRawData: "   ").webLinks.isEmpty)
   }
 
+  @Test func testWebUrlsAssumeHTTPSWithoutAScheme() {
+    let issue = ComicInfo.Issue(webRawData: "example.org dc.com/comics http://example.com mailto:a@example.com")
+    #expect(
+      issue.webUrls.map(\.absoluteString) == [
+        "https://example.org", "https://dc.com/comics", "http://example.com", "mailto:a@example.com",
+      ])
+  }
+
+  @Test func testWebUrlsSplitOnAnyWhitespace() {
+    let issue = ComicInfo.Issue(webRawData: "  https://example.com\nhttps://example.org  ")
+    #expect(issue.webUrls.map(\.absoluteString) == ["https://example.com", "https://example.org"])
+  }
+
   @Test func testSettingWebLinksJoinsThemWithSpaces() {
     let links = [" https://example.com", "", "https://example.org", "https://example.com"]
     #expect(issue.settingWebLinks(links).webRawData == "https://example.com https://example.org")
