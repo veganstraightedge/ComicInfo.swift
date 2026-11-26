@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-11-26
+
 ### Added
 
 - **`Issue.settingCharacters(_:)`, `settingGenres(_:)`, `settingLocations(_:)`, `settingTeams(_:)`**: a copy of the issue with that list changed, the counterparts of `characters`, `genres`, `locations` and `teams`. Each value is trimmed, and empty values and repeats are dropped. A comma inside a value becomes a space, so it reads back as one entry. An empty list removes the field.
