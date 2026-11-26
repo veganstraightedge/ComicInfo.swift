@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.1] - 2026-11-26
+
 ### Fixed
 
 - **`Issue`, `Page`, the enums and `ComicInfoError` are `Sendable`**, so an issue can be passed to a `MetadataSource`'s async methods from the main actor under Swift 6's strict concurrency checking.
