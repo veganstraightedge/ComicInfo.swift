@@ -54,6 +54,7 @@ Or add it through Xcode:
 - [Export Functionality (JSON & XML)](doc/export.md)
 - [Error Handling](doc/error-handling.md)
 - [Creating Issues Programmatically](doc/creating-issues.md)
+- [Looking Up Details in Online Databases](doc/metadata-sources.md)
 
 ## API Reference
 
