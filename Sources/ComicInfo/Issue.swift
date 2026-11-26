@@ -49,7 +49,7 @@ extension ComicInfo {
   /// let genreString = issue.genreRawData    // "Action, Adventure, Superhero"
   /// let genreArray = issue.genres           // ["Action", "Adventure", "Superhero"]
   /// ```
-  public struct Issue: Codable {
+  public struct Issue: Codable, Sendable {
     /// Age rating classification for content appropriateness.
     public let ageRating: AgeRating?
     /// Total issues in alternate series.

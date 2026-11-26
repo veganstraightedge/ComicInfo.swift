@@ -5,7 +5,7 @@
 
 extension ComicInfo {
   /// Manga enum representing manga reading direction.
-  public enum Manga: String, CaseIterable, Equatable, Codable {
+  public enum Manga: String, CaseIterable, Equatable, Codable, Sendable {
     case unknown = "Unknown"
     case no = "No"
     case yes = "Yes"
@@ -57,7 +57,7 @@ extension ComicInfo {
   /// - `.teen`: 13+ content
   /// - `.mature17Plus`: 17+ mature content
   /// - `.adultsOnly18Plus`: 18+ adult content only
-  public enum AgeRating: String, CaseIterable, Equatable, Codable {
+  public enum AgeRating: String, CaseIterable, Equatable, Codable, Sendable {
     case unknown = "Unknown"
     case adultsOnly18Plus = "Adults Only 18+"
     case earlyChildhood = "Early Childhood"
@@ -109,7 +109,7 @@ extension ComicInfo {
   /// - `.unknown`: Color format not specified
   /// - `.no`: Full color comic
   /// - `.yes`: Black and white comic
-  public enum BlackAndWhite: String, CaseIterable, Equatable, Codable {
+  public enum BlackAndWhite: String, CaseIterable, Equatable, Codable, Sendable {
     case unknown = "Unknown"
     case no = "No"
     case yes = "Yes"
@@ -146,7 +146,7 @@ extension ComicInfo {
   }
 
   /// Page type enum for comic pages.
-  public enum PageType: String, CaseIterable, Equatable, Codable {
+  public enum PageType: String, CaseIterable, Equatable, Codable, Sendable {
     case frontCover = "FrontCover"
     case innerCover = "InnerCover"
     case roundup = "Roundup"
