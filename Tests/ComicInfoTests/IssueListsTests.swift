@@ -4,30 +4,44 @@ import Testing
 @testable import ComicInfo
 
 struct IssueListsTests {
-  @Test func testJoinsAListWithCommas() {
-    #expect(ComicInfo.Issue.joinedList(["Action", "Adventure"]) == "Action, Adventure")
-    #expect(ComicInfo.Issue.joinedList(["Saga"]) == "Saga")
+  private let issue = ComicInfo.Issue(series: "Saga", title: "Chapter One")
+
+  @Test func testSettingAListJoinsItWithCommas() {
+    let updated = issue.settingGenres(["Action", "Adventure"])
+    #expect(updated.genreRawData == "Action, Adventure")
+    #expect(updated.genres == ["Action", "Adventure"])
   }
 
-  @Test func testJoinedListIsNilWhenThereIsNothingToWrite() {
-    #expect(ComicInfo.Issue.joinedList([]) == nil)
-    #expect(ComicInfo.Issue.joinedList(["", "  "]) == nil)
+  @Test func testEachListHasItsOwnSetter() {
+    #expect(issue.settingCharacters(["Alana", "Marko"]).charactersRawData == "Alana, Marko")
+    #expect(issue.settingGenres(["Sci-Fi"]).genreRawData == "Sci-Fi")
+    #expect(issue.settingLocations(["Landfall", "Wreath"]).locationsRawData == "Landfall, Wreath")
+    #expect(issue.settingTeams(["The Will"]).teamsRawData == "The Will")
   }
 
-  @Test func testJoinedListTrimsAndDropsEmptiesAndDuplicates() {
-    let joined = ComicInfo.Issue.joinedList(["  Action ", "", "Adventure", "Action"])
-    #expect(joined == "Action, Adventure")
+  @Test func testSettingAnEmptyListRemovesIt() {
+    let issue = ComicInfo.Issue(genreRawData: "Action")
+    #expect(issue.settingGenres([]).genreRawData == nil)
+    #expect(issue.settingGenres(["", "  "]).genreRawData == nil)
   }
 
-  @Test func testJoinedListReplacesCommasInsideAValue() {
-    #expect(ComicInfo.Issue.joinedList(["Peter Parker, Jr."]) == "Peter Parker Jr.")
-    #expect(ComicInfo.Issue.joinedList(["a,b"]) == "a b")
+  @Test func testSettingAListTrimsAndDropsEmptiesAndRepeats() {
+    let updated = issue.settingCharacters(["  Alana ", "", "Marko", "Alana"])
+    #expect(updated.charactersRawData == "Alana, Marko")
   }
 
-  @Test func testJoinedListReadsBackAsTheSameList() throws {
-    let issue = try loadFixture("valid_complete")
-    let joined = ComicInfo.Issue.joinedList(issue.genres)
-    #expect(ComicInfo.Issue(genreRawData: joined).genres == issue.genres)
+  @Test func testCommasInsideAValueBecomeSpaces() {
+    #expect(issue.settingCharacters(["Peter Parker, Jr."]).charactersRawData == "Peter Parker Jr.")
+    #expect(issue.settingCharacters(["a,b"]).characters == ["a b"])
+  }
+
+  @Test func testSettingAListChangesNothingElse() throws {
+    let complete = try loadFixture("valid_complete")
+    let updated = complete.settingGenres(complete.genres.reversed())
+
+    #expect(updated.genres == complete.genres.reversed())
+    let restored = updated.settingGenres(complete.genres)
+    #expect(try restored.toXMLString() == complete.toXMLString())
   }
 
   @Test func testWebLinksKeepEveryEntryAsText() {
@@ -49,14 +63,19 @@ struct IssueListsTests {
     #expect(ComicInfo.Issue(webRawData: "   ").webLinks.isEmpty)
   }
 
-  @Test func testJoinsWebLinksWithSpaces() {
-    let joined = ComicInfo.Issue.joinedWeb([" https://example.com", "", "https://example.org", "https://example.com"])
-    #expect(joined == "https://example.com https://example.org")
-    #expect(ComicInfo.Issue.joinedWeb([]) == nil)
+  @Test func testSettingWebLinksJoinsThemWithSpaces() {
+    let links = [" https://example.com", "", "https://example.org", "https://example.com"]
+    #expect(issue.settingWebLinks(links).webRawData == "https://example.com https://example.org")
+    #expect(issue.settingWebLinks([]).webRawData == nil)
   }
 
-  @Test func testJoinedWebSplitsAnEntryWithSpacesInIt() {
-    #expect(
-      ComicInfo.Issue.joinedWeb(["https://example.com https://example.org"]) == "https://example.com https://example.org")
+  @Test func testAWebLinkWithSpacesInItBecomesSeveral() {
+    let updated = issue.settingWebLinks(["https://example.com https://example.org"])
+    #expect(updated.webLinks == ["https://example.com", "https://example.org"])
+  }
+
+  @Test func testSettingAListLeavesTheIssueItWasCalledOnAsItWas() {
+    _ = issue.settingTeams(["The Will"])
+    #expect(issue.teamsRawData == nil)
   }
 }
