@@ -20,7 +20,7 @@ import Foundation
 ///   print("Parse error: \(message)")
 /// }
 /// ```
-public enum ComicInfoError: Error, Equatable {
+public enum ComicInfoError: Error, Equatable, Sendable {
   /// XML parsing failed due to malformed XML or missing required elements
   case parseError(String)
 

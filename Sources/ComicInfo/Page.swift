@@ -5,7 +5,7 @@
 
 extension ComicInfo {
   /// Represents a single page in a comic book with metadata.
-  public struct Page: Equatable, Hashable, Codable {
+  public struct Page: Equatable, Hashable, Codable, Sendable {
     /// Page number or index (0-based).
     public let image: Int
 
