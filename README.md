@@ -36,7 +36,7 @@ Add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/veganstraightedge/ComicInfo.swift.git", from: "1.9.1")
+  .package(url: "https://github.com/veganstraightedge/ComicInfo.swift.git", from: "1.10.0")
 ]
 ```
 

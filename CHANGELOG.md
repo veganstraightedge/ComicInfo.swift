@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-11-26
+
 ### Added
 
 - **`ComicInfo.MetadataSource`**: what an online comics database implements to have a comic's details looked up in it. `missingDetails(for:)` says what an issue needs before it can be searched for, `matches(for:)` searches, and `issue(for:)` fetches what the database knows about one match. Each database has its own package built on this one. See [doc/metadata-sources.md](doc/metadata-sources.md).
