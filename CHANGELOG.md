@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.1] - 2026-11-26
+
 ### Fixed
 
 - **`Issue.webUrls` opens links typed without a scheme**: an entry such as `example.org` became a URL with no scheme, which can't be opened. It is now taken to be `https://example.org`. The entries are also split on any whitespace, not only spaces, as `webLinks` does. The stored `Web` text is unchanged.
